@@ -1,0 +1,21 @@
+# Node.js
+**/node_modules/
+
+# Next.js
+/frontend/.next/
+/frontend/out/
+
+# Nest.js
+/backend/dist/
+/backend/nest-cli.json
+
+# IDE and Editors
+.idea/
+.vscode/
+
+# Configuration files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
