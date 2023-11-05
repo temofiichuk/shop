@@ -13,10 +13,16 @@
 .idea/
 .vscode/
 
+# OS
+.DS_Store
+
 # Configuration files
-.env
-.env.local
-.env.development
-.env.production
+**/.env
+**/.env.local
+**/.env.development
+**/.env.production
+
+# Other
+.prettierrc
 
 
