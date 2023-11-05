@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID, Resolver, Query, InputType } from "@nestjs/graphql";
+import { ObjectType, Field, ID, Resolver, InputType } from "@nestjs/graphql";
 
 @Resolver()
 @ObjectType()

@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { UsersResolver } from "./users.resolver";
 import { User } from "../graphql.schema";
 import { UsersService } from "./users.service";
-import { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from "../app.service";
 
 @Module({
   imports: [],
