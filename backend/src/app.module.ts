@@ -2,9 +2,10 @@ import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
-import { UsersModule } from "./users/users.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { AuthModule } from "./auth/auth.module";
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
       autoSchemaFile: "schema.gql",
       driver: ApolloDriver,
     }),
-    UsersModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

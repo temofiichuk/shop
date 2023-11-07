@@ -2,22 +2,68 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  id: ID!
+type UserAuthData {
+  id: Float!
   name: String!
   email: String!
 }
 
+type AuthData {
+  user: UserAuthData!
+  accessToken: String!
+  refreshToken: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  created_at: DateTime!
+  update_at: DateTime!
+  phone: String!
+  avatar: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
-  find(id: Float!): User!
-  getAll: [User!]!
+  login(data: LoginUserInput!): AuthData!
+  getNewTokens(data: RefreshTokenInput!): AuthData!
+  user(id: Int!): User!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input RefreshTokenInput {
+  refresh_token: String!
 }
 
 type Mutation {
-  createUser(data: CreateUserInput!): User!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
 }
 
 input CreateUserInput {
   name: String!
   email: String!
+  password: String!
+  phone: String!
+  avatar: String!
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  password: String
+  phone: String
+  avatar: String
+  id: Int!
 }
