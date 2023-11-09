@@ -1,0 +1,251 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserAuthData {
+  id: Float!
+  name: String!
+  email: String!
+}
+
+type AuthData {
+  user: UserAuthData!
+  accessToken: String!
+  refreshToken: String!
+}
+
+type AdminAuthData {
+  id: Float!
+  name: String!
+  email: String!
+  type: String!
+}
+
+type AuthDataForAdmin {
+  accessToken: String!
+  refreshToken: String!
+  admin: AdminAuthData!
+}
+
+type Image {
+  id: Float!
+  product_id: Float!
+  name: String!
+  url: String!
+}
+
+type FavoriteProduct {
+  id: Float!
+  name: String!
+  price: Float!
+  images: [Image!]!
+  slug: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  phone: String!
+  avatar: String!
+}
+
+type UserResponse {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  avatar: String!
+  favorites: [FavoriteProduct!]!
+}
+
+type SuccessOutput {
+  message: String!
+}
+
+type Admin {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  phone: String!
+  avatar: String!
+  type: String!
+}
+
+type Product {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Review {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Category {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Subcategory {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Query {
+  authUserLogin(loginUserInput: LoginUserInput!): AuthData!
+  authAdminLogin(loginAdminInput: LoginAdminInput!): AuthDataForAdmin!
+  authNewTokens(token: RefreshTokenInput!): AuthData!
+  userById(id: Int!): User!
+  adminGetAll: [Admin!]!
+  product(id: Int!): Product!
+  review(id: Int!): Review!
+  category(id: Int!): Category!
+  subcategory(id: Int!): Subcategory!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input LoginAdminInput {
+  email: String!
+  password: String!
+}
+
+input RefreshTokenInput {
+  refresh_token: String!
+}
+
+type Mutation {
+  userCreate(create_data: CreateUserInput!): SuccessOutput!
+  userUpdate(update_data: UpdateUserInput!): User!
+  userRemove(id: Float!): User!
+  userToggleFavorite(product_id: Int!): UserResponse!
+  adminCreate(createAdminInput: CreateAdminInput!): SuccessOutput!
+  adminUpdate(updateAdminInput: UpdateAdminInput!): Admin!
+  adminRemove(id: Int!): Admin!
+  createProduct(createProductInput: CreateProductInput!): Product!
+  updateProduct(updateProductInput: UpdateProductInput!): Product!
+  removeProduct(id: Int!): Product!
+  createReview(createReviewInput: CreateReviewInput!): Review!
+  updateReview(updateReviewInput: UpdateReviewInput!): Review!
+  removeReview(id: Int!): Review!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: Int!): Category!
+  createSubcategory(createSubcategoryInput: CreateSubcategoryInput!): Subcategory!
+  updateSubcategory(updateSubcategoryInput: UpdateSubcategoryInput!): Subcategory!
+  removeSubcategory(id: Int!): Subcategory!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+  phone: String!
+  avatar: String!
+}
+
+input UpdateUserInput {
+  name: String!
+  email: String!
+  password: String!
+  phone: String!
+  avatar: String!
+  id: ID!
+}
+
+input CreateAdminInput {
+  name: String!
+  email: String!
+  password: String!
+  avatar: String!
+  type: String
+}
+
+input UpdateAdminInput {
+  name: String!
+  email: String!
+  password: String!
+  avatar: String!
+  type: String
+  id: ID!
+}
+
+input CreateProductInput {
+  name: String!
+  price: Float!
+  slug: String!
+  descriptions: [ProductDescription!]!
+  category: [ProductCategory!]!
+  subcategory: [ProductSubCategory!]!
+  image: String!
+  quantity: Float!
+  stock: Float!
+}
+
+input ProductDescription {
+  head: String!
+  body: String!
+}
+
+input ProductCategory {
+  name: String!
+  slug: String!
+}
+
+input ProductSubCategory {
+  name: String!
+  slug: String!
+  category: [ProductCategory!]!
+}
+
+input UpdateProductInput {
+  name: String
+  price: Float
+  slug: String
+  descriptions: [ProductDescription!]
+  category: [ProductCategory!]
+  subcategory: [ProductSubCategory!]
+  image: String
+  quantity: Float
+  stock: Float
+  id: Int!
+}
+
+input CreateReviewInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateReviewInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateCategoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCategoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateSubcategoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateSubcategoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}

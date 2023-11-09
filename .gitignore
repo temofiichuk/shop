@@ -24,5 +24,8 @@
 
 # Other
 .prettierrc
-
+todos.txt
+**/*.example
+**/*.example.*
+/backend/db_seeder
 
