@@ -1,14 +1,15 @@
 import {
-  BadGatewayException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
 } from "@nestjs/common";
-
 import { PrismaService } from "src/prisma.service";
 import { hash } from "argon2";
 import { CreateAdminInput } from "./dto/create-admin.input";
 import { UpdateAdminInput } from "./dto/update-admin.input";
+import { Admin, EnumAdminType, Prisma } from "@prisma/client";
+import { adminFieldsOutput, AdminOutputType } from "./dto/admin.output";
 
 @Injectable()
 export class AdminService {
@@ -19,46 +20,72 @@ export class AdminService {
   }
 
   async getById(id: number) {
-    return this.prisma.admin.findUnique({ where: { id } });
+    return this.prisma.admin.findUnique({
+      where: { id },
+      select: adminFieldsOutput,
+    });
   }
 
   async create(createAdminInput: CreateAdminInput) {
-    const isAdminExists = await this.prisma.admin.findUnique({
-      where: { email: createAdminInput.email },
-    });
-    if (isAdminExists) {
+    await this.checkEmail(createAdminInput);
+    createAdminInput.password = await hash(createAdminInput.password);
+    await this.prisma.admin.create({ data: createAdminInput });
+    throw new HttpException({ message: "Admin was created" }, HttpStatus.OK);
+  }
+
+  async update(updateAdminInput: UpdateAdminInput, admin: AdminOutputType) {
+    await this.checkEmail(updateAdminInput);
+    if (
+      admin?.type !== EnumAdminType.ROOTADMIN &&
+      admin.id !== +updateAdminInput.id
+    ) {
+      throw new ForbiddenException(`You can't update fields of other admins`);
+    }
+
+    let user = null;
+    try {
+      user = await this.prisma.admin.update({
+        where: { id: +updateAdminInput.id },
+        data: updateAdminInput,
+        select: adminFieldsOutput,
+      });
+    } catch (e) {
       throw new HttpException(
-        { message: "Admin already exists" },
+        { message: "Something went wrong" },
         HttpStatus.BAD_REQUEST
       );
     }
-    createAdminInput.password = await hash(createAdminInput.password);
-    const admin = await this.prisma.admin.create({ data: createAdminInput });
-    if (!admin) throw new BadGatewayException("Admin not created");
-
-    return { message: "Admin was created" };
+    return user;
   }
 
-  async update(id: number, updateAdminInput: UpdateAdminInput) {
-    const availableUser = await this.prisma.admin.findUnique({
-      where: { email: updateAdminInput.email },
-    });
-    if (availableUser && availableUser.id !== id) {
-      throw new BadGatewayException("Admin with this email already exists");
+  async remove(id: number, admin) {
+    if (admin?.type !== EnumAdminType.ROOTADMIN) {
+      throw new ForbiddenException(`You can't delete other admins`);
     }
-    const admin = await this.prisma.admin.update({
-      where: { id },
-      data: updateAdminInput,
-    });
-    if (!admin) throw new BadGatewayException("Admin wasn't updated");
-    throw new HttpException({ message: "Admin was updated" }, HttpStatus.OK);
+    let deletedAdmin = null;
+    try {
+      deletedAdmin = await this.prisma.admin.delete({
+        where: { id },
+      });
+    } catch (e) {
+      throw new HttpException(
+        { message: "Something went wrong" },
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    return deletedAdmin;
   }
 
-  async remove(id: number) {
-    const admin = await this.prisma.admin.delete({
-      where: { id },
+  private async checkEmail({ email }: Prisma.AdminWhereUniqueInput) {
+    if (!email) return;
+    const existsAdmin = await this.prisma.admin.findUnique({
+      where: { email },
     });
-    if (!admin) throw new BadGatewayException("Admin wasn't deleted");
-    throw new HttpException({ message: "Admin was deleted" }, HttpStatus.OK);
+    if (existsAdmin) {
+      throw new HttpException(
+        { message: "Admin with this email already exists" },
+        HttpStatus.CONFLICT
+      );
+    }
   }
 }

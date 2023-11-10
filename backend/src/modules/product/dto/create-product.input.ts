@@ -1,16 +1,19 @@
-import { InputType, Field } from "@nestjs/graphql";
+import { InputType, Field, Int } from "@nestjs/graphql";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 @InputType()
-export class ProductDescription {
+export class DescriptionInput {
   @Field()
+  @IsString()
   head: string;
 
   @Field()
+  @IsString()
   body: string;
 }
 
 @InputType()
-export class ProductCategory {
+export class CategoryInput {
   @Field()
   name: string;
 
@@ -19,43 +22,69 @@ export class ProductCategory {
 }
 
 @InputType()
-export class ProductSubCategory {
+export class SubCategoryInput {
   @Field()
   name: string;
 
   @Field()
   slug: string;
 
-  @Field(() => [ProductCategory])
-  category: ProductCategory;
+  @Field(() => CategoryInput)
+  category: CategoryInput;
+}
+
+@InputType()
+export class ImageInput {
+  @Field()
+  @IsString()
+  name: string;
+
+  @Field()
+  @IsString()
+  url: string;
 }
 
 @InputType()
 export class CreateProductInput {
   @Field()
+  @IsString()
   name: string;
 
-  @Field()
+  @Field(() => Int)
+  @IsNumber()
   price: number;
 
   @Field()
+  @IsString()
   slug: string;
 
-  @Field(() => [ProductDescription])
-  descriptions: ProductDescription[];
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  @IsNumber()
+  combination_id?: number;
 
-  @Field(() => [ProductCategory])
-  category: ProductCategory;
+  @Field(() => [DescriptionInput], { nullable: true })
+  @IsOptional()
+  descriptions?: DescriptionInput[];
 
-  @Field(() => [ProductSubCategory])
-  subcategory: ProductSubCategory;
-
-  @Field()
-  image: string;
-
-  @Field()
-  quantity: number;
-
-  @Field()
+  @Field(() => Int)
+  @IsNumber()
   stock: number;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  @IsNumber()
+  rating?: number;
+
+  @Field(() => [ImageInput], { nullable: true })
+  @IsOptional()
+  images?: ImageInput[];
+
+  @Field(() => CategoryInput, { nullable: true })
+  @IsOptional()
+  category?: CategoryInput;
+
+  @Field(() => SubCategoryInput, { nullable: true })
+  @IsOptional()
+  subcategory?: SubCategoryInput;
 }

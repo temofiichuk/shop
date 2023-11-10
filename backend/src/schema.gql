@@ -74,9 +74,37 @@ type Admin {
   type: String!
 }
 
+type ProductDescriptionType {
+  head: String!
+  body: String!
+}
+
+type ProductCategoryType {
+  name: String!
+  slug: String!
+}
+
+type ProductSubCategoryType {
+  name: String!
+  slug: String!
+  category: [ProductCategoryType!]!
+}
+
+type ProductImageType {
+  name: String!
+  url: String!
+}
+
 type Product {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  price: Float!
+  slug: String!
+  descriptions: [ProductDescriptionType!]!
+  category: [ProductCategoryType!]!
+  subcategory: [ProductSubCategoryType!]!
+  images: [ProductImageType!]!
+  quantity: Float!
+  stock: Float!
 }
 
 type Review {
@@ -100,7 +128,8 @@ type Query {
   authNewTokens(token: RefreshTokenInput!): AuthData!
   userById(id: Int!): User!
   adminGetAll: [Admin!]!
-  product(id: Int!): Product!
+  findAll: [Product!]!
+  findOne(id: Float!): Product!
   review(id: Int!): Review!
   category(id: Int!): Category!
   subcategory(id: Int!): Subcategory!
@@ -121,16 +150,16 @@ input RefreshTokenInput {
 }
 
 type Mutation {
-  userCreate(create_data: CreateUserInput!): SuccessOutput!
-  userUpdate(update_data: UpdateUserInput!): User!
+  userCreate(createUserInput: CreateUserInput!): SuccessOutput!
+  userUpdate(updateUserInput: UpdateUserInput!): User!
   userRemove(id: Float!): User!
   userToggleFavorite(product_id: Int!): UserResponse!
-  adminCreate(createAdminInput: CreateAdminInput!): SuccessOutput!
+  adminCreate(createAdminInput: CreateAdminInput!): Admin!
   adminUpdate(updateAdminInput: UpdateAdminInput!): Admin!
-  adminRemove(id: Int!): Admin!
-  createProduct(createProductInput: CreateProductInput!): Product!
-  updateProduct(updateProductInput: UpdateProductInput!): Product!
-  removeProduct(id: Int!): Product!
+  adminRemove(id: Float!): Admin!
+  productCreate(createProductInput: CreateProductInput!): Product!
+  productUpdate(updateProductInput: UpdateProductInput!): Product!
+  productRemove(id: Float!): Product!
   createReview(createReviewInput: CreateReviewInput!): Review!
   updateReview(updateReviewInput: UpdateReviewInput!): Review!
   removeReview(id: Int!): Review!
@@ -151,11 +180,11 @@ input CreateUserInput {
 }
 
 input UpdateUserInput {
-  name: String!
-  email: String!
-  password: String!
-  phone: String!
-  avatar: String!
+  name: String
+  email: String
+  password: String
+  phone: String
+  avatar: String
   id: ID!
 }
 
@@ -168,53 +197,60 @@ input CreateAdminInput {
 }
 
 input UpdateAdminInput {
-  name: String!
-  email: String!
-  password: String!
-  avatar: String!
+  name: String
+  email: String
+  password: String
+  avatar: String
   type: String
-  id: ID!
+  id: Int!
 }
 
 input CreateProductInput {
   name: String!
-  price: Float!
+  price: Int!
   slug: String!
-  descriptions: [ProductDescription!]!
-  category: [ProductCategory!]!
-  subcategory: [ProductSubCategory!]!
-  image: String!
-  quantity: Float!
-  stock: Float!
+  combination_id: Int
+  descriptions: [DescriptionInput!]
+  stock: Int!
+  rating: Int
+  images: [ImageInput!]
+  category: CategoryInput
+  subcategory: SubCategoryInput
 }
 
-input ProductDescription {
+input DescriptionInput {
   head: String!
   body: String!
 }
 
-input ProductCategory {
+input ImageInput {
+  name: String!
+  url: String!
+}
+
+input CategoryInput {
   name: String!
   slug: String!
 }
 
-input ProductSubCategory {
+input SubCategoryInput {
   name: String!
   slug: String!
-  category: [ProductCategory!]!
+  category: CategoryInput!
 }
 
 input UpdateProductInput {
   name: String
-  price: Float
+  price: Int
   slug: String
-  descriptions: [ProductDescription!]
-  category: [ProductCategory!]
-  subcategory: [ProductSubCategory!]
-  image: String
-  quantity: Float
-  stock: Float
-  id: Int!
+  combination_id: Int
+  descriptions: [DescriptionInput!]
+  stock: Int
+  rating: Int
+  images: [ImageInput!]
+  category: CategoryInput
+  subcategory: SubCategoryInput
+  id: ID!
 }
 
 input CreateReviewInput {
