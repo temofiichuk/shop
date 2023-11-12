@@ -75,33 +75,40 @@ type Admin {
 }
 
 type ProductDescriptionType {
+  id: Int!
   head: String!
   body: String!
 }
 
 type ProductCategoryType {
+  id: Int!
   name: String!
   slug: String!
 }
 
 type ProductSubCategoryType {
+  id: Int!
   name: String!
   slug: String!
-  category: [ProductCategoryType!]!
+  category: ProductCategoryType!
 }
 
 type ProductImageType {
+  id: Int!
   name: String!
   url: String!
 }
 
 type Product {
+  id: Int!
   name: String!
   price: Float!
   slug: String!
   descriptions: [ProductDescriptionType!]!
-  category: [ProductCategoryType!]!
-  subcategory: [ProductSubCategoryType!]!
+  category: ProductCategoryType!
+  category_id: Int!
+  subcategory: ProductSubCategoryType!
+  subcategory_id: Int!
   images: [ProductImageType!]!
   quantity: Float!
   stock: Float!
@@ -214,8 +221,8 @@ input CreateProductInput {
   stock: Int!
   rating: Int
   images: [ImageInput!]
-  category: CategoryInput
-  subcategory: SubCategoryInput
+  category_id: Float!
+  subcategory_id: Float!
 }
 
 input DescriptionInput {
@@ -228,29 +235,24 @@ input ImageInput {
   url: String!
 }
 
-input CategoryInput {
-  name: String!
-  slug: String!
-}
-
-input SubCategoryInput {
-  name: String!
-  slug: String!
-  category: CategoryInput!
-}
-
 input UpdateProductInput {
   name: String
   price: Int
   slug: String
   combination_id: Int
-  descriptions: [DescriptionInput!]
   stock: Int
   rating: Int
   images: [ImageInput!]
-  category: CategoryInput
-  subcategory: SubCategoryInput
-  id: ID!
+  category_id: Float
+  subcategory_id: Float
+  id: Int!
+  descriptions: [UpdateDescriptionInput!]!
+}
+
+input UpdateDescriptionInput {
+  head: String
+  body: String
+  id: Int!
 }
 
 input CreateReviewInput {

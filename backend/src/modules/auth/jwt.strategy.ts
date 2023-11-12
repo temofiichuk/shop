@@ -24,7 +24,6 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, "jwt") {
   }
 
   async validate({ id, type }: ValidationPayloadType): Promise<User> {
-    console.log("user validate");
     const user: User = await this.userService.getById(+id);
     if (type !== "user" && !user) throw new UnauthorizedException();
     return user;
@@ -51,7 +50,6 @@ export class JwtAuthAdminStrategy extends PassportStrategy(
     id,
     type,
   }: ValidationPayloadType): Promise<{ admin: AdminOutputType }> {
-    console.log("admin validate");
     const admin: AdminOutputType = await this.adminService.getById(+id);
     if (type !== "admin" || !admin) throw new UnauthorizedException();
     return { admin };

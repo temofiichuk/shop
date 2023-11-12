@@ -4,12 +4,17 @@ import {
   HttpStatus,
   Injectable,
 } from "@nestjs/common";
-import { CreateProductInput } from "./dto/create-product.input";
-import { UpdateProductInput } from "./dto/update-product.input";
+import {
+  CreateProductInput,
+  DescriptionInput,
+} from "./dto/create-product.input";
+import {
+  UpdateDescriptionInput,
+  UpdateProductInput,
+} from "./dto/update-product.input";
 import { PrismaService } from "../../prisma.service";
-import * as url from "url";
-import { Image, Prisma } from "@prisma/client";
-import { OmitType } from "@nestjs/graphql";
+
+import { productRelativeFields } from "./dto/product.output";
 
 @Injectable()
 export class ProductService {
@@ -20,32 +25,38 @@ export class ProductService {
       where: { name: createProductInput.name },
     });
 
-    if (existsProduct) throw new BadGatewayException("Product already exists");
+    if (existsProduct)
+      throw new HttpException("Product already exists", HttpStatus.CONFLICT);
 
-    const { descriptions, category, subcategory, images, ...fields } =
+    const { descriptions, category_id, subcategory_id, images, ...fields } =
       createProductInput;
 
     let product = null;
-    try {
-      product = await this.prisma.product.create({
-        data: {
-          ...fields,
-          category: {
-            connect: { name: category.name },
-          },
-          subcategory: {
-            connect: { name: subcategory.name },
-          },
-          images: {
-            createMany: {
-              data: images.map((img) => ({ name: img.name, url: img.url })),
-            },
+    // try {
+    product = await this.prisma.product.create({
+      data: {
+        ...fields,
+        category: {
+          connect: { id: category_id },
+        },
+        subcategory: {
+          connect: { id: subcategory_id },
+        },
+        images: {
+          createMany: {
+            data: images.map(({ name, url }) => ({ name, url })),
           },
         },
-      });
-    } catch (e) {
-      if (!product) throw new BadGatewayException("Product not created");
-    }
+        admin: {
+          connect: { id: admin_id },
+        },
+      },
+    });
+    // } catch (e) {
+    //   throw new BadGatewayException("Product not created");
+    // }
+
+    await this.createDescriptions(descriptions, product.id);
 
     return product;
   }
@@ -58,42 +69,64 @@ export class ProductService {
     return `This action returns a #${id} product`;
   }
 
-  async update(admin_id: number, updateProductInput: UpdateProductInput) {
-    const { id, descriptions, images, category, subcategory, ...updateFields } =
-      updateProductInput;
-
+  async update(
+    admin_id: number,
+    { id, descriptions, images, ...updateFields }: UpdateProductInput
+  ) {
     const product = await this.prisma.product.update({
-      where: { id },
+      where: { id: id },
       data: {
+        admin_id,
         ...updateFields,
-        admin: {
-          update: {
-            id: admin_id,
-          },
-        },
-        category: {
-          update: {
-            name: category.name,
-          },
-        },
-        subcategory: {
-          update: {
-            name: subcategory.name,
-          },
-        },
-        descriptions: {
-          updateMany: {
-            where: { head: { in: descriptions.map(({ head }) => head) } },
-            data: descriptions.map(({ head, body }) => ({ head, body })),
+        images: {
+          createMany: {
+            data: images.map(({ name, url }) => ({ name, url })),
           },
         },
       },
+      include: productRelativeFields,
     });
     if (!product) throw new BadGatewayException("Product wasn't updated");
-    throw new HttpException({ message: "Product was updated" }, HttpStatus.OK);
+    await this.updateDescriptions(descriptions, product.id);
+    console.log(product);
+    return product;
   }
 
   remove(id: number) {
     return `This action removes a #${id} product`;
+  }
+
+  private async updateDescriptions(
+    descriptions: UpdateDescriptionInput[],
+    product_id: number
+  ) {
+    try {
+      descriptions.map(({ id, head, body }) =>
+        this.prisma.description.upsert({
+          where: { id },
+          create: { head, body, product_id },
+          update: { head, body, product_id },
+        })
+      );
+    } catch (e) {
+      throw new BadGatewayException("Descriptions not updated");
+    }
+  }
+
+  private async createDescriptions(
+    descriptions: DescriptionInput[],
+    product_id: number
+  ) {
+    try {
+      await this.prisma.description.createMany({
+        data: descriptions.map(({ head, body }) => ({
+          head,
+          body,
+          product_id,
+        })),
+      });
+    } catch (e) {
+      throw new BadGatewayException("Descriptions not created");
+    }
   }
 }

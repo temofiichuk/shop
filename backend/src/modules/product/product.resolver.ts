@@ -5,12 +5,15 @@ import { CreateProductInput } from "./dto/create-product.input";
 import { UpdateProductInput } from "./dto/update-product.input";
 import { AuthAdmin } from "../auth/decorators/auth-admin.decorators";
 import { CurrentAdmin } from "../auth/decorators/current-admin.decorators";
+import { UsePipes } from "@nestjs/common";
+import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
 
 @Resolver(() => Product)
 export class ProductResolver {
   constructor(private readonly productService: ProductService) {}
 
   @Mutation(() => Product)
+  @UsePipes(CustomValidationPipe)
   @AuthAdmin()
   productCreate(
     @CurrentAdmin("id") id: number,
@@ -30,14 +33,13 @@ export class ProductResolver {
   }
 
   @Mutation(() => Product)
+  @UsePipes(CustomValidationPipe)
   @AuthAdmin()
   productUpdate(
     @CurrentAdmin("id") id: number,
     @Args("updateProductInput") updateProductInput: UpdateProductInput
   ) {
-    const productId = updateProductInput.id;
-    delete updateProductInput.id;
-    return this.productService.update(productId, updateProductInput);
+    return this.productService.update(id, updateProductInput);
   }
 
   @Mutation(() => Product)

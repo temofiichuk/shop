@@ -58,9 +58,9 @@ export class AdminService {
     return user;
   }
 
-  async remove(id: number, admin) {
+  async remove(id: number, admin: AdminOutputType) {
     if (admin?.type !== EnumAdminType.ROOTADMIN) {
-      throw new ForbiddenException(`You can't delete other admins`);
+      throw new ForbiddenException(`You can't delete admins`);
     }
     let deletedAdmin = null;
     try {

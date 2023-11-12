@@ -1,7 +1,10 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, Int } from "@nestjs/graphql";
 
 @ObjectType()
 export class ProductDescriptionType {
+  @Field(() => Int)
+  id: number;
+
   @Field()
   head: string;
 
@@ -11,6 +14,9 @@ export class ProductDescriptionType {
 
 @ObjectType()
 export class ProductCategoryType {
+  @Field(() => Int)
+  id: number;
+
   @Field()
   name: string;
 
@@ -20,18 +26,24 @@ export class ProductCategoryType {
 
 @ObjectType()
 export class ProductSubCategoryType {
+  @Field(() => Int)
+  id: number;
+
   @Field()
   name: string;
 
   @Field()
   slug: string;
 
-  @Field(() => [ProductCategoryType])
+  @Field(() => ProductCategoryType)
   category: ProductCategoryType;
 }
 
 @ObjectType()
 export class ProductImageType {
+  @Field(() => Int)
+  id: number;
+
   @Field()
   name: string;
 
@@ -41,6 +53,9 @@ export class ProductImageType {
 
 @ObjectType()
 export class Product {
+  @Field(() => Int)
+  id: number;
+
   @Field()
   name: string;
 
@@ -53,11 +68,17 @@ export class Product {
   @Field(() => [ProductDescriptionType])
   descriptions: ProductDescriptionType[];
 
-  @Field(() => [ProductCategoryType])
+  @Field(() => ProductCategoryType)
   category: ProductCategoryType;
 
-  @Field(() => [ProductSubCategoryType])
+  @Field(() => Int)
+  category_id: number;
+
+  @Field(() => ProductSubCategoryType)
   subcategory: ProductSubCategoryType;
+
+  @Field(() => Int)
+  subcategory_id: number;
 
   @Field(() => [ProductImageType])
   images: ProductImageType[];

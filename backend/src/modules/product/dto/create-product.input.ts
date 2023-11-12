@@ -13,27 +13,6 @@ export class DescriptionInput {
 }
 
 @InputType()
-export class CategoryInput {
-  @Field()
-  name: string;
-
-  @Field()
-  slug: string;
-}
-
-@InputType()
-export class SubCategoryInput {
-  @Field()
-  name: string;
-
-  @Field()
-  slug: string;
-
-  @Field(() => CategoryInput)
-  category: CategoryInput;
-}
-
-@InputType()
 export class ImageInput {
   @Field()
   @IsString()
@@ -80,11 +59,9 @@ export class CreateProductInput {
   @IsOptional()
   images?: ImageInput[];
 
-  @Field(() => CategoryInput, { nullable: true })
-  @IsOptional()
-  category?: CategoryInput;
+  @Field()
+  category_id: number;
 
-  @Field(() => SubCategoryInput, { nullable: true })
-  @IsOptional()
-  subcategory?: SubCategoryInput;
+  @Field()
+  subcategory_id: number;
 }
