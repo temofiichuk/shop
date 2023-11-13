@@ -66,22 +66,22 @@ export class Product {
   slug: string;
 
   @Field(() => [ProductDescriptionType])
-  descriptions: ProductDescriptionType[];
+  descriptions?: ProductDescriptionType[];
 
   @Field(() => ProductCategoryType)
-  category: ProductCategoryType;
+  category?: ProductCategoryType;
 
   @Field(() => Int)
-  category_id: number;
+  category_id?: number;
 
   @Field(() => ProductSubCategoryType)
-  subcategory: ProductSubCategoryType;
+  subcategory?: ProductSubCategoryType;
 
   @Field(() => Int)
-  subcategory_id: number;
+  subcategory_id?: number;
 
   @Field(() => [ProductImageType])
-  images: ProductImageType[];
+  images?: ProductImageType[];
 
   @Field()
   quantity: number;

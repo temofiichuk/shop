@@ -1,14 +1,22 @@
 import { InputType, Field, Int } from "@nestjs/graphql";
-import { IsNumber, IsOptional, IsString } from "class-validator";
+import {
+  IsLowercase,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+} from "class-validator";
 
 @InputType()
 export class DescriptionInput {
   @Field()
   @IsString()
+  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
   head: string;
 
   @Field()
   @IsString()
+  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
   body: string;
 }
 
@@ -27,6 +35,7 @@ export class ImageInput {
 export class CreateProductInput {
   @Field()
   @IsString()
+  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
   name: string;
 
   @Field(() => Int)
@@ -35,6 +44,7 @@ export class CreateProductInput {
 
   @Field()
   @IsString()
+  @IsLowercase()
   slug: string;
 
   @Field(() => Int, { nullable: true })
@@ -60,8 +70,10 @@ export class CreateProductInput {
   images?: ImageInput[];
 
   @Field()
+  @IsNumber()
   category_id: number;
 
   @Field()
+  @IsNumber()
   subcategory_id: number;
 }

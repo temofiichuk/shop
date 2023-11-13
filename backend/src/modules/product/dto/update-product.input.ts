@@ -7,13 +7,14 @@ import {
   OmitType,
   PartialType,
 } from "@nestjs/graphql";
-import { IsNumber } from "class-validator";
+import { IsNumber, IsOptional } from "class-validator";
 
 @InputType()
 export class UpdateDescriptionInput extends PartialType(DescriptionInput) {
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @IsNumber()
-  id: number;
+  @IsOptional()
+  id?: number;
 }
 
 @InputType()

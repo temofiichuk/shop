@@ -22,16 +22,6 @@ export class ProductResolver {
     return this.productService.create(id, createProductInput);
   }
 
-  @Query(() => [Product])
-  findAll() {
-    return this.productService.findAll();
-  }
-
-  @Query(() => Product)
-  findOne(@Args("id") id: number) {
-    return this.productService.findOne(id);
-  }
-
   @Mutation(() => Product)
   @UsePipes(CustomValidationPipe)
   @AuthAdmin()

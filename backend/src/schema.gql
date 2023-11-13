@@ -135,8 +135,6 @@ type Query {
   authNewTokens(token: RefreshTokenInput!): AuthData!
   userById(id: Int!): User!
   adminGetAll: [Admin!]!
-  findAll: [Product!]!
-  findOne(id: Float!): Product!
   review(id: Int!): Review!
   category(id: Int!): Category!
   subcategory(id: Int!): Subcategory!
@@ -252,7 +250,7 @@ input UpdateProductInput {
 input UpdateDescriptionInput {
   head: String
   body: String
-  id: Int!
+  id: Int
 }
 
 input CreateReviewInput {
