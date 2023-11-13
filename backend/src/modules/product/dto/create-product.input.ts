@@ -1,61 +1,79 @@
-import { InputType, Field } from "@nestjs/graphql";
+import { InputType, Field, Int } from "@nestjs/graphql";
+import {
+  IsLowercase,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+} from "class-validator";
 
 @InputType()
-export class ProductDescription {
+export class DescriptionInput {
   @Field()
+  @IsString()
+  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
   head: string;
 
   @Field()
+  @IsString()
+  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
   body: string;
 }
 
 @InputType()
-export class ProductCategory {
+export class ImageInput {
   @Field()
+  @IsString()
   name: string;
 
   @Field()
-  slug: string;
-}
-
-@InputType()
-export class ProductSubCategory {
-  @Field()
-  name: string;
-
-  @Field()
-  slug: string;
-
-  @Field(() => [ProductCategory])
-  category: ProductCategory;
+  @IsString()
+  url: string;
 }
 
 @InputType()
 export class CreateProductInput {
   @Field()
+  @IsString()
+  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
   name: string;
 
-  @Field()
+  @Field(() => Int)
+  @IsNumber()
   price: number;
 
   @Field()
+  @IsString()
+  @IsLowercase()
   slug: string;
 
-  @Field(() => [ProductDescription])
-  descriptions: ProductDescription[];
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  @IsNumber()
+  combination_id?: number;
 
-  @Field(() => [ProductCategory])
-  category: ProductCategory;
+  @Field(() => [DescriptionInput], { nullable: true })
+  @IsOptional()
+  descriptions?: DescriptionInput[];
 
-  @Field(() => [ProductSubCategory])
-  subcategory: ProductSubCategory;
-
-  @Field()
-  image: string;
-
-  @Field()
-  quantity: number;
-
-  @Field()
+  @Field(() => Int)
+  @IsNumber()
   stock: number;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  @IsNumber()
+  rating?: number;
+
+  @Field(() => [ImageInput], { nullable: true })
+  @IsOptional()
+  images?: ImageInput[];
+
+  @Field()
+  @IsNumber()
+  category_id: number;
+
+  @Field()
+  @IsNumber()
+  subcategory_id: number;
 }

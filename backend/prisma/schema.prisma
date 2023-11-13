@@ -67,13 +67,13 @@ model Product {
   slug           String        @unique
   created_at     DateTime      @default(now())
   updated_at     DateTime      @updatedAt
-  combination_id Int
+  combination_id Int?
   descriptions   Description[]
   stock          Int
-  rating         Int
+  rating         Int @default(0)
   images         Image[]
   reviews        Review[]
-  admin          Admin?        @relation(fields: [admin_id], references: [id])
+  admin          Admin?       @relation(fields: [admin_id], references: [id])
   admin_id       Int?
   category       Category?     @relation(fields: [category_id], references: [id])
   category_id    Int?
@@ -82,18 +82,12 @@ model Product {
   order_item     OrderItem[]
   user           User?         @relation(fields: [user_id], references: [id])
   user_id        Int?
-  // color          Color?        @relation(fields: [color_id], references: [id])
-  // color_id       Int?
-  // size           Size?         @relation(fields: [size_id], references: [id])
-  // size_id        Int?
-  // brand          Brand?        @relation(fields: [brand_id], references: [id])
-  // brand_id       Int?
 }
 
 model Image {
   id         Int      @id @unique @default(autoincrement())
   name       String
-  url        String
+  url        String   @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   product    Product? @relation(fields: [product_id], references: [id])
@@ -109,30 +103,6 @@ model Description {
   product    Product? @relation(fields: [product_id], references: [id])
   product_id Int?
 }
-
-// model Color {
-//   id         Int       @id @unique @default(autoincrement())
-//   name       String    @unique
-//   created_at DateTime  @default(now())
-//   updated_at DateTime  @updatedAt
-//   products   Product[]
-// }
-//
-// model Size {
-//   id         Int       @id @unique @default(autoincrement())
-//   name       String    @unique
-//   created_at DateTime  @default(now())
-//   updated_at DateTime  @updatedAt
-//   products   Product[]
-// }
-//
-// model Brand {
-//   id         Int       @id @unique @default(autoincrement())
-//   name       String    @unique
-//   created_at DateTime  @default(now())
-//   updated_at DateTime  @updatedAt
-//   products   Product[]
-// }
 
 model Review {
   id         Int              @id @unique @default(autoincrement())

@@ -15,7 +15,7 @@ export class UserResolver {
 
   @Mutation(() => SuccessOutput)
   @UsePipes(CustomValidationPipe)
-  userCreate(@Args("create_data") createUserInput: CreateUserInput) {
+  userCreate(@Args("createUserInput") createUserInput: CreateUserInput) {
     return this.userService.create(createUserInput);
   }
 
@@ -24,7 +24,7 @@ export class UserResolver {
   @Auth()
   userUpdate(
     @CurrentUser("id") id: number,
-    @Args("update_data") updateUserInput: UpdateUserInput
+    @Args("updateUserInput") updateUserInput: UpdateUserInput
   ) {
     return this.userService.update(id, updateUserInput);
   }
