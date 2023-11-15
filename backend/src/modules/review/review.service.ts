@@ -1,26 +1,62 @@
-import { Injectable } from '@nestjs/common';
-import { CreateReviewInput } from './dto/create-review.input';
-import { UpdateReviewInput } from './dto/update-review.input';
+import { Injectable } from "@nestjs/common";
+import { CreateReviewInput } from "./dto/create-review.input";
+import { PrismaService } from "../../prisma.service";
+import { EnumReviewStatus } from "@prisma/client";
 
 @Injectable()
 export class ReviewService {
-  create(createReviewInput: CreateReviewInput) {
-    return 'This action adds a new review';
+  constructor(private readonly prisma: PrismaService) {}
+
+  create(
+    user_id: number,
+    { product_id, ...createReviewInput }: CreateReviewInput
+  ) {
+    return this.prisma.review.create({
+      data: {
+        ...createReviewInput,
+        user: {
+          connect: { id: user_id },
+        },
+        product: {
+          connect: { id: product_id },
+        },
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all review`;
+  async findAllByProduct(id: number) {
+    return this.prisma.review.findMany({ where: { product_id: id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
+  async findAllByUser(id: number) {
+    return this.prisma.review.findMany({ where: { user_id: id } });
   }
 
-  update(id: number, updateReviewInput: UpdateReviewInput) {
-    return `This action updates a #${id} review`;
+  findAllByStatus(status: EnumReviewStatus) {
+    return this.prisma.review.findMany({ where: { status } });
+  }
+
+  findOne(pattern: string) {
+    return this.prisma.review.findFirst({
+      where: {
+        OR: [
+          { comment: { contains: pattern } },
+          { user: { name: { contains: pattern } } },
+        ],
+      },
+    });
+  }
+
+  updateStatus(id: number, status: EnumReviewStatus) {
+    return this.prisma.review.update({
+      where: { id },
+      data: { status },
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} review`;
+    return this.prisma.review.delete({
+      where: { id },
+    });
   }
 }

@@ -12,6 +12,7 @@ import { ReviewModule } from "src/modules/review/review.module";
 import { CategoryModule } from "./modules/category/category.module";
 import { SubcategoryModule } from "./modules/subcategory/subcategory.module";
 import { graphqlConfig } from "./config/graphql.config";
+import { AttributeModule } from './modules/attribute/attribute.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { graphqlConfig } from "./config/graphql.config";
     ReviewModule,
     CategoryModule,
     SubcategoryModule,
+    AttributeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

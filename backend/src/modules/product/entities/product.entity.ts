@@ -1,4 +1,6 @@
 import { ObjectType, Field, Int } from "@nestjs/graphql";
+import { Category } from "../../category/entities/category.entity";
+import { Subcategory } from "../../subcategory/entities/subcategory.entity";
 
 @ObjectType()
 export class ProductDescriptionType {
@@ -10,33 +12,6 @@ export class ProductDescriptionType {
 
   @Field()
   body: string;
-}
-
-@ObjectType()
-export class ProductCategoryType {
-  @Field(() => Int)
-  id: number;
-
-  @Field()
-  name: string;
-
-  @Field()
-  slug: string;
-}
-
-@ObjectType()
-export class ProductSubCategoryType {
-  @Field(() => Int)
-  id: number;
-
-  @Field()
-  name: string;
-
-  @Field()
-  slug: string;
-
-  @Field(() => ProductCategoryType)
-  category: ProductCategoryType;
 }
 
 @ObjectType()
@@ -68,14 +43,14 @@ export class Product {
   @Field(() => [ProductDescriptionType])
   descriptions?: ProductDescriptionType[];
 
-  @Field(() => ProductCategoryType)
-  category?: ProductCategoryType;
+  @Field(() => Category)
+  category?: Category;
 
   @Field(() => Int)
   category_id?: number;
 
-  @Field(() => ProductSubCategoryType)
-  subcategory?: ProductSubCategoryType;
+  @Field(() => Subcategory)
+  subcategory?: Subcategory;
 
   @Field(() => Int)
   subcategory_id?: number;

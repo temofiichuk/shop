@@ -42,11 +42,6 @@ export class CreateProductInput {
   @IsNumber()
   price: number;
 
-  @Field()
-  @IsString()
-  @IsLowercase()
-  slug: string;
-
   @Field(() => Int, { nullable: true })
   @IsOptional()
   @IsNumber()
