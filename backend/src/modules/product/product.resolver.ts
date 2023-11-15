@@ -37,4 +37,9 @@ export class ProductResolver {
   productRemove(@Args("id") id: number) {
     return this.productService.remove(id);
   }
+
+  @Query(() => [Product])
+  productBySearch(@Args("pattern") pattern: string) {
+    return this.productService.findManyBySearch(pattern);
+  }
 }

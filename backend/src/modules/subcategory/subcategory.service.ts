@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSubcategoryInput } from './dto/create-subcategory.input';
-import { UpdateSubcategoryInput } from './dto/update-subcategory.input';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../prisma.service";
+import { CreateSubcategoryInput } from "./dto/create-subcategory.input";
+import slugify from "slugify";
+import { UpdateSubcategoryInput } from "./dto/update-subcategory.input";
 
 @Injectable()
 export class SubcategoryService {
+  constructor(private readonly prisma: PrismaService) {}
   create(createSubcategoryInput: CreateSubcategoryInput) {
-    return 'This action adds a new subcategory';
+    return this.prisma.subcategory.create({
+      data: {
+        ...createSubcategoryInput,
+        slug: slugify(createSubcategoryInput.name, { lower: true }),
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all subcategory`;
+    return this.prisma.subcategory.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subcategory`;
+  findOne(name: string) {
+    return this.prisma.subcategory.findFirst({
+      where: {
+        name: {
+          contains: name,
+        },
+      },
+    });
   }
 
   update(id: number, updateSubcategoryInput: UpdateSubcategoryInput) {
-    return `This action updates a #${id} subcategory`;
+    return this.prisma.subcategory.update({
+      where: { id },
+      data: {
+        ...updateSubcategoryInput,
+        slug: slugify(updateSubcategoryInput.name, { lower: true }),
+      },
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} subcategory`;
+    return this.prisma.subcategory.delete({ where: { id } });
   }
 }

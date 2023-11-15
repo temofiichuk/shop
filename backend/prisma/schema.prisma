@@ -67,21 +67,53 @@ model Product {
   slug           String        @unique
   created_at     DateTime      @default(now())
   updated_at     DateTime      @updatedAt
-  combination_id Int?
   descriptions   Description[]
   stock          Int
-  rating         Int @default(0)
+  rating         Int           @default(0)
   images         Image[]
   reviews        Review[]
-  admin          Admin?       @relation(fields: [admin_id], references: [id])
+  admin          Admin?        @relation(fields: [admin_id], references: [id])
   admin_id       Int?
   category       Category?     @relation(fields: [category_id], references: [id])
   category_id    Int?
   subcategory    Subcategory?  @relation(fields: [subcategory_id], references: [id])
   subcategory_id Int?
-  order_item     OrderItem[]
+  order_items    OrderItem[]
   user           User?         @relation(fields: [user_id], references: [id])
   user_id        Int?
+  attributes     Attribute[]
+  combinations   Combination[]
+}
+
+model Combination {
+  id         Int         @id @unique @default(autoincrement())
+  product    Product?    @relation(fields: [product_id], references: [id])
+  product_id Int?
+  attributes Attribute[]
+  price      Int
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+}
+
+model Attribute {
+  id             Int              @id @unique @default(autoincrement())
+  name           String           @unique
+  values         AttributeValue[]
+  product        Product?         @relation(fields: [product_id], references: [id])
+  product_id     Int?
+  combination    Combination?     @relation(fields: [combination_id], references: [id])
+  combination_id Int?
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+}
+
+model AttributeValue {
+  id           Int        @id @unique @default(autoincrement())
+  value        String
+  attribute    Attribute @relation(fields: [attribute_id], references: [id])
+  attribute_id Int
+  created_at   DateTime         @default(now())
+  updated_at   DateTime         @updatedAt
 }
 
 model Image {
@@ -146,14 +178,14 @@ enum EnumOrderStatus {
 
 model OrderItem {
   id             Int      @id @unique @default(autoincrement())
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
-  product        Product? @relation(fields: [product_id], references: [id])
-  order          Order?   @relation(fields: [order_id], references: [id])
-  order_id       Int?
-  product_id     Int?
   combination_id Int?
   quantity       Int      @default(1)
   price          Int
   total_price    Int
+  product        Product? @relation(fields: [product_id], references: [id])
+  product_id     Int?
+  order          Order?   @relation(fields: [order_id], references: [id])
+  order_id       Int?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 }

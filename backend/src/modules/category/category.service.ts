@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryInput } from './dto/create-category.input';
-import { UpdateCategoryInput } from './dto/update-category.input';
+import { Injectable } from "@nestjs/common";
+import { CreateCategoryInput } from "./dto/create-category.input";
+import { UpdateCategoryInput } from "./dto/update-category.input";
+import { PrismaService } from "../../prisma.service";
+
+import slugify from "slugify";
 
 @Injectable()
 export class CategoryService {
+  constructor(private readonly prisma: PrismaService) {}
   create(createCategoryInput: CreateCategoryInput) {
-    return 'This action adds a new category';
+    return this.prisma.category.create({
+      data: {
+        ...createCategoryInput,
+        slug: slugify(createCategoryInput.name, { lower: true }),
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all category`;
+    return this.prisma.category.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  findOne(name: string) {
+    return this.prisma.category.findFirst({
+      where: {
+        name: {
+          contains: name,
+        },
+      },
+    });
   }
 
   update(id: number, updateCategoryInput: UpdateCategoryInput) {
-    return `This action updates a #${id} category`;
+    return this.prisma.category.update({
+      where: { id },
+      data: {
+        ...updateCategoryInput,
+        slug: slugify(updateCategoryInput.name, { lower: true }),
+      },
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} category`;
+    return this.prisma.category.delete({ where: { id } });
   }
 }
