@@ -5,7 +5,11 @@ export const adminFieldsOutput: Prisma.AdminSelect = {
   name: true,
   email: true,
   password: false,
+  role: true,
   type: true,
 };
 
-export type AdminOutputType = Pick<Admin, "id" | "type" | "email" | "name">;
+export type AdminOutputType = Pick<
+  Admin,
+  "id" | "type" | "email" | "name" | "role"
+>;

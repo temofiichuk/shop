@@ -8,7 +8,7 @@ import { verify } from "argon2";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { LoginUserInput } from "./dto/login-user.input";
-import { Admin, Prisma, User } from "@prisma/client";
+import { Admin, EnumUserRole, Prisma, User } from "@prisma/client";
 import { LoginAdminInput } from "./dto/login-admin.input";
 
 @Injectable()
@@ -39,22 +39,23 @@ export class AuthService {
     if (!admin) return new NotFoundException("Admin Not Found");
 
     const isPasswordCorrect = await verify(admin.password, data.password);
-
     if (!isPasswordCorrect) {
       return new UnauthorizedException("Password Incorrect");
     }
 
-    return await this.getAuthAdminFields(admin);
+    return await this.getAuthFields(admin);
   }
 
   async getNewTokens(refreshToken: string) {
-    const isVerifiedToken = await this.jwt.verifyAsync(refreshToken);
-    if (!isVerifiedToken) throw new UnauthorizedException("Token Incorrect");
-
-    const isAdmin = isVerifiedToken.type === "admin";
+    const isVerifiedToken = await this.jwt
+      .verifyAsync(refreshToken)
+      .catch(() => {
+        throw new UnauthorizedException();
+      });
+    const isAdmin = isVerifiedToken.role === EnumUserRole.ADMIN;
     if (isAdmin) {
       const admin = await this.getAdmin({ id: isVerifiedToken.id });
-      return await this.getAuthAdminFields(admin);
+      return await this.getAuthFields(admin);
     }
 
     const user = await this.getUser({ id: isVerifiedToken.id });
@@ -69,28 +70,20 @@ export class AuthService {
     return this.prisma.admin.findUnique({ where: param });
   }
 
-  private async getAuthFields({ id, email, name }: User) {
+  private async getAuthFields({ id, email, name, role }: User | Admin) {
     return {
-      user: { id, email, name },
-      ...(await this.createNewTokens(id)),
+      user: { id, email, name, role },
+      ...(await this.createNewTokens(id, role)),
     };
   }
 
-  private async getAuthAdminFields({ id, name, email, type }: Admin) {
-    return {
-      admin: { id, name, email, type },
-      ...(await this.createNewTokens(id, "admin")),
-    };
-  }
-
-  private async createNewTokens(id: number, type: string = "user") {
+  private async createNewTokens(id: number, role: EnumUserRole) {
     const accessToken = await this.jwt.signAsync(
-      { id, type },
+      { id, role },
       { expiresIn: this.configService.get("LIFECYCLE_ACCESS_TOKEN") }
     );
-
     const refreshToken = await this.jwt.signAsync(
-      { id, type },
+      { id, role },
       { expiresIn: this.configService.get("LIFECYCLE_REFRESH_TOKEN") }
     );
 

@@ -17,17 +17,17 @@ export const graphqlConfig = {
   autoSchemaFile: "src/schema.gql",
   driver: ApolloDriver,
   context: ({ req }) => ({ headers: req.headers }),
-  formatError: (error: ErrorType): GraphQLFormattedError => {
-    const originalError = error.extensions?.originalError as OriginalErrorType;
+  formatError: (error: GraphQLError): GraphQLFormattedError => {
+    if (!error?.message.includes("Validation error")) return error;
 
-    return {
-      message: originalError?.message ?? error.message,
-      path: error.path,
-      extensions: {
-        code: originalError?.statusCode ?? error.extensions.statusCode,
-        error: originalError?.code ?? error.extensions.code,
-        validation_errors: error.extensions.validation_errors,
-      },
-    };
+    const originalError = error.extensions.originalError as OriginalErrorType;
+    const response = JSON.parse(originalError?.message ?? error?.message);
+
+    if (response) {
+      error.message = response.message;
+      error.extensions.validation_errors = response.validation_errors;
+    }
+
+    return error;
   },
 };

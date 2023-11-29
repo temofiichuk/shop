@@ -6,25 +6,13 @@ type UserAuthData {
   id: Float!
   name: String!
   email: String!
+  role: String!
 }
 
 type AuthData {
   user: UserAuthData!
   accessToken: String!
   refreshToken: String!
-}
-
-type AdminAuthData {
-  id: Float!
-  name: String!
-  email: String!
-  type: String!
-}
-
-type AuthDataForAdmin {
-  accessToken: String!
-  refreshToken: String!
-  admin: AdminAuthData!
 }
 
 type Image {
@@ -77,6 +65,7 @@ type Admin {
 type Subcategory {
   id: Int!
   name: String!
+  slug: String!
   products: [Product!]!
   category: Category!
   category_id: Int!
@@ -92,6 +81,7 @@ scalar DateTime
 type Category {
   id: Int!
   name: String!
+  slug: String!
   subcategories: Subcategory!
   products: [Product!]!
   created_at: DateTime!
@@ -154,8 +144,8 @@ type Attribute {
 
 type Query {
   authUserLogin(loginUserInput: LoginUserInput!): AuthData!
-  authAdminLogin(loginAdminInput: LoginAdminInput!): AuthDataForAdmin!
-  authNewTokens(token: RefreshTokenInput!): AuthData!
+  authAdminLogin(loginAdminInput: LoginAdminInput!): AuthData!
+  authNewTokens(refresh_token: String!): AuthData!
   userById(id: Int!): User!
   adminGetAll: [Admin!]!
   productBySearch(pattern: String!): [Product!]!
@@ -178,10 +168,6 @@ input LoginUserInput {
 input LoginAdminInput {
   email: String!
   password: String!
-}
-
-input RefreshTokenInput {
-  refresh_token: String!
 }
 
 type Mutation {

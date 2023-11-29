@@ -10,6 +10,9 @@ export class Subcategory {
   @Field()
   name: string;
 
+  @Field()
+  slug: string;
+
   @Field(() => [Product])
   products: Product[];
 

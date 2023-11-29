@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Catamaran } from "next/font/google";
 import "@/assets/scss/styles.scss";
 import { ReactNode } from "react";
+import ApolloProvider from "@/lib/apollo/apollo.provider";
 
 const catamaran = Catamaran({ subsets: ["latin"] });
 
@@ -13,7 +14,13 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="en">
-      <body className={catamaran.className}>{children}</body>
+      <body className={catamaran.className} suppressHydrationWarning={true}>
+        <ApolloProvider>
+          {/*<ReduxProvider store={store}>/*/}
+          {children}
+          {/*</ReduxProvider>/*/}
+        </ApolloProvider>
+      </body>
     </html>
   );
 };

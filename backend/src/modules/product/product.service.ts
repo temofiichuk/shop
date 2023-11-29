@@ -15,8 +15,13 @@ export class ProductService {
   ) {}
 
   async create(admin_id: number, createProductInput: CreateProductInput) {
-    const { category_id, subcategory_id, descriptions, images, ...fields } =
-      createProductInput;
+    const {
+      category_id,
+      subcategory_id,
+      descriptions = [],
+      images = [],
+      ...fields
+    } = createProductInput;
 
     return this.prisma.product.create({
       data: {

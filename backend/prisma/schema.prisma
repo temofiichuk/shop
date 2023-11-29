@@ -7,6 +7,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum EnumUserRole {
+  ADMIN
+  USER
+}
+
 model User {
   id         Int       @id @unique @default(autoincrement())
   name       String
@@ -20,6 +25,7 @@ model User {
   rating     Int?
   orders     Order[]
   favorites  Product[]
+  role       EnumUserRole    @default(USER)
 }
 
 model Admin {
@@ -31,6 +37,7 @@ model Admin {
   updated_at       DateTime      @updatedAt
   avatar           String        @default("/admin/uploads/avatas/default_admin_avatar.png")
   type             EnumAdminType @default(ADMIN)
+  role             EnumUserRole        @default(ADMIN)
   created_products Product[]
 }
 
