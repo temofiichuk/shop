@@ -10,6 +10,9 @@ export class Category {
   @Field()
   name: string;
 
+  @Field()
+  slug: string;
+
   @Field(() => Subcategory)
   subcategories: Subcategory;
 

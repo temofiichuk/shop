@@ -1,11 +1,12 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
-import { Admin } from "@prisma/client";
+import { Admin, EnumUserRole } from "@prisma/client";
 import { GqlExecutionContext } from "@nestjs/graphql";
 
 export const CurrentAdmin = createParamDecorator(
-  (data: keyof Admin, context: ExecutionContext) => {
+  (select: keyof Admin, context: ExecutionContext) => {
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext().req;
-    return data ? req.user.admin[data] : req.user.admin;
+    if (req.user.role === EnumUserRole.ADMIN)
+      return select ? req.user[select] : req.user;
   }
 );

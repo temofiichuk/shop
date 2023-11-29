@@ -1,5 +1,6 @@
-import { ObjectType, Field, OmitType } from "@nestjs/graphql";
+import { ObjectType, Field } from "@nestjs/graphql";
 import { Optional } from "@nestjs/common";
+import { EnumUserRole } from "@prisma/client";
 
 @ObjectType()
 export class UserAuthData {
@@ -9,16 +10,8 @@ export class UserAuthData {
   name: string;
   @Field()
   email: string;
-}
-
-@ObjectType()
-export class AuthData {
   @Field()
-  user: UserAuthData;
-  @Field()
-  accessToken: string;
-  @Field()
-  refreshToken: string;
+  role: EnumUserRole;
 }
 
 @ObjectType()
@@ -29,7 +22,11 @@ export class AdminAuthData extends UserAuthData {
 }
 
 @ObjectType()
-export class AuthDataForAdmin extends OmitType(AuthData, ["user"]) {
+export class AuthData {
   @Field()
-  admin: AdminAuthData;
+  user: UserAuthData;
+  @Field()
+  accessToken: string;
+  @Field()
+  refreshToken: string;
 }

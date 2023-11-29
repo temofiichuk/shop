@@ -1,5 +1,14 @@
-import { ValidationError, ValidationPipe } from "@nestjs/common";
-import { UserInputError } from "apollo-server-express";
+import {
+  BadRequestException,
+  HttpException,
+  UnprocessableEntityException,
+  ValidationError,
+  ValidationPipe,
+} from "@nestjs/common";
+import { ApolloError, UserInputError } from "apollo-server-express";
+import { GraphQLException } from "@nestjs/graphql/dist/exceptions";
+import { ApolloServerErrorCode } from "@apollo/server/errors";
+import { ValidationErrorCode } from "@apollo/server/src/plugin/schemaReporting/generated/operations";
 
 export class CustomValidationPipe extends ValidationPipe {
   constructor() {
@@ -11,9 +20,12 @@ export class CustomValidationPipe extends ValidationPipe {
           formattedErrors[error.property] = Object.values(error.constraints)[0];
         });
 
-        return new UserInputError("Validation Error", {
+        const res = {
+          message: "Validation error",
           validation_errors: formattedErrors,
-        });
+        };
+
+        return new BadRequestException(JSON.stringify(res));
       },
     });
   }
