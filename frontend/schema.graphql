@@ -57,7 +57,7 @@ type Admin {
     name: String!
     email: String!
     password: String!
-    phone: String!
+    role: EnumUserRole!
     avatar: String!
     type: String!
 }

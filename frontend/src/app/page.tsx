@@ -1,5 +1,5 @@
 "use client";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { CREATE_PRODUCT } from "@/lib/graphql/queries";
 
 const dynamic = "force-dynamic";

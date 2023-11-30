@@ -1,6 +1,3 @@
-import { Simulate } from "react-dom/test-utils";
-import input = Simulate.input;
-
 export enum EnumAdminType {
   ADMIN = "ADMIN",
   ROOTADMIN = "ROOTADMIN",
