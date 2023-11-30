@@ -12,8 +12,8 @@ export class AuthResolver {
 
   @Query(() => AuthData)
   @UsePipes(CustomValidationPipe)
-  authUserLogin(@Args("loginUserInput") loginUserInput: LoginUserInput) {
-    return this.authService.login(loginUserInput);
+  authLogin(@Args("loginInput") loginInput: LoginUserInput) {
+    return this.authService.login(loginInput);
   }
 
   @Query(() => AuthData)

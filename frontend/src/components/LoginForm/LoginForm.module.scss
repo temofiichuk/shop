@@ -1,0 +1,19 @@
+.login {
+  border: 1px solid;
+  padding: 12px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  input {
+    border: 1px solid;
+    padding: 5px 10px;
+  }
+}
+
+.error {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}

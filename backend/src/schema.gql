@@ -143,7 +143,7 @@ type Attribute {
 }
 
 type Query {
-  authUserLogin(loginUserInput: LoginUserInput!): AuthData!
+  authLogin(loginInput: LoginUserInput!): AuthData!
   authAdminLogin(loginAdminInput: LoginAdminInput!): AuthData!
   authNewTokens(refresh_token: String!): AuthData!
   userById(id: Int!): User!
@@ -163,11 +163,13 @@ type Query {
 input LoginUserInput {
   email: String!
   password: String!
+  role: String!
 }
 
 input LoginAdminInput {
   email: String!
   password: String!
+  role: String!
 }
 
 type Mutation {

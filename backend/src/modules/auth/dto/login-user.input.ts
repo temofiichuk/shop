@@ -1,6 +1,7 @@
 import { InputType, Field } from "@nestjs/graphql";
 
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty } from "class-validator";
+import { EnumUserRole } from "@prisma/client";
 @InputType()
 export class LoginUserInput {
   @Field()
@@ -11,4 +12,8 @@ export class LoginUserInput {
   @Field()
   @IsNotEmpty()
   password: string;
+
+  @Field()
+  @IsEnum(EnumUserRole)
+  role: EnumUserRole;
 }

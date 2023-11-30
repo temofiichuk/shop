@@ -10,7 +10,7 @@ type UserAuthData {
 }
 
 type AuthData {
-    user: UserAuthData
+    user: UserAuthData!
     accessToken: String!
     refreshToken: String!
 }
@@ -57,7 +57,7 @@ type Admin {
     name: String!
     email: String!
     password: String!
-    role: EnumUserRole!
+    phone: String!
     avatar: String!
     type: String!
 }
@@ -143,7 +143,7 @@ type Attribute {
 }
 
 type Query {
-    authUserLogin(loginUserInput: LoginUserInput!): AuthData!
+    authLogin(loginInput: LoginUserInput!): AuthData!
     authAdminLogin(loginAdminInput: LoginAdminInput!): AuthData!
     authNewTokens(refresh_token: String!): AuthData!
     userById(id: Int!): User!
@@ -163,11 +163,13 @@ type Query {
 input LoginUserInput {
     email: String!
     password: String!
+    role: String!
 }
 
 input LoginAdminInput {
     email: String!
     password: String!
+    role: String!
 }
 
 type Mutation {

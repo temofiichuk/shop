@@ -46,8 +46,8 @@ export const CREATE_PRODUCT = gql`
 `;
 
 export const USER_LOGIN = gql`
-  query authUserLogin($loginUserInput: LoginUserInput!) {
-    authUserLogin(loginUserInput: $loginUserInput) {
+  query authLogin($loginUserInput: LoginUserInput!) {
+    authLogin(loginInput: $loginUserInput) {
       user {
         id
         name

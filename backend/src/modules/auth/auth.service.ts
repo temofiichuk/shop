@@ -10,6 +10,7 @@ import { ConfigService } from "@nestjs/config";
 import { LoginUserInput } from "./dto/login-user.input";
 import { Admin, EnumUserRole, Prisma, User } from "@prisma/client";
 import { LoginAdminInput } from "./dto/login-admin.input";
+import { da } from "@faker-js/faker";
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,12 @@ export class AuthService {
   ) {}
 
   async login(data: LoginUserInput) {
-    const availableUser = await this.getUser({ email: data.email });
+    let availableUser: User | Admin;
+
+    if (data.role === EnumUserRole.USER) {
+      availableUser = await this.getUser({ email: data.email });
+    }
+
     if (!availableUser) throw new NotFoundException("User Not Found");
 
     const isPasswordCorrect = await verify(
