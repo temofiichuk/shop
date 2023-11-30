@@ -32,6 +32,7 @@ export enum EnumToken {
 export type LoginType = {
   login: string;
   password: string;
+  role: EnumUserRole;
 };
 
 export type CreateUserType = {
