@@ -13,7 +13,7 @@ export type TokensType = {
   refreshToken: string;
 };
 
-export type AuthResponseType = TokensType & {
+export type AuthUserResponseType = TokensType & {
   user: UserResponseType;
 };
 

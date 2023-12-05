@@ -1,5 +1,9 @@
 import Cookies from "js-cookie";
-import { AuthResponseType, EnumToken, TokensType } from "@/types/auth.types";
+import {
+  AuthUserResponseType,
+  EnumToken,
+  TokensType,
+} from "@/types/auth.types";
 
 export const saveTokens = (data: TokensType) => {
   Cookies.set(EnumToken.ACCESS, data.accessToken);
@@ -14,7 +18,7 @@ export const removeTokens = () => {
   console.log("tokens removed from storage");
 };
 
-export const saveTokensToStorage = (data: AuthResponseType) => {
+export const saveTokensToStorage = (data: AuthUserResponseType) => {
   saveTokens(data);
   localStorage.removeItem("user");
   localStorage.setItem("user", JSON.stringify(data.user));

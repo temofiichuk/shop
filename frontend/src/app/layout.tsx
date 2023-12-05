@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { Catamaran } from "next/font/google";
 import "@/assets/scss/styles.scss";
 import { ReactNode } from "react";
 import ApolloProvider from "@/lib/apollo/apollo.provider";
-
-const catamaran = Catamaran({ subsets: ["latin"] });
+import ReduxProvider from "@/components/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -14,11 +12,9 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="en">
-      <body className={catamaran.className} suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true}>
         <ApolloProvider>
-          {/*<ReduxProvider store={store}>/*/}
-          {children}
-          {/*</ReduxProvider>/*/}
+          <ReduxProvider>{children}</ReduxProvider>
         </ApolloProvider>
       </body>
     </html>
