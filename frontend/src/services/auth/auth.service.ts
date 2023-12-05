@@ -10,7 +10,7 @@ import {
   saveTokensToStorage,
 } from "@/services/auth/auth.helper";
 import {
-  AuthResponseType,
+  AuthUserResponseType,
   CreateUserType,
   EnumUserRole,
   LoginType,
@@ -23,34 +23,12 @@ class AuthService {
     cache: new InMemoryCache(),
   });
 
-  login = async (inputs: LoginType, role: EnumUserRole) => {
-    const query = role === EnumUserRole.USER ? USER_LOGIN : ADMIN_LOGIN;
-    try {
-      const { data } = await this.client.query({ query, variables: inputs });
-      saveTokensToStorage(data[0]);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  register = async (createUserInput: CreateUserType) => {
-    try {
-      const { data } = await this.client.query({
-        query: USER_REGISTER,
-        variables: createUserInput,
-      });
-      return data[0].message;
-    } catch (e) {
-      return false;
-    }
-  };
-
   updateTokens = async () => {
     const refreshToken = getRefreshToken();
-
     try {
-      const { data }: ApolloQueryResult<{ authNewTokens: AuthResponseType }> =
+      const {
+        data,
+      }: ApolloQueryResult<{ authNewTokens: AuthUserResponseType }> =
         await this.client.query({
           query: GET_NEW_TOKENS,
           variables: { refreshToken },

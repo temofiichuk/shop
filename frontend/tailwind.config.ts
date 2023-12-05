@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import forms from "@tailwindcss/forms";
 
 const colors = {
   transparent: "transparent",
@@ -22,12 +23,12 @@ const colors = {
 
 const config: Config = {
   content: [
-    // "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    colors: {},
+    // colors: {},
     extend: {
       fontSize: {
         "xs": "0.82rem",
@@ -50,19 +51,45 @@ const config: Config = {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        fadeLeftIn: {
+          "0%": { opacity: "0", transform: "translate(100%, 100px)" },
+          "100%": { opacity: "1", transform: "translate(0,0)" },
+        },
+        fadeRightIn: {
+          "0%": { opacity: "0", transform: "translate(-100%, -100%)" },
+          "100%": { opacity: "1", transform: "translate(0,0)" },
+        },
         scaleIn: {
-          "0%": { transform: "scale(0.9)", opacity: "0" },
-          "50%": { transform: "scale(0)" },
+          "0%": { transform: "scale(0)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        changeAndShow: {
+          "0%": { transform: "translate(0, 0)", opacity: "0", zIndex: "0" },
+          "50%": { transform: "translate(50px, 50px)" },
+          "100%": { transform: "translate(0, 0)", opacity: "1", zIndex: "10" },
+        },
+        changeAndHide: {
+          "0%": { transform: "translate(0, 0)", opacity: "1", zIndex: "10" },
+          "50%": { transform: "translate(-50px, -50px)" },
+          "100%": {
+            transform: "translate(0, 0)",
+            opacity: "0",
+            zIndex: "0",
+            pointerEvents: "none",
+          },
         },
       },
       animation: {
         fadeIn: "fadeIn 0.5s ease-in-out",
+        fadeLeftIn: "fadeLeftIn 0.5s ease-in-out",
+        fadeRightIn: "fadeRightIn 0.5s ease-in-out",
+        changeAndShow: "changeAndShow 0.5s ease-in-out forwards",
+        changeAndHide: "changeAndHide 0.5s ease-in-out forwards",
         scaleIn: "scaleIn 0.35s ease-in-out",
       },
     },
   },
-  plugins: [],
+  plugins: [forms],
 };
 
 export default config;
