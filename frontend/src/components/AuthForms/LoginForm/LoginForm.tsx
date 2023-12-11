@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   changeType,
   EnumTypeOfForm,
-} from "@/store/redocers/typeOfForm.reducer";
+} from "@/store/redocers/type-of-auth-form.reducer";
 
 type FieldsType = {
   email?: string;
@@ -26,6 +26,7 @@ type LoginForm = {
 
 const LoginForm = ({ role, className }: LoginForm) => {
   const [loginFetch, { error }] = useLazyQuery(USER_LOGIN);
+
   const validError = error?.graphQLErrors[0]?.extensions
     .validation_errors as FieldsType;
   const { push } = useRouter();
@@ -64,7 +65,10 @@ const LoginForm = ({ role, className }: LoginForm) => {
         <div className={classElem}>
           <div className="title">
             <RiAccountPinCircleLine className="mx-auto h-20 w-auto" />
-            <h2>Sign in to your account</h2>
+            <h2>
+              Sign in to your {role === EnumUserRole.ADMIN ? "admin " : ""}
+              account
+            </h2>
           </div>
           <div className="box">
             <form onSubmit={handleSubmit}>
@@ -89,14 +93,18 @@ const LoginForm = ({ role, className }: LoginForm) => {
                 </button>
                 <p className={style.error}>{error?.message}</p>
               </div>
-              <div>
-                <p className="text-center">Don't have an account yet?</p>
-                <button
-                  type="button"
-                  onClick={() => dispatch(changeType(EnumTypeOfForm.REGISTER))}>
-                  Registration
-                </button>
-              </div>
+              {role !== EnumUserRole.ADMIN && (
+                <div>
+                  <p className="text-center">Don't have an account yet?</p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      dispatch(changeType(EnumTypeOfForm.REGISTER))
+                    }>
+                    Registration
+                  </button>
+                </div>
+              )}
             </form>
           </div>
         </div>
