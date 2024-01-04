@@ -2,25 +2,19 @@
 import { FC, useLayoutEffect } from "react";
 import LoginForm from "@/components/AuthForms/LoginForm/LoginForm";
 import { EnumUserRole } from "@/types/auth.types";
-import RegisterForm from "@/components/AuthForms/RegisterForm/RegisterForm";
 import { useAppSelector } from "@/store/hooks";
 import { redirect } from "next/navigation";
 
 const Page: FC = () => {
-  const currentUser = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
 
   useLayoutEffect(() => {
-    if (currentUser?.role === EnumUserRole.USER) {
-      redirect("/profile");
+    if (user?.role === EnumUserRole.ADMIN) {
+      redirect("/admin/dashboard");
     }
-  }, []);
+  }, [user]);
 
-  return (
-    <>
-      <LoginForm role={EnumUserRole.USER} />
-      <RegisterForm />
-    </>
-  );
+  return <LoginForm role={EnumUserRole.ADMIN} />;
 };
 
 export default Page;

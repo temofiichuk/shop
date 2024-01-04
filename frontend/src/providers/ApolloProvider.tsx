@@ -1,5 +1,4 @@
 "use client";
-
 import { from } from "@apollo/client";
 import {
   NextSSRInMemoryCache,
@@ -20,7 +19,6 @@ export const makeClient = () => {
             new SSRMultipartLink({
               stripDefer: true,
             }),
-            httpLink,
           ])
         : httpLink,
   });

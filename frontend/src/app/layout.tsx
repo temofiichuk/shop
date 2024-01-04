@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "@/assets/scss/styles.scss";
 import { ReactNode } from "react";
-import ApolloProvider from "@/lib/apollo/apollo.provider";
-import ReduxProvider from "@/components/ReduxProvider";
+import ApolloProvider from "@/providers/ApolloProvider";
+import ReduxProvider from "@/providers/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "Shop",
