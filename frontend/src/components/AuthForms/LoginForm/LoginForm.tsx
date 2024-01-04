@@ -6,13 +6,13 @@ import { useLazyQuery } from "@apollo/client";
 import { USER_LOGIN } from "@/lib/graphql/queries";
 import { EnumUserRole } from "@/types/auth.types";
 import { RiAccountPinCircleLine } from "react-icons/ri";
-import { saveTokensToStorage } from "@/services/auth/auth.helper";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   changeType,
   EnumTypeOfForm,
-} from "@/store/redocers/type-of-auth-form.reducer";
+} from "@/store/features/type-of-auth-form.slice";
+import AuthService from "@/services/auth/auth.service";
 
 type FieldsType = {
   email?: string;
@@ -40,12 +40,14 @@ const LoginForm = ({ role, className }: LoginForm) => {
 
   const anima =
     typeOfForm === EnumTypeOfForm.LOGIN
-      ? "animate-changeAndShow "
-      : "animate-changeAndHide ";
+      ? " animate-changeAndShow "
+      : " animate-changeAndHide ";
 
   const classElem = `${style.form} ${className ?? ""} ${
-    typeOfForm ? anima : "animate-fadeLeftIn"
+    typeOfForm ? anima : " animate-fadeLeftIn"
   }`;
+
+  const isAdmin = role === EnumUserRole.ADMIN;
 
   return (
     <Formik
@@ -54,9 +56,9 @@ const LoginForm = ({ role, className }: LoginForm) => {
         const { data } = await loginFetch({
           variables: { loginUserInput: values },
         });
-        if (data.authLogin) {
-          saveTokensToStorage(data.authLogin);
-          push("/");
+        if (data?.authLogin) {
+          AuthService.login(data.authLogin);
+          push(isAdmin ? "/admin/dashboard" : "/profile");
         }
         setSubmitting(false);
       }}
@@ -66,7 +68,7 @@ const LoginForm = ({ role, className }: LoginForm) => {
           <div className="title">
             <RiAccountPinCircleLine className="mx-auto h-20 w-auto" />
             <h2>
-              Sign in to your {role === EnumUserRole.ADMIN ? "admin " : ""}
+              Sign in to your {isAdmin ? "admin " : ""}
               account
             </h2>
           </div>
@@ -91,9 +93,9 @@ const LoginForm = ({ role, className }: LoginForm) => {
                 <button type="submit" disabled={isSubmitting}>
                   Sign in
                 </button>
-                <p className={style.error}>{error?.message}</p>
+                <p className={style.error + " mt-2"}>{error?.message}</p>
               </div>
-              {role !== EnumUserRole.ADMIN && (
+              {isAdmin && (
                 <div>
                   <p className="text-center">Don't have an account yet?</p>
                   <button

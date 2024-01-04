@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import {
   changeType,
   EnumTypeOfForm,
-} from "@/store/redocers/type-of-auth-form.reducer";
+} from "@/store/features/type-of-auth-form.slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 type FieldsType = {

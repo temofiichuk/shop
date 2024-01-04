@@ -1,21 +1,13 @@
-import {
-  ADMIN_LOGIN,
-  GET_NEW_TOKENS,
-  USER_LOGIN,
-  USER_REGISTER,
-} from "@/lib/graphql/queries";
+import { GET_NEW_TOKENS } from "@/lib/graphql/queries";
 import {
   getRefreshToken,
-  removeTokens,
-  saveTokensToStorage,
+  removeAuthData,
+  saveAuthDataToStorage,
 } from "@/services/auth/auth.helper";
-import {
-  AuthUserResponseType,
-  CreateUserType,
-  EnumUserRole,
-  LoginType,
-} from "@/types/auth.types";
+import { AuthUserResponseType } from "@/types/auth.types";
 import { ApolloClient, ApolloQueryResult, InMemoryCache } from "@apollo/client";
+import store from "@/store/store";
+import { login, logout } from "@/store/features/auth.slice";
 
 class AuthService {
   private client = new ApolloClient({
@@ -33,7 +25,7 @@ class AuthService {
           query: GET_NEW_TOKENS,
           variables: { refreshToken },
         });
-      saveTokensToStorage(data.authNewTokens);
+      saveAuthDataToStorage(data.authNewTokens);
       return true;
     } catch (error) {
       this.logout();
@@ -41,8 +33,14 @@ class AuthService {
     }
   };
 
+  login(authData: AuthUserResponseType) {
+    saveAuthDataToStorage(authData);
+    store.dispatch(login(authData.user));
+  }
+
   logout() {
-    removeTokens();
+    removeAuthData();
+    store.dispatch(logout());
   }
 }
 

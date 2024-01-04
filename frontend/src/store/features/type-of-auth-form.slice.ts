@@ -11,7 +11,7 @@ type TypeOfForm = {
 
 const initialState: TypeOfForm = { value: null };
 
-export const typeOfFormSlice = createSlice({
+const typeOfFormSlice = createSlice({
   name: "Type Of Authorization Form",
   initialState,
   reducers: {

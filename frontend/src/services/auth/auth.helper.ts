@@ -3,25 +3,26 @@ import {
   AuthUserResponseType,
   EnumToken,
   TokensType,
+  UserResponseType,
 } from "@/types/auth.types";
+import store from "@/store/store";
 
 export const saveTokens = (data: TokensType) => {
   Cookies.set(EnumToken.ACCESS, data.accessToken);
   Cookies.set(EnumToken.REFRESH, data.refreshToken);
-  console.log("tokens saved to storage");
 };
 
-export const removeTokens = () => {
+export const removeAuthData = () => {
   Cookies.remove(EnumToken.ACCESS);
   Cookies.remove(EnumToken.REFRESH);
   localStorage.removeItem("user");
-  console.log("tokens removed from storage");
+  console.log("tokens and user removed from storage");
 };
 
-export const saveTokensToStorage = (data: AuthUserResponseType) => {
+export const saveAuthDataToStorage = (data: AuthUserResponseType) => {
   saveTokens(data);
-  localStorage.removeItem("user");
   localStorage.setItem("user", JSON.stringify(data.user));
+  console.log("tokens and user saved to storage");
 };
 
 export const getAccessToken = () => Cookies.get(EnumToken.ACCESS) || null;
