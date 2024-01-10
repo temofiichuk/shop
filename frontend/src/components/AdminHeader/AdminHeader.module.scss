@@ -1,0 +1,18 @@
+.header {
+  @apply bg-gray-400 mr-[-16px] ml-[-16px] flex justify-between p-4;
+
+  h2 {
+    @apply text-3xl;
+  }
+}
+
+.admin {
+  @apply flex;
+  > div {
+    @apply flex flex-col justify-center items-center;
+  }
+
+  .avatar {
+    @apply w-[50px] h-[50px];
+  }
+}

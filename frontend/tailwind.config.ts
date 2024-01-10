@@ -47,6 +47,10 @@ const config: Config = {
         "9xl": "9.2rem",
       },
       keyframes: {
+        spinner: {
+          "0%": { transform: "rotate(0)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
         fadeIn: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
@@ -86,6 +90,7 @@ const config: Config = {
         changeAndShow: "changeAndShow 0.5s ease-in-out forwards",
         changeAndHide: "changeAndHide 0.5s ease-in-out forwards",
         scaleIn: "scaleIn 0.35s ease-in-out",
+        spinner: "spinner 0.5s infinite ease-in-out ",
       },
     },
   },

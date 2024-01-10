@@ -82,3 +82,11 @@ export const USER_REGISTER = gql`
     }
   }
 `;
+
+export const GET_CURRENT_ADMIN_AVATAR = gql`
+  query adminGetAvatar {
+    adminGetAvatar {
+      avatar
+    }
+  }
+`;

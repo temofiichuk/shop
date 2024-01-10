@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { AdminService } from "./admin.service";
-import { Admin } from "./entities/admin.entity";
+import { Admin, AdminAvatar } from "./entities/admin.entity";
 import { CreateAdminInput } from "./dto/create-admin.input";
 import { UpdateAdminInput } from "./dto/update-admin.input";
 import { CustomValidationPipe } from "src/pipes/custom-validation.pipe";
@@ -17,6 +17,12 @@ export class AdminResolver {
   @AuthAdmin()
   adminGetAll() {
     return this.adminService.getAll();
+  }
+
+  @Query(() => AdminAvatar)
+  @AuthAdmin()
+  adminGetAvatar(@CurrentAdmin("id") id: number) {
+    return this.adminService.getAvatar(id);
   }
 
   @Mutation(() => Admin)

@@ -62,6 +62,10 @@ type Admin {
   type: String!
 }
 
+type AdminAvatar {
+  avatar: String
+}
+
 type Subcategory {
   id: Int!
   name: String!
@@ -148,6 +152,7 @@ type Query {
   authNewTokens(refresh_token: String!): AuthData!
   userById(id: Int!): User!
   adminGetAll: [Admin!]!
+  adminGetAvatar: AdminAvatar!
   productBySearch(pattern: String!): [Product!]!
   reviewGetAllByStatus(status: String!): [Review!]!
   reviewFindOne(pattern: String!): Review!
