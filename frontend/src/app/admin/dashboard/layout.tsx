@@ -7,7 +7,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
     <div className="w-screen h-screen bg-gray-200 p-4">
       <div className="flex bg-gray-100 min-w-full min-h-full rounded-3xl p-4 shadow-sm flex-col sm:flex-row ">
         <AdminSidebar />
-        <div>
+        <div className="w-full">
           <AdminHeader />
           <div>
             <div>{children}</div>
