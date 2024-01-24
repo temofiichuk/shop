@@ -4,6 +4,7 @@ import withAuth from "@/utils/withAuth";
 import { EnumUserRole } from "@/types/auth.types";
 import { useAppDispatch } from "@/store/hooks";
 import { setTitle } from "@/store/features/admin.page-title.slice";
+import AdminProducts from "@/components/AdminProducts/AdminProducts";
 
 const Products: FC = () => {
   const title = "Products";
@@ -13,7 +14,11 @@ const Products: FC = () => {
     dispatch(setTitle({ value: title }));
   }, []);
 
-  return <div>Product's Page Content</div>;
+  return (
+    <div>
+      <AdminProducts />
+    </div>
+  );
 };
 
 export default withAuth(EnumUserRole.ADMIN, Products);

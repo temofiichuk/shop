@@ -2,7 +2,6 @@
 import { FC, useEffect } from "react";
 import withAuth from "@/utils/withAuth";
 import { EnumUserRole } from "@/types/auth.types";
-import AdminHeader from "@/components/AdminHeader/AdminHeader";
 import { useAppDispatch } from "@/store/hooks";
 import { setTitle } from "@/store/features/admin.page-title.slice";
 

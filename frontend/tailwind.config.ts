@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import forms from "@tailwindcss/forms";
+import withMT from "@material-tailwind/react/utils/withMT";
 
 const colors = {
   transparent: "transparent",
@@ -97,4 +98,4 @@ const config: Config = {
   plugins: [forms],
 };
 
-export default config;
+export default withMT(config);

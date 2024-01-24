@@ -154,6 +154,8 @@ type Query {
   adminGetAll: [Admin!]!
   adminGetAvatar: AdminAvatar!
   productBySearch(pattern: String!): [Product!]!
+  productGetMany(skip: Float!, take: Float!): [Product!]!
+  productCount: Int!
   reviewGetAllByStatus(status: String!): [Review!]!
   reviewFindOne(pattern: String!): Review!
   reviewGetByProduct(id: Float!): Review!

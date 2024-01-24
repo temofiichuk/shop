@@ -84,9 +84,46 @@ export const USER_REGISTER = gql`
 `;
 
 export const GET_CURRENT_ADMIN_AVATAR = gql`
-  query adminGetAvatar {
+  query {
     adminGetAvatar {
       avatar
     }
+  }
+`;
+
+export const GET_PRODUCTS = gql`
+  query getProducts($skip: Float!, $take: Float!) {
+    productGetMany(skip: $skip, take: $take) {
+      id
+      name
+      price
+      slug
+      stock
+      descriptions {
+        id
+        head
+        body
+      }
+      images {
+        name
+        url
+      }
+      category {
+        id
+        name
+        slug
+      }
+      subcategory {
+        id
+        name
+        slug
+      }
+    }
+  }
+`;
+
+export const GET_PRODUCTS_COUNT = gql`
+  query {
+    productCount
   }
 `;
