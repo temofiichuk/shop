@@ -119,4 +119,16 @@ export class ProductService {
       include: productRelativeFields,
     });
   }
+
+  async getMany(skip: number, take: number = 10) {
+    return this.prisma.product.findMany({
+      skip,
+      take,
+      include: productRelativeFields,
+    });
+  }
+
+  async getCount() {
+    return this.prisma.product.count();
+  }
 }

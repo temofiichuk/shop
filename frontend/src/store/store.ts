@@ -3,6 +3,9 @@ import authSlice from "@/store/features/auth.slice";
 import typeOfFormSlice from "@/store/features/type-of-auth-form.slice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
+import adminPageTitleSlice from "@/store/features/admin.page-title.slice";
+import isLoadingSlice from "@/store/features/is-loading.slice";
+import isOpenSlice from "@/store/features/is-open.slice";
 
 export const persistConfig = {
   key: "root",
@@ -15,6 +18,9 @@ const store = configureStore({
   reducer: {
     typeOfForm: typeOfFormSlice,
     auth: persistedAuthReducer,
+    adminPageTitle: adminPageTitleSlice,
+    isLoading: isLoadingSlice,
+    isOpen: isOpenSlice,
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>

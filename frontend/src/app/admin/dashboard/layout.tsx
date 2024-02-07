@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
-import Sidebar from "@/components/admin/Sidebar";
+import AdminHeader from "@/components/AdminHeader/AdminHeader";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="w-full flex">
-      <Sidebar />
-      {children}
-    </div>
+    <>
+      <AdminHeader />
+      <div>{children}</div>
+    </>
   );
 };
 

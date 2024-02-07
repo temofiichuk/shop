@@ -95,7 +95,7 @@ const LoginForm = ({ role, className }: LoginForm) => {
                 </button>
                 <p className={style.error + " mt-2"}>{error?.message}</p>
               </div>
-              {isAdmin && (
+              {!isAdmin && (
                 <div>
                   <p className="text-center">Don't have an account yet?</p>
                   <button

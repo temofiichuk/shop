@@ -1,0 +1,19 @@
+.list {
+  @apply mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center;
+}
+
+.link {
+  @apply font-medium text-blue-gray-500;
+}
+
+.item {
+  @apply flex items-center gap-2 lg:rounded-full;
+}
+
+.icon {
+  @apply h-[18px] w-[18px];
+}
+
+.label {
+  @apply text-gray-900;
+}

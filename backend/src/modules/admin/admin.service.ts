@@ -18,6 +18,15 @@ export class AdminService {
     return this.prisma.admin.findMany({ select: adminFieldsOutput });
   }
 
+  async getAvatar(id: number) {
+    const currentAdmin = await this.prisma.admin.findUnique({
+      where: { id },
+      select: { avatar: true },
+    });
+
+    return currentAdmin.avatar;
+  }
+
   async getById(id: number) {
     return this.prisma.admin.findUnique({
       where: { id },

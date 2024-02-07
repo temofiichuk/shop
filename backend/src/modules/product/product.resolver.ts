@@ -42,4 +42,14 @@ export class ProductResolver {
   productBySearch(@Args("pattern") pattern: string) {
     return this.productService.findManyBySearch(pattern);
   }
+
+  @Query(() => [Product])
+  productGetMany(@Args("skip") skip: number, @Args("take") take: number) {
+    return this.productService.getMany(skip, take);
+  }
+
+  @Query(() => Int)
+  async productCount() {
+    return this.productService.getCount();
+  }
 }
