@@ -52,7 +52,10 @@ const AdminProducts = () => {
         <div className="w-full h-full overflow-scroll">
           <List className={`${styles.productList} w-full`}>
             {products?.map(({ id, name }) => (
-              <ListItem ripple={false} className="py-1 pr-1 pl-4 text-sm">
+              <ListItem
+                key={id}
+                ripple={false}
+                className="py-1 pr-1 pl-4 text-sm">
                 {name}
                 <ListItemSuffix className="sm:flex">
                   <IconButton variant="text" color="blue-gray">
