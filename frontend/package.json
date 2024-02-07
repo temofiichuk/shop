@@ -12,6 +12,7 @@
     "@apollo/client": "^3.8.8",
     "@apollo/experimental-nextjs-app-support": "^0.5.1",
     "@apollo/react-hooks": "^4.0.0",
+    "@heroicons/react": "^2.1.1",
     "@material-tailwind/react": "^2.1.8",
     "@reduxjs/toolkit": "^1.9.7",
     "@tailwindcss/forms": "^0.5.7",

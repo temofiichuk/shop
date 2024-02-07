@@ -16,8 +16,10 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
       <body suppressHydrationWarning={true}>
         <ApolloProvider>
           <ReduxProvider>
-            <Loading />
-            {children}
+            <div className="container m-auto min-h-screen">
+              <Loading />
+              {children}
+            </div>
           </ReduxProvider>
         </ApolloProvider>
       </body>

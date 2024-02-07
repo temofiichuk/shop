@@ -40,7 +40,7 @@ const AdminProducts = () => {
   }, []);
 
   return (
-    <Card className="w-full h-full mt-2 sm:m-2 sm:ml-2">
+    <Card className="w-full h-full mt-2 mb-2">
       {loadingProducts && (
         <div className="w-full h-full flex items-center justify-center">
           <div className="w-8">
