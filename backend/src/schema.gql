@@ -92,16 +92,17 @@ type Category {
   updated_at: DateTime!
 }
 
-type ProductDescriptionType {
+type ProductDescription {
   id: Int!
   head: String!
   body: String!
 }
 
-type ProductImageType {
+type ProductImage {
   id: Int!
   name: String!
   url: String!
+  is_main: Boolean!
 }
 
 type Product {
@@ -109,12 +110,12 @@ type Product {
   name: String!
   price: Float!
   slug: String!
-  descriptions: [ProductDescriptionType!]!
+  descriptions: [ProductDescription!]!
   category: Category!
   category_id: Int!
   subcategory: Subcategory!
   subcategory_id: Int!
-  images: [ProductImageType!]!
+  images: [ProductImage!]!
   quantity: Float!
   stock: Float!
 }
@@ -154,8 +155,10 @@ type Query {
   adminGetAll: [Admin!]!
   adminGetAvatar: AdminAvatar!
   productBySearch(pattern: String!): [Product!]!
+  productGetByID(id: Float!): Product!
   productGetMany(skip: Float!, take: Float!): [Product!]!
   productCount: Int!
+  productSetMainImage(product_id: Float!, image_id: Float!): Product!
   reviewGetAllByStatus(status: String!): [Review!]!
   reviewFindOne(pattern: String!): Review!
   reviewGetByProduct(id: Float!): Review!
@@ -258,6 +261,7 @@ input DescriptionInput {
 input ImageInput {
   name: String!
   url: String!
+  is_main: Boolean!
 }
 
 input UpdateProductInput {

@@ -1,5 +1,7 @@
 import { InputType, Field, Int } from "@nestjs/graphql";
 import {
+  IS_BOOLEAN,
+  IsBoolean,
   IsLowercase,
   IsNumber,
   IsOptional,
@@ -29,6 +31,10 @@ export class ImageInput {
   @Field()
   @IsString()
   url: string;
+
+  @Field()
+  @IsBoolean()
+  is_main: boolean;
 }
 
 @InputType()

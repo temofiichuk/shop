@@ -1,0 +1,33 @@
+.imageWidget {
+	@apply w-full max-w-xl h-full shadow-2xl border transition m-auto;
+}
+
+.wrapper {
+	@apply flex flex-col gap-2 p-4;
+}
+
+.mainImage {
+	@apply w-full h-auto max-h-[300px] rounded-xl  m-auto object-cover;
+}
+
+.image {
+	@apply w-full h-full cursor-pointer rounded-lg object-cover;
+}
+
+.imagesWrapper {
+	@apply gap-2  grid mb-4;
+	grid-template-columns: repeat(auto-fit, minmax(70px, 0.3334fr));
+	grid-template-rows: repeat(auto-fit, minmax(40px, 1fr));
+}
+
+.form {
+	@apply w-full p-4 border-2 mt-8 mb-2 rounded-lg flex flex-col gap-6;
+}
+
+.input {
+	@apply shadow-none border-0 border-b-2;
+}
+
+.button {
+	@apply w-full;
+}

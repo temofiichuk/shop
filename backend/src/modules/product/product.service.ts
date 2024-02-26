@@ -23,13 +23,18 @@ export class ProductService {
       ...fields
     } = createProductInput;
 
+    if (images.length > 0) {
+      const mainImage = images.find((item) => item.is_main);
+      if (!mainImage) images[0].is_main = true;
+    }
+
     return this.prisma.product.create({
       data: {
         ...fields,
         slug: slugify(fields.name, { lower: true }),
         images: {
           createMany: {
-            data: images.map(({ name, url }) => ({ name, url })),
+            data: images.map(({ ...fields }) => ({ ...fields })),
           },
         },
         admin: {
@@ -37,7 +42,7 @@ export class ProductService {
         },
         descriptions: {
           createMany: {
-            data: descriptions.map(({ head, body }) => ({ head, body })),
+            data: descriptions.map(({ ...fields }) => ({ ...fields })),
           },
         },
         category: {
@@ -78,7 +83,11 @@ export class ProductService {
         ...slug,
         images: {
           createMany: {
-            data: images.map(({ name, url }) => ({ name, url })),
+            data: images.map(({ name, url, is_main }) => ({
+              name,
+              url,
+              is_main,
+            })),
           },
         },
         descriptions: {
@@ -130,5 +139,32 @@ export class ProductService {
 
   async getCount() {
     return this.prisma.product.count();
+  }
+
+  async getByID(id: number) {
+    return this.prisma.product.findUnique({
+      where: { id },
+      include: productRelativeFields,
+    });
+  }
+
+  async setMainImage(product_id: number, imageId: number) {
+    return this.prisma.$transaction(async (prisma) => {
+      const currentMainImage = await prisma.image.findFirst({
+        where: { product_id, is_main: true },
+      });
+
+      if (currentMainImage) {
+        await prisma.image.update({
+          where: { id: currentMainImage.id },
+          data: { is_main: false },
+        });
+      }
+
+      await prisma.image.update({
+        where: { id: imageId, product_id },
+        data: { is_main: true },
+      });
+    });
   }
 }

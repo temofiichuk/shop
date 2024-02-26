@@ -3,7 +3,7 @@ import { Category } from "../../category/entities/category.entity";
 import { Subcategory } from "../../subcategory/entities/subcategory.entity";
 
 @ObjectType()
-export class ProductDescriptionType {
+export class ProductDescription {
   @Field(() => Int)
   id: number;
 
@@ -15,7 +15,7 @@ export class ProductDescriptionType {
 }
 
 @ObjectType()
-export class ProductImageType {
+export class ProductImage {
   @Field(() => Int)
   id: number;
 
@@ -24,6 +24,9 @@ export class ProductImageType {
 
   @Field()
   url: string;
+
+  @Field()
+  is_main: boolean;
 }
 
 @ObjectType()
@@ -40,8 +43,8 @@ export class Product {
   @Field()
   slug: string;
 
-  @Field(() => [ProductDescriptionType])
-  descriptions?: ProductDescriptionType[];
+  @Field(() => [ProductDescription])
+  descriptions?: ProductDescription[];
 
   @Field(() => Category)
   category?: Category;
@@ -55,8 +58,8 @@ export class Product {
   @Field(() => Int)
   subcategory_id?: number;
 
-  @Field(() => [ProductImageType])
-  images?: ProductImageType[];
+  @Field(() => [ProductImage])
+  images?: ProductImage[];
 
   @Field()
   quantity: number;

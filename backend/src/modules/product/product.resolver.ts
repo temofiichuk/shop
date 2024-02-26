@@ -43,6 +43,11 @@ export class ProductResolver {
     return this.productService.findManyBySearch(pattern);
   }
 
+  @Query(() => Product)
+  productGetByID(@Args("id") id: number) {
+    return this.productService.getByID(id);
+  }
+
   @Query(() => [Product])
   productGetMany(@Args("skip") skip: number, @Args("take") take: number) {
     return this.productService.getMany(skip, take);
@@ -51,5 +56,13 @@ export class ProductResolver {
   @Query(() => Int)
   async productCount() {
     return this.productService.getCount();
+  }
+
+  @Query(() => Product)
+  async productSetMainImage(
+    @Args("product_id") product_id: number,
+    @Args("image_id") image_id: number
+  ) {
+    return this.productService.setMainImage(product_id, image_id);
   }
 }

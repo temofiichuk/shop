@@ -15,12 +15,14 @@ import {
   ListItem,
   ListItemSuffix,
 } from "@material-tailwind/react";
+import { useRouter } from "next/navigation";
 
 const AdminProducts = () => {
-  const [fetchProducts, { loading: loadingProducts, error }] = useLazyQuery<{
+  const router = useRouter();
+  const [fetchProducts, { loading: loadingProducts }] = useLazyQuery<{
     productGetMany: Product[];
   }>(GET_PRODUCTS);
-  const { data: count, loading: loadingCountOfProducts } = useQuery<{
+  const { data: count } = useQuery<{
     productCount: number;
   }>(GET_PRODUCTS_COUNT);
 
@@ -35,30 +37,42 @@ const AdminProducts = () => {
     setProducts(products.productGetMany);
   };
 
+  const editHandler = (id: number) => {
+    router.push(`products/manage?product_id=${id}`);
+  };
+
   useEffect(() => {
     fetchProductHandler(1);
-  }, []);
+  }, [take]);
+
+  console.log(products);
 
   return (
-    <Card className="w-full h-full mt-2 mb-2">
-      {loadingProducts && (
-        <div className="w-full h-full flex items-center justify-center">
-          <div className="w-8">
-            <Spinner />
+    <>
+      <Card className="w-full h-full mt-2 mb-2">
+        {loadingProducts && (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="w-8">
+              <Spinner />
+            </div>
           </div>
-        </div>
-      )}
-      <div>
+        )}
         <div className="w-full h-full overflow-scroll">
           <List className={`${styles.productList} w-full`}>
             {products?.map(({ id, name }) => (
-              <ListItem ripple={false} className="py-1 pr-1 pl-4 text-sm">
+              <ListItem
+                key={id}
+                ripple={false}
+                className="py-1 pr-1 pl-4 text-sm">
                 {name}
                 <ListItemSuffix className="sm:flex">
                   <IconButton variant="text" color="blue-gray">
                     <RiDeleteBin7Fill />
                   </IconButton>
-                  <IconButton variant="text" color="blue-gray">
+                  <IconButton
+                    variant="text"
+                    color="blue-gray"
+                    onClick={() => editHandler(id)}>
                     <RiEditFill />
                   </IconButton>
                 </ListItemSuffix>
@@ -66,15 +80,15 @@ const AdminProducts = () => {
             ))}
           </List>
         </div>
-      </div>
-      {count && (
-        <Pagination
-          take={take}
-          count={count.productCount}
-          handler={fetchProductHandler}
-        />
-      )}
-    </Card>
+        {count && (
+          <Pagination
+            take={take}
+            count={count.productCount}
+            handler={fetchProductHandler}
+          />
+        )}
+      </Card>
+    </>
   );
 };
 

@@ -1,0 +1,14 @@
+.handler {
+	@apply hover:cursor-pointer;
+}
+
+.wrapper {
+	@apply grid grid-rows-[0fr] transition-[grid-template-rows] duration-[400ms];
+
+	&[aria-hidden="false"] {
+		@apply grid-rows-[1fr];
+	}
+}
+.content {
+	@apply overflow-hidden w-max;
+}

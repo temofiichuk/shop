@@ -5,13 +5,13 @@
 @tailwind utilities;
 
 html {
-  @apply h-full bg-gray-50;
+	@apply h-full bg-gray-50;
 }
 
 body {
-  @apply h-full;
+	@apply h-full;
 }
 
 .icon {
-  @apply w-6 h-6 lg:w-8 lg:h-8;
+	@apply w-6 h-6 lg:w-8 lg:h-8;
 }

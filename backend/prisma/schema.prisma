@@ -131,6 +131,7 @@ model Image {
   updated_at DateTime @updatedAt
   product    Product? @relation(fields: [product_id], references: [id])
   product_id Int?
+  is_main    Boolean  @default(false)
 }
 
 model Description {

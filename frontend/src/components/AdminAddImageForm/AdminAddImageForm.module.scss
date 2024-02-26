@@ -1,0 +1,9 @@
+.collapse {
+	@apply absolute -left-1/2 bottom-[-15px] translate-x-1/2 bg-white;
+}
+.button {
+	@apply w-full;
+}
+.input {
+	@apply shadow-none border-0 border-b-2;
+}
