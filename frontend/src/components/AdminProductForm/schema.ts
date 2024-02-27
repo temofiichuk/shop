@@ -9,8 +9,14 @@ export const imageSchema = object({
 
 export default object().shape({
 	name: string().required("Name is required field").min(5).max(50),
-	price: number().required("Price is required field").positive().integer(),
-	stock: number().required("Stock is required field").positive().integer(),
+	price: number()
+		.required("Price is required field")
+		.positive("Price must be a positive number")
+		.integer("Price must be a number"),
+	stock: number()
+		.required("Stock is required field")
+		.positive("Price must be a positive number")
+		.integer("Price must be a number"),
 	images: array(imageSchema),
 	descriptions: array(
 		object({

@@ -39,7 +39,11 @@ const AdminProductForm = () => {
 	const onSubmit: SubmitHandler<Product> = (data) => console.log(data);
 
 	useLayoutEffect(() => {
-		productID && fetchProduct({ variables: { id: +productID } }).then(({ data }) => removeTypename(data));
+		productID &&
+			fetchProduct({ variables: { id: +productID } })
+				.then(({ data }) => removeTypename(data))
+				.then((data) => methods.reset(data.productGetByID))
+				.finally(() => console.log("fetch is ended"));
 	}, [productID]);
 
 	if (error) return notFound();
@@ -51,7 +55,7 @@ const AdminProductForm = () => {
 				<form className={styles.form} onSubmit={methods.handleSubmit(onSubmit)}>
 					<div className="flex flex-col lg:flex-row-reverse">
 						<div className="lg:h-[calc(100vh-2rem)] lg:w-full lg:sticky lg:top-10 lg:right-0 lg:max-w-[20rem] lg:shadow-blue-gray-900/5 ">
-							<AdminProductImageWidget images={methods.getValues("images")} />
+							<AdminProductImageWidget />
 						</div>
 						<div className="w-full mr-4">
 							<AdminProductTextFieldsWidget />
@@ -64,5 +68,7 @@ const AdminProductForm = () => {
 		</Card>
 	);
 };
+
+AdminProductForm.displayName = "AdminProductForm";
 
 export default AdminProductForm;

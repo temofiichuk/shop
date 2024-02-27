@@ -40,7 +40,7 @@ const AdminAddImageForm = memo(({ isMain }: { isMain: boolean }) => {
 
 	const FormCollapse = memo(() => {
 		return (
-			<Card className="flex flex-col gap-2 bg-white border p-4">
+			<Card className={styles.form}>
 				{fields.map((key) => (
 					<div key={key}>
 						<Input

@@ -13,23 +13,27 @@ const AdminProductTextFieldsWidget = memo(() => {
 	} = useFormContext();
 
 	const simpleFields = useMemo(
-		() => Object.entries({ ...defaultValues }).filter(([_, val]) => !Array.isArray(val)),
+		() => Object.entries({ ...defaultValues }).filter(([_, val]) => val !== Object(val)),
 		[defaultValues]
 	);
 
 	return (
-		<div className="mb-1 flex flex-col gap-6">
+		<div className={styles.wrapper}>
 			{simpleFields.map(([key]) => (
-				<div key={key}>
+				<div key={key} className={styles.field}>
 					<Input
 						{...register(key)}
 						crossOrigin="false"
 						variant="standard"
 						label={toRegularCase(key)}
 						placeholder={toRegularCase(key)}
-						className="shadow-none border-0 border-b-2"
+						className="input"
 					/>
-					<ErrorMessage errors={errors} name={key} />
+					<ErrorMessage
+						errors={errors}
+						name={key}
+						render={({ message }) => <p className="text-red-700 animate-shake">{message}</p>}
+					/>
 				</div>
 			))}
 		</div>

@@ -3,17 +3,20 @@ import styles from "./AdminProductImageWidget.module.scss";
 
 import { ProductImage } from "@/types/types";
 import { Button, ButtonGroup, Card } from "@material-tailwind/react";
-import { memo, useMemo } from "react";
+import { FC, HTMLAttributes, memo, useMemo } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import AdminAddImageForm from "@/components/AdminAddImageForm/AdminAddImageForm";
 import CustomPopover from "@/components/Popover/Popover";
+import Image from "next/image";
 
-const AdminProductImageWidget = memo(({ images = [] }: { images?: ProductImage[] }) => {
+const AdminProductImageWidget = memo(() => {
 	const { control, getValues } = useFormContext();
 	const { update, remove } = useFieldArray({
 		control,
 		name: "images",
 	});
+
+	const images = getValues("images");
 
 	const { main, mainIndex } = useMemo(() => {
 		let mainIndex = images.findIndex((img: ProductImage) => img.is_main);
@@ -25,7 +28,13 @@ const AdminProductImageWidget = memo(({ images = [] }: { images?: ProductImage[]
 		<Card color="transparent" shadow={false} className={styles.imageWidget}>
 			<div className={styles.wrapper}>
 				<CustomPopover>
-					<img className={styles.mainImage} src={main?.url ?? "/no-image.jpg"} alt={main?.name ?? "No Image"} />
+					<Image
+						width={700}
+						height={400}
+						className={styles.mainImage}
+						src={main?.url ?? "/no-image.jpg"}
+						alt={main?.name ?? "No Image"}
+					/>
 					{main && (
 						<Button
 							className="absolute z-50 left-1/2 -translate-x-1/2 bottom-8"

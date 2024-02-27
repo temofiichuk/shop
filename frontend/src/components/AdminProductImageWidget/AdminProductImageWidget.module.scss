@@ -24,10 +24,6 @@
 	@apply w-full p-4 border-2 mt-8 mb-2 rounded-lg flex flex-col gap-6;
 }
 
-.input {
-	@apply shadow-none border-0 border-b-2;
-}
-
 .button {
 	@apply w-full;
 }

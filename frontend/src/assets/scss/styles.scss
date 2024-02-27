@@ -15,3 +15,7 @@ body {
 .icon {
 	@apply w-6 h-6 lg:w-8 lg:h-8;
 }
+
+.input {
+	@apply shadow-none border-0 border-b-2;
+}

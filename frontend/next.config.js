@@ -5,7 +5,7 @@ const nextConfig = {
 		SERVER_URL: process.env.SERVER_URL,
 	},
 	images: {
-		domains: ["www.google.com"], // Add the hostname here
+		domains: ["www.google.com", "loremflickr.com"], // Add the hostname here
 	},
 };
 
