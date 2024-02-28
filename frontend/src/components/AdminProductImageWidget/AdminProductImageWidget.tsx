@@ -3,7 +3,7 @@ import styles from "./AdminProductImageWidget.module.scss";
 
 import { ProductImage } from "@/types/types";
 import { Button, ButtonGroup, Card } from "@material-tailwind/react";
-import { FC, HTMLAttributes, memo, useMemo } from "react";
+import { memo, useMemo } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import AdminAddImageForm from "@/components/AdminAddImageForm/AdminAddImageForm";
 import CustomPopover from "@/components/Popover/Popover";
@@ -25,10 +25,11 @@ const AdminProductImageWidget = memo(() => {
 	}, [images]);
 
 	return (
-		<Card color="transparent" shadow={false} className={styles.imageWidget}>
+		<Card className="shadow-2xl h-fit">
 			<div className={styles.wrapper}>
 				<CustomPopover>
 					<Image
+						priority={true}
 						width={700}
 						height={400}
 						className={styles.mainImage}
@@ -37,7 +38,7 @@ const AdminProductImageWidget = memo(() => {
 					/>
 					{main && (
 						<Button
-							className="absolute z-50 left-1/2 -translate-x-1/2 bottom-8"
+							className={styles.button}
 							onClick={async () => {
 								update(0, { ...images[0], is_main: true });
 								remove(mainIndex);
@@ -52,9 +53,16 @@ const AdminProductImageWidget = memo(() => {
 							if (img.is_main) return;
 							return (
 								<CustomPopover key={`image.${index}`}>
-									<img src={img.url} alt={img.name} className={styles.image} />
+									<Image
+										priority={true}
+										width={100}
+										height={40}
+										src={img.url}
+										alt={img.name}
+										className={styles.image}
+									/>
 
-									<ButtonGroup size="sm" className="absolute z-50 left-1/2 -translate-x-1/2 bottom-4">
+									<ButtonGroup size="sm" className={styles.button}>
 										<Button
 											onClick={async () => {
 												update(mainIndex, { ...main, is_main: false });

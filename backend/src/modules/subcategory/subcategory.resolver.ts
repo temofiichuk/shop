@@ -6,39 +6,36 @@ import { UpdateSubcategoryInput } from "./dto/update-subcategory.input";
 
 @Resolver(() => Subcategory)
 export class SubcategoryResolver {
-  constructor(private readonly subcategoryService: SubcategoryService) {}
+	constructor(private readonly subcategoryService: SubcategoryService) {}
 
-  @Mutation(() => Subcategory)
-  subcategoryCreate(
-    @Args("createSubcategoryInput")
-    createSubcategoryInput: CreateSubcategoryInput
-  ) {
-    return this.subcategoryService.create(createSubcategoryInput);
-  }
+	@Mutation(() => Subcategory)
+	subcategoryCreate(
+		@Args("createSubcategoryInput")
+		createSubcategoryInput: CreateSubcategoryInput
+	) {
+		return this.subcategoryService.create(createSubcategoryInput);
+	}
 
-  @Query(() => [Subcategory])
-  subcategoryGetAll() {
-    return this.subcategoryService.findAll();
-  }
+	@Query(() => [Subcategory])
+	subcategoryGetAll(@Args("id") id: number) {
+		return this.subcategoryService.findAll(id);
+	}
 
-  @Query(() => Subcategory)
-  subcategoryFindOne(@Args("name") name: string) {
-    return this.subcategoryService.findOne(name);
-  }
+	@Query(() => Subcategory)
+	subcategoryFindOne(@Args("name") name: string) {
+		return this.subcategoryService.findOne(name);
+	}
 
-  @Mutation(() => Subcategory)
-  subcategoryUpdate(
-    @Args("updateSubcategoryInput")
-    updateSubcategoryInput: UpdateSubcategoryInput
-  ) {
-    return this.subcategoryService.update(
-      updateSubcategoryInput.id,
-      updateSubcategoryInput
-    );
-  }
+	@Mutation(() => Subcategory)
+	subcategoryUpdate(
+		@Args("updateSubcategoryInput")
+		updateSubcategoryInput: UpdateSubcategoryInput
+	) {
+		return this.subcategoryService.update(updateSubcategoryInput.id, updateSubcategoryInput);
+	}
 
-  @Mutation(() => Subcategory)
-  subcategoryRemove(@Args("id") id: number) {
-    return this.subcategoryService.remove(id);
-  }
+	@Mutation(() => Subcategory)
+	subcategoryRemove(@Args("id") id: number) {
+		return this.subcategoryService.remove(id);
+	}
 }

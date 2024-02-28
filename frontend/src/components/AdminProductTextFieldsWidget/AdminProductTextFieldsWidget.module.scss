@@ -1,8 +1,5 @@
 .wrapper {
-	@apply mb-1 grid gap-14 mt-10 lg:mt-0;
+	@apply mb-1 p-4 shadow-2xl grid gap-14 mt-10 lg:mt-0;
 	grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
 	grid-template-rows: repeat(auto-fit, 40px);
-}
-
-.field {
 }

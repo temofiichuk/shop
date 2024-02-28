@@ -33,6 +33,7 @@ const config: Config = {
 		extend: {
 			boxShadow: {
 				"inner-xl": "inset 0px 1px 10px 1px rgba(0,0,0,.1)",
+				"card": " 54px 54px 300px #666666,-54px -54px 300px #ffffff",
 			},
 			fontSize: {
 				"xs": "0.82rem",

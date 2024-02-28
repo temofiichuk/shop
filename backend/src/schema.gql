@@ -165,7 +165,7 @@ type Query {
   reviewGetByUser: Review!
   categoryGetAll: [Category!]!
   categoryFindOne(name: String!): Category!
-  subcategoryGetAll: [Subcategory!]!
+  subcategoryGetAll(id: Float!): [Subcategory!]!
   subcategoryFindOne(name: String!): Subcategory!
   attributeGetAll: [Attribute!]!
 }

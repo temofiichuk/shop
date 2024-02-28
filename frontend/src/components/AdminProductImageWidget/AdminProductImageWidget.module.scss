@@ -25,5 +25,5 @@
 }
 
 .button {
-	@apply w-full;
+	@apply absolute z-50 left-1/2 -translate-x-1/2 bottom-8;
 }

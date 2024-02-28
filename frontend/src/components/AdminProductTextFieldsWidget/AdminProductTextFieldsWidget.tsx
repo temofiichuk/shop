@@ -1,10 +1,12 @@
 import styles from "./AdminProductTextFieldsWidget.module.scss";
 
-import { Input } from "@material-tailwind/react";
+import { Card, Input } from "@material-tailwind/react";
 import { toRegularCase } from "@/lib/functions";
 import { memo, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+
+const simpleFields = ["name", "price", "slug", "stock"];
 
 const AdminProductTextFieldsWidget = memo(() => {
 	const {
@@ -12,19 +14,18 @@ const AdminProductTextFieldsWidget = memo(() => {
 		formState: { errors, defaultValues },
 	} = useFormContext();
 
-	const simpleFields = useMemo(
-		() => Object.entries({ ...defaultValues }).filter(([_, val]) => val !== Object(val)),
+	const fields = useMemo(
+		() => Object.entries({ ...defaultValues }).filter(([key]) => simpleFields.includes(key)),
 		[defaultValues]
 	);
 
 	return (
-		<div className={styles.wrapper}>
-			{simpleFields.map(([key]) => (
+		<Card className={styles.wrapper}>
+			{fields.map(([key]) => (
 				<div key={key} className={styles.field}>
 					<Input
 						{...register(key)}
 						crossOrigin="false"
-						variant="standard"
 						label={toRegularCase(key)}
 						placeholder={toRegularCase(key)}
 						className="input"
@@ -36,7 +37,7 @@ const AdminProductTextFieldsWidget = memo(() => {
 					/>
 				</div>
 			))}
-		</div>
+		</Card>
 	);
 });
 

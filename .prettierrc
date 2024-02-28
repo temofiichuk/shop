@@ -11,5 +11,5 @@
   "bracketSameLine": true,
   "singleAttributePerLine": false,
   "quoteProps": "consistent",
-  "printWidth": 120
+  "printWidth": 100
 }

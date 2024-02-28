@@ -6,41 +6,41 @@ import { UpdateSubcategoryInput } from "./dto/update-subcategory.input";
 
 @Injectable()
 export class SubcategoryService {
-  constructor(private readonly prisma: PrismaService) {}
-  create(createSubcategoryInput: CreateSubcategoryInput) {
-    return this.prisma.subcategory.create({
-      data: {
-        ...createSubcategoryInput,
-        slug: slugify(createSubcategoryInput.name, { lower: true }),
-      },
-    });
-  }
+	constructor(private readonly prisma: PrismaService) {}
+	async create(createSubcategoryInput: CreateSubcategoryInput) {
+		return this.prisma.subcategory.create({
+			data: {
+				...createSubcategoryInput,
+				slug: slugify(createSubcategoryInput.name, { lower: true }),
+			},
+		});
+	}
 
-  findAll() {
-    return this.prisma.subcategory.findMany();
-  }
+	async findAll(id: number) {
+		return this.prisma.subcategory.findMany({ where: { category_id: id } });
+	}
 
-  findOne(name: string) {
-    return this.prisma.subcategory.findFirst({
-      where: {
-        name: {
-          contains: name,
-        },
-      },
-    });
-  }
+	async findOne(name: string) {
+		return this.prisma.subcategory.findFirst({
+			where: {
+				name: {
+					contains: name,
+				},
+			},
+		});
+	}
 
-  update(id: number, updateSubcategoryInput: UpdateSubcategoryInput) {
-    return this.prisma.subcategory.update({
-      where: { id },
-      data: {
-        ...updateSubcategoryInput,
-        slug: slugify(updateSubcategoryInput.name, { lower: true }),
-      },
-    });
-  }
+	async update(id: number, updateSubcategoryInput: UpdateSubcategoryInput) {
+		return this.prisma.subcategory.update({
+			where: { id },
+			data: {
+				...updateSubcategoryInput,
+				slug: slugify(updateSubcategoryInput.name, { lower: true }),
+			},
+		});
+	}
 
-  remove(id: number) {
-    return this.prisma.subcategory.delete({ where: { id } });
-  }
+	async remove(id: number) {
+		return this.prisma.subcategory.delete({ where: { id } });
+	}
 }

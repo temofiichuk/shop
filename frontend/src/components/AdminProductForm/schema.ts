@@ -20,8 +20,17 @@ export default object().shape({
 	images: array(imageSchema),
 	descriptions: array(
 		object({
-			head: string().required("Head is required field").min(2).max(50),
+			head: string()
+				.required("Head is required field")
+				.min(2, "Head must be at least 2 characters")
+				.max(50),
 			body: string().required("Body is required field"),
 		})
 	),
+	category_id: number()
+		.positive("Category is required field")
+		.required("Category is required field"),
+	subcategory_id: number()
+		.positive("Subcategory is required field")
+		.required("Subcategory is required field"),
 });

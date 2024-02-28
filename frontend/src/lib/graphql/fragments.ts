@@ -44,17 +44,11 @@ export const productFragment = gql`
 		images {
 			...productImgAttrs
 		}
-		category {
-			...productCatAttrs
-		}
-		subcategory {
-			...productSubCatAttrs
-		}
+		category_id
+		subcategory_id
 	}
 	${productDescriptionFragment}
 	${productImageFragment}
-	${productCategoryFragment}
-	${productSubcategoryFragment}
 `;
 
 export const authFragment = gql`

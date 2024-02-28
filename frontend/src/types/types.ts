@@ -18,7 +18,7 @@ export type User = {
 export type Category = {
 	id?: number;
 	name: string;
-	slug: string;
+	slug?: string;
 	created_at?: Date;
 	updated_at?: Date;
 	subcategories?: Subcategory[];
@@ -28,7 +28,7 @@ export type Category = {
 export type Subcategory = {
 	id?: number;
 	name: string;
-	slug: string;
+	slug?: string;
 	created_at?: Date;
 	updated_at?: Date;
 	products?: Product[];
