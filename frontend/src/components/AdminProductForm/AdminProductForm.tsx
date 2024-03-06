@@ -64,8 +64,8 @@ const AdminProductForm = () => {
 							<AdminProductDescWidget />
 						</div>
 						<div className="lg:w-full lg:sticky lg:top-10 lg:h-max lg:max-w-[20rem] grid gap-6">
-							<AdminProductImageWidget />
 							<AdminProductCatWidget />
+							<AdminProductImageWidget />
 						</div>
 					</div>
 

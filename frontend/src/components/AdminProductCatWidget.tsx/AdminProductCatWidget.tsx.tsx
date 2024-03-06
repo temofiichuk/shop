@@ -1,5 +1,5 @@
 import styles from "./AdminProductCatWidget.tsx.module.scss";
-import { FC, memo, useEffect } from "react";
+import { ChangeEvent, FC, memo, useEffect } from "react";
 import { Select, Option, Card } from "@material-tailwind/react";
 import { Controller, useFormContext } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
@@ -18,40 +18,39 @@ const AdminProductCatWidget: FC<IAdminProductCatWidget> = memo(() => {
 	}>(GET_SUBCATEGORIES);
 
 	const {
+		register,
 		control,
 		watch,
+		setValue,
+		getValues,
 		formState: { errors },
 	} = useFormContext();
 
 	const cat_id: number = watch("category_id");
+	const subcat_id: number = getValues("subcategory_id");
 
 	useEffect(() => {
 		fetchCat();
 	}, []);
 
 	useEffect(() => {
-		if (cat_id !== 0)
-			fetchSubcat({ variables: { id: +cat_id } }).then(({ data }) => console.log(data));
+		if (cat_id !== 0) fetchSubcat({ variables: { id: +cat_id } });
 	}, [cat_id]);
 
 	return (
 		<Card className="shadow-2xl p-4 flex flex-col h-fit gap-6">
 			{category && (
-				<>
+				<div>
 					<Controller
 						name="category_id"
 						control={control}
 						render={({ field: { value, ...field } }) => (
-							<Select
-								{...field}
-								value={value.toString()}
-								label="Category"
-								onChange={(e) => field.onChange(e)}>
+							<Select {...field} value={value.toString()} label="Category">
 								{category.categoryGetAll.map((cat) => (
 									<Option value={cat.id?.toString()} key={cat.id}>
 										{cat.name}
 									</Option>
-								))}
+								)) ?? <Option>Category</Option>}
 							</Select>
 						)}
 					/>
@@ -61,37 +60,30 @@ const AdminProductCatWidget: FC<IAdminProductCatWidget> = memo(() => {
 						name="category_id"
 						render={({ message }) => <p className="text-red-700 animate-shake">{message}</p>}
 					/>
-				</>
+				</div>
 			)}
-
-			<Controller
-				name="subcategory_id"
-				control={control}
-				render={({ field: { value, ...field } }) => (
+			<div>
+				{subcategory && (
 					<Select
-						{...field}
-						value={value.toString()}
-						disabled={cat_id === 0}
-						label="Subcategory"
-						onChange={(e) => field.onChange(e)}>
-						{subcategory ? (
-							subcategory.subcategoryGetAll.map((cat) => (
-								<Option value={cat.id?.toString()} key={cat.id}>
-									{cat.name}
-								</Option>
-							))
-						) : (
-							<Option>{""}</Option>
-						)}
+						{...register("subcategory_id")}
+						onChange={(value) => setValue("subcategory_id", value ?? "")}
+						disabled={cat_id == 0}
+						value={subcat_id.toString()}
+						label="Subcategory">
+						{subcategory.subcategoryGetAll.map((cat) => (
+							<Option value={cat.id?.toString()} key={cat.id}>
+								{cat.name}
+							</Option>
+						)) ?? <Option value={"0"}>Subcategory</Option>}
 					</Select>
 				)}
-			/>
 
-			<ErrorMessage
-				errors={errors}
-				name={"subcategory_id"}
-				render={({ message }) => <p className="text-red-700 animate-shake">{message}</p>}
-			/>
+				<ErrorMessage
+					errors={errors}
+					name={"subcategory_id"}
+					render={({ message }) => <p className="text-red-700 animate-shake">{message}</p>}
+				/>
+			</div>
 		</Card>
 	);
 });

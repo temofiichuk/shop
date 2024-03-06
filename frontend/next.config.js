@@ -5,7 +5,7 @@ const nextConfig = {
 		SERVER_URL: process.env.SERVER_URL,
 	},
 	images: {
-		domains: ["www.google.com", "loremflickr.com"],
+		domains: ["www.google.com", "loremflickr.com", "picsum.photos"],
 	},
 };
 
