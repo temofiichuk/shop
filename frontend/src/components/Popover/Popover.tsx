@@ -1,16 +1,6 @@
 import styles from "./Popover.module.scss";
-import {
-	cloneElement,
-	FC,
-	HTMLAttributes,
-	memo,
-	PropsWithChildren,
-	ReactElement,
-	useMemo,
-	useState,
-} from "react";
+import { FC, HTMLAttributes, ReactElement, useState } from "react";
 import useOutsideEvent from "@/lib/hooks/useOutsideEvent";
-import { isEqual } from "lodash";
 
 interface IPopover {
 	children: [ReactElement, ReactElement];
@@ -32,13 +22,13 @@ const Popover: FC<IPopover> = ({ children, handlerProps, contentProps }) => {
 		<div ref={ref}>
 			<div
 				{...handlerProps}
-				className={`${styles.handler} ${handlerProps?.className}`}
+				className={`${styles.handler} ${handlerProps?.className ?? ""}`}
 				onClick={() => setIsOpen((prevState) => !prevState)}>
 				{children[0]}
 			</div>
 			<div
 				{...contentProps}
-				className={`${styles.wrapper} ${contentProps?.className}`}
+				className={`${styles.wrapper} ${contentProps?.className ?? ""}`}
 				aria-hidden={!isOpen}>
 				<div className={styles.content}>{children[1]}</div>
 			</div>

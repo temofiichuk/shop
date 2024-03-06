@@ -19,6 +19,15 @@ export const CREATE_PRODUCT = gql`
 	${productFragment}
 `;
 
+export const UPDATE_PRODUCT = gql`
+	mutation productUpdate($updateProductInput: UpdateProductInput!) {
+		productUpdate(updateProductInput: $updateProductInput) {
+			...productAttrs
+		}
+	}
+	${productFragment}
+`;
+
 export const USER_LOGIN = gql`
 	query authLogin($loginUserInput: LoginUserInput!) {
 		authLogin(loginInput: $loginUserInput) {

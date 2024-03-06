@@ -1,9 +1,9 @@
-import styles from "./AdminProductCatWidget.tsx.module.scss";
-import { ChangeEvent, FC, memo, useEffect } from "react";
+import styles from "./AdminProductCatWidget.module.scss";
+import { FC, memo, useEffect } from "react";
 import { Select, Option, Card } from "@material-tailwind/react";
 import { Controller, useFormContext } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { GET_CATEGORIES, GET_SUBCATEGORIES } from "@/lib/graphql/queries";
 import { Category, Subcategory } from "@/types/types";
 
@@ -38,7 +38,7 @@ const AdminProductCatWidget: FC<IAdminProductCatWidget> = memo(() => {
 	}, [cat_id]);
 
 	return (
-		<Card className="shadow-2xl p-4 flex flex-col h-fit gap-6">
+		<Card className={styles.wrapper}>
 			{category && (
 				<div>
 					<Controller

@@ -3,8 +3,8 @@ import styles from "./AdminProductForm.module.scss";
 
 import { Button, Card } from "@material-tailwind/react";
 import { useLayoutEffect, useMemo } from "react";
-import { useLazyQuery } from "@apollo/client";
-import { GET_PRODUCT } from "@/lib/graphql/queries";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { GET_PRODUCT, UPDATE_PRODUCT, CREATE_PRODUCT } from "@/lib/graphql/queries";
 import { Product } from "@/types/types";
 import { useSearchParams } from "next/navigation";
 import removeTypename from "remove-graphql-typename";
@@ -17,7 +17,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import productSchema from "@/components/AdminProductForm/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AdminProductDescWidget from "@/components/AdminProductDescWidget/AdminProductDescWidget";
-import AdminProductCatWidget from "@/components/AdminProductCatWidget.tsx/AdminProductCatWidget.tsx";
+import AdminProductCatWidget from "@/components/AdminProductCatWidget/AdminProductCatWidget";
 
 const initialValues = {
 	name: "",
@@ -35,6 +35,12 @@ const AdminProductForm = () => {
 		GET_PRODUCT
 	);
 
+	const [updateProduct, { data: updatedProduct, loading: isUpdateLoading, error: hasUpdateError }] =
+		useMutation(UPDATE_PRODUCT);
+
+	const [createProduct, { data: createdProduct, loading: isCreateLoading, error: hasCreateError }] =
+		useMutation(CREATE_PRODUCT);
+
 	const product = useMemo(() => data?.productGetByID, [data]);
 
 	const methods = useForm<Product>({
@@ -42,7 +48,14 @@ const AdminProductForm = () => {
 		defaultValues: product ?? initialValues,
 	});
 
-	const onSubmit: SubmitHandler<Product> = (data) => console.log(data);
+	const onSubmit: SubmitHandler<Product> = (data) => {
+		if (productID) {
+			data.id = +productID;
+			updateProduct({ variables: { updateProductInput: data } });
+			return;
+		}
+		createProduct({ variables: { createProductInput: data } });
+	};
 
 	useLayoutEffect(() => {
 		productID &&
@@ -55,21 +68,24 @@ const AdminProductForm = () => {
 	if ((productID && !product) || loading) return <Loading />;
 
 	return (
-		<Card shadow={false} className=" mt-6 flex flex-row relative bg-gray-50">
+		<Card shadow={false} className={styles.formWrapper}>
 			<FormProvider {...methods}>
 				<form className={styles.form} onSubmit={methods.handleSubmit(onSubmit)}>
-					<div className="flex flex-col lg:flex-row">
-						<div className="w-full mr-4">
+					<div className={styles.wrapper}>
+						<div className={styles.main}>
 							<AdminProductTextFieldsWidget />
 							<AdminProductDescWidget />
 						</div>
-						<div className="lg:w-full lg:sticky lg:top-10 lg:h-max lg:max-w-[20rem] grid gap-6">
-							<AdminProductCatWidget />
+						<div className={styles.aside}>
 							<AdminProductImageWidget />
+							<AdminProductCatWidget />
 						</div>
 					</div>
 
-					<Button type="submit"> SAFE </Button>
+					<Button type="submit" disabled={isUpdateLoading}>
+						{" "}
+						SAFE{" "}
+					</Button>
 				</form>
 			</FormProvider>
 		</Card>

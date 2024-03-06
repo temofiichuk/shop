@@ -1,80 +1,84 @@
 import { InputType, Field, Int } from "@nestjs/graphql";
 import {
-  IS_BOOLEAN,
-  IsBoolean,
-  IsLowercase,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Matches,
+	IS_BOOLEAN,
+	IsBoolean,
+	IsLowercase,
+	IsNumber,
+	IsOptional,
+	IsString,
+	Matches,
 } from "class-validator";
 
 @InputType()
 export class DescriptionInput {
-  @Field()
-  @IsString()
-  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
-  head: string;
+	@Field()
+	@IsString()
+	@Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
+	head: string;
 
-  @Field()
-  @IsString()
-  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
-  body: string;
+	@Field()
+	@IsString()
+	@Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
+	body: string;
 }
 
 @InputType()
 export class ImageInput {
-  @Field()
-  @IsString()
-  name: string;
+	@Field()
+	@IsString()
+	name: string;
 
-  @Field()
-  @IsString()
-  url: string;
+	@Field()
+	@IsString()
+	url: string;
 
-  @Field()
-  @IsBoolean()
-  is_main: boolean;
+	@Field()
+	@IsBoolean()
+	is_main: boolean;
 }
 
 @InputType()
 export class CreateProductInput {
-  @Field()
-  @IsString()
-  @Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
-  name: string;
+	@Field()
+	@IsString()
+	@Matches(/^\p{Lu}\p{Ll}*/u, { message: "Must be Sentence Case" })
+	name: string;
 
-  @Field(() => Int)
-  @IsNumber()
-  price: number;
+	@Field({ nullable: true })
+	@IsString()
+	slug?: string;
 
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsNumber()
-  combination_id?: number;
+	@Field(() => Int)
+	@IsNumber()
+	price: number;
 
-  @Field(() => [DescriptionInput], { nullable: true })
-  @IsOptional()
-  descriptions?: DescriptionInput[];
+	@Field(() => Int, { nullable: true })
+	@IsOptional()
+	@IsNumber()
+	combination_id?: number;
 
-  @Field(() => Int)
-  @IsNumber()
-  stock: number;
+	@Field(() => [DescriptionInput], { nullable: true })
+	@IsOptional()
+	descriptions?: DescriptionInput[];
 
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsNumber()
-  rating?: number;
+	@Field(() => Int)
+	@IsNumber()
+	stock: number;
 
-  @Field(() => [ImageInput], { nullable: true })
-  @IsOptional()
-  images?: ImageInput[];
+	@Field(() => Int, { nullable: true })
+	@IsOptional()
+	@IsNumber()
+	rating?: number;
 
-  @Field()
-  @IsNumber()
-  category_id: number;
+	@Field(() => [ImageInput], { nullable: true })
+	@IsOptional()
+	images?: ImageInput[];
 
-  @Field()
-  @IsNumber()
-  subcategory_id: number;
+	@Field()
+	@IsNumber()
+	category_id: number;
+
+	@Field()
+	@IsNumber()
+	subcategory_id: number;
 }

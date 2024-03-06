@@ -17,7 +17,6 @@ export default object().shape({
 		.required("Stock is required field")
 		.positive("Price must be a positive number")
 		.integer("Price must be a number"),
-	images: array(imageSchema),
 	descriptions: array(
 		object({
 			head: string()

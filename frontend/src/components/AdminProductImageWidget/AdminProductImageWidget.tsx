@@ -2,12 +2,13 @@
 import styles from "./AdminProductImageWidget.module.scss";
 
 import { ProductImage } from "@/types/types";
-import { Button, ButtonGroup, Card } from "@material-tailwind/react";
+import { Button, ButtonGroup } from "@material-tailwind/react";
 import { memo, useCallback, useMemo } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import AdminAddImageForm from "@/components/AdminAddImageForm/AdminAddImageForm";
 import CustomPopover from "@/components/Popover/Popover";
 import Image from "next/image";
+import { StarIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 const AdminProductImageWidget = memo(() => {
 	const { control, watch } = useFormContext();
@@ -43,7 +44,7 @@ const AdminProductImageWidget = memo(() => {
 
 	return (
 		<div className={styles.wrapper}>
-			<CustomPopover contentProps={{ className: styles.button }}>
+			<CustomPopover contentProps={{ className: styles.positionOfButtons }}>
 				<Image
 					priority={true}
 					width={700}
@@ -54,7 +55,7 @@ const AdminProductImageWidget = memo(() => {
 				/>
 				{main && (
 					<Button onClick={() => removeMain(mainIndex)}>
-						<span>Delete</span>
+						<TrashIcon className={styles.button} />
 					</Button>
 				)}
 			</CustomPopover>
@@ -63,7 +64,9 @@ const AdminProductImageWidget = memo(() => {
 					{images.map((img: ProductImage, index: number) => {
 						if (img.is_main) return;
 						return (
-							<CustomPopover key={`image.${index}`} contentProps={{ className: styles.button }}>
+							<CustomPopover
+								key={`image.${img.url}`}
+								contentProps={{ className: styles.positionOfButtons }}>
 								<Image
 									priority={true}
 									width={100}
@@ -74,8 +77,12 @@ const AdminProductImageWidget = memo(() => {
 								/>
 
 								<ButtonGroup size="sm">
-									<Button onClick={() => makeMain(index, img)}>Make Main</Button>
-									<Button onClick={() => remove(index)}>Delete</Button>
+									<Button onClick={() => makeMain(index, img)}>
+										<StarIcon className={styles.button} />
+									</Button>
+									<Button onClick={() => remove(index)}>
+										<TrashIcon className={styles.button} />
+									</Button>
 								</ButtonGroup>
 							</CustomPopover>
 						);

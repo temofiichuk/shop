@@ -243,6 +243,7 @@ input UpdateAdminInput {
 
 input CreateProductInput {
     name: String!
+    slug: String
     price: Int!
     combination_id: Int
     descriptions: [DescriptionInput!]
@@ -266,6 +267,7 @@ input ImageInput {
 
 input UpdateProductInput {
     name: String
+    slug: String
     price: Int
     combination_id: Int
     stock: Int
