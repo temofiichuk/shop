@@ -1,5 +1,5 @@
 import styles from "./AdminProductCatWidget.module.scss";
-import { FC, memo, useEffect } from "react";
+import { FC, memo, useEffect, useMemo } from "react";
 import { Select, Option, Card } from "@material-tailwind/react";
 import { Controller, useFormContext } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
@@ -63,7 +63,7 @@ const AdminProductCatWidget: FC<IAdminProductCatWidget> = memo(() => {
 				</div>
 			)}
 			<div>
-				{subcategory && (
+				{subcategory ? (
 					<Select
 						{...register("subcategory_id")}
 						onChange={(value) => setValue("subcategory_id", value ?? "")}
@@ -74,7 +74,11 @@ const AdminProductCatWidget: FC<IAdminProductCatWidget> = memo(() => {
 							<Option value={cat.id?.toString()} key={cat.id}>
 								{cat.name}
 							</Option>
-						)) ?? <Option value={"0"}>Subcategory</Option>}
+						))}
+					</Select>
+				) : (
+					<Select label="Subcategory" disabled>
+						<Option>{""}</Option>
 					</Select>
 				)}
 

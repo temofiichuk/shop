@@ -4,27 +4,29 @@ import { ReactNode } from "react";
 import ApolloProvider from "@/providers/ApolloProvider";
 import ReduxProvider from "@/providers/ReduxProvider";
 import Loading from "@/components/Loading/Loading";
+import Message from "@/components/Message/Message";
 
 export const metadata: Metadata = {
-  title: "Shop",
-  description: "Shop with admin dashboard",
+	title: "Shop",
+	description: "Shop with admin dashboard",
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
-  return (
-    <html lang="en">
-      <body suppressHydrationWarning={true}>
-        <ApolloProvider>
-          <ReduxProvider>
-            <div className="container m-auto min-h-screen">
-              <Loading />
-              {children}
-            </div>
-          </ReduxProvider>
-        </ApolloProvider>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body suppressHydrationWarning={true}>
+				<ApolloProvider>
+					<ReduxProvider>
+						<div className="container m-auto min-h-screen">
+							<Message />
+							<Loading />
+							{children}
+						</div>
+					</ReduxProvider>
+				</ApolloProvider>
+			</body>
+		</html>
+	);
 };
 
 export default RootLayout;
