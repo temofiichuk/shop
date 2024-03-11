@@ -1,8 +1,6 @@
 import { Prisma } from "@prisma/client";
 
 export const productRelativeFields: Prisma.ProductSelect = {
-  images: true,
-  descriptions: true,
-  category: true,
-  subcategory: true,
+	images: true,
+	descriptions: true,
 };

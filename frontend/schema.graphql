@@ -92,16 +92,17 @@ type Category {
     updated_at: DateTime!
 }
 
-type ProductDescriptionType {
+type ProductDescription {
     id: Int!
     head: String!
     body: String!
 }
 
-type ProductImageType {
+type ProductImage {
     id: Int!
     name: String!
     url: String!
+    is_main: Boolean!
 }
 
 type Product {
@@ -109,18 +110,14 @@ type Product {
     name: String!
     price: Float!
     slug: String!
-    descriptions: [ProductDescriptionType!]!
+    descriptions: [ProductDescription!]!
     category: Category!
     category_id: Int!
     subcategory: Subcategory!
     subcategory_id: Int!
-    images: [ProductImageType!]!
+    images: [ProductImage!]!
     quantity: Float!
     stock: Float!
-}
-
-type ProductCount {
-    value: Float!
 }
 
 type Review {
@@ -158,15 +155,17 @@ type Query {
     adminGetAll: [Admin!]!
     adminGetAvatar: AdminAvatar!
     productBySearch(pattern: String!): [Product!]!
+    productGetByID(id: Float!): Product!
     productGetMany(skip: Float!, take: Float!): [Product!]!
-    productCount: ProductCount!
+    productCount: Int!
+    productSetMainImage(product_id: Float!, image_id: Float!): Product!
     reviewGetAllByStatus(status: String!): [Review!]!
     reviewFindOne(pattern: String!): Review!
     reviewGetByProduct(id: Float!): Review!
     reviewGetByUser: Review!
     categoryGetAll: [Category!]!
     categoryFindOne(name: String!): Category!
-    subcategoryGetAll: [Subcategory!]!
+    subcategoryGetAll(id: Float!): [Subcategory!]!
     subcategoryFindOne(name: String!): Subcategory!
     attributeGetAll: [Attribute!]!
 }
@@ -244,6 +243,7 @@ input UpdateAdminInput {
 
 input CreateProductInput {
     name: String!
+    slug: String
     price: Int!
     combination_id: Int
     descriptions: [DescriptionInput!]
@@ -262,10 +262,12 @@ input DescriptionInput {
 input ImageInput {
     name: String!
     url: String!
+    is_main: Boolean!
 }
 
 input UpdateProductInput {
     name: String
+    slug: String
     price: Int
     combination_id: Int
     stock: Int
@@ -324,4 +326,9 @@ input UpdateAttributeInput {
     name: String
     id: Int!
     values: [UpdateAttributeValueInput!]!
+}
+
+input UpdateAttributeValueInput {
+    value: String
+    id: Int
 }

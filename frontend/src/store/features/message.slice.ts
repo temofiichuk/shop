@@ -1,36 +1,42 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-enum EnumMessage {
-  FAILURE = "FAILURE",
-  SUCCESS = "SUCCESS",
-  INFORMATION = "INFORMATION",
+export enum EnumMessage {
+	FAILURE = "FAILURE",
+	SUCCESS = "SUCCESS",
+	INFORMATION = "INFORMATION",
 }
 
 type MessageType = {
-  value: string;
-  type?: EnumMessage;
-  reset?: boolean;
+	value: string;
+	type: EnumMessage;
+	reset?: boolean;
+	timer?: number;
 };
 
-const initialState: MessageType = { value: "" };
+const initialState: MessageType = {
+	value: "",
+	reset: false,
+	type: EnumMessage.INFORMATION,
+	timer: 5000,
+};
 
 const messageSlice = createSlice({
-  name: "message",
-  initialState,
-  reducers: {
-    setMessage: (state, { payload }: PayloadAction<MessageType>) => {
-      state.value = payload.value;
-      state.type = payload.type ?? undefined;
-
-      if (payload.reset) {
-        const key = setTimeout(() => {
-          state = initialState;
-          clearTimeout(key);
-        }, 10000);
-      }
-    },
-    resetMessage: (state) => (state = initialState),
-  },
+	name: "message",
+	initialState,
+	reducers: {
+		setMessage: (state, { payload }: PayloadAction<MessageType>) => {
+			state.value = payload.value;
+			state.type = payload.type;
+			if (payload.reset) state.reset = payload.reset;
+			if (payload.timer) state.timer = payload.timer;
+		},
+		resetMessage: (state) => {
+			state.value = initialState.value;
+			state.type = initialState.type;
+			state.reset = initialState.reset;
+			state.timer = initialState.timer;
+		},
+	},
 });
 
 export const { setMessage, resetMessage } = messageSlice.actions;

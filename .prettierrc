@@ -7,9 +7,9 @@
   "arrowParens": "always",
   "semi": true,
   "trailingComma": "es5",
-  "useTabs": false,
+  "useTabs": true,
   "bracketSameLine": true,
   "singleAttributePerLine": false,
   "quoteProps": "consistent",
-  "printWidth": 80
+  "printWidth": 100
 }

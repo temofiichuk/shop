@@ -2,8 +2,10 @@ import { from, HttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 import { getAccessToken } from "@/services/auth/auth.helper";
-// import fetchWithReauthorization from "@/lib/apollo/appolo.reathorization";
 import errorLink from "@/lib/apollo/apollo.error-link";
+import { removeTypenameFromVariables } from "@apollo/client/link/remove-typename";
+
+const removeTypenameLink = removeTypenameFromVariables();
 
 const httpLink = new HttpLink({
   uri: process.env.SERVER_URL,
@@ -20,4 +22,4 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-export default from([authLink, errorLink, httpLink]);
+export default from([authLink, removeTypenameLink, errorLink, httpLink]);

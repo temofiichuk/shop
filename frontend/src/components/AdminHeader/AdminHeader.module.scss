@@ -1,23 +1,23 @@
 .header {
-  @apply mx-auto max-w-screen-xl p-2 lg:rounded-full lg:pl-6;
+	@apply mx-auto p-2 lg:rounded-full lg:pl-6;
 }
 
 .nav {
-  @apply relative mx-auto flex items-center justify-between text-blue-gray-900;
+	@apply relative mx-auto flex items-center justify-between text-blue-gray-900;
 }
 
 .navDesktop {
-  @apply hidden lg:block;
+	@apply hidden lg:block;
 }
 
 .icon {
-  @apply w-6 h-6;
+	@apply w-6 h-6;
 }
 
 .button {
-  @apply mr-auto ml-2 lg:hidden;
+	@apply mr-auto ml-2 lg:hidden;
 }
 
 .collapse {
-  @apply overflow-scroll;
+	@apply overflow-scroll;
 }

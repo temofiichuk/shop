@@ -1,0 +1,22 @@
+.widget {
+	@apply mt-6;
+}
+
+.title {
+	@apply text-center mb-2;
+}
+.wrapper {
+	@apply grid gap-6;
+}
+
+.card {
+	@apply grid gap-6 p-4 shadow-2xl;
+}
+
+.description {
+	@apply flex items-center gap-6;
+}
+
+.removeButton {
+	@apply h-10;
+}
