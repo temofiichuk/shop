@@ -5,6 +5,7 @@ import { toRegularCase } from "@/lib/functions";
 import { memo, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import InputError from "@/components/InputError/InputError";
 
 const simpleFields = ["name", "price", "slug", "stock"];
 
@@ -30,11 +31,7 @@ const AdminProductTextFieldsWidget = memo(() => {
 						placeholder={toRegularCase(key)}
 						className="input"
 					/>
-					<ErrorMessage
-						errors={errors}
-						name={key}
-						render={({ message }) => <p className="text-red-700 animate-shake">{message}</p>}
-					/>
+					<InputError errors={errors} name={key} />
 				</div>
 			))}
 		</Card>

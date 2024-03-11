@@ -4,12 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-	@apply h-full bg-gray-50;
-}
+@layer base {
+	html {
+		@apply h-full bg-gray-50;
+	}
 
-body {
-	@apply h-full;
+	body {
+		@apply h-full;
+	}
 }
 
 .icon {
@@ -18,5 +20,4 @@ body {
 
 .input {
 	@apply shadow-none;
-	//border-0 border-b-2;
 }

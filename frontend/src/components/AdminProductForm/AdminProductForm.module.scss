@@ -1,5 +1,5 @@
 .form {
-	@apply grid gap-6 w-full;
+	@apply grid gap-6 w-full transition-all duration-1000;
 }
 
 .formWrapper {
@@ -11,7 +11,7 @@
 }
 
 .aside {
-	@apply lg:w-full lg:sticky lg:top-10 lg:h-max lg:max-w-[20rem] grid gap-6;
+	@apply mt-6 lg:mt-0 lg:w-full lg:sticky lg:top-10 lg:h-max lg:max-w-[20rem] grid gap-6;
 }
 
 .main {

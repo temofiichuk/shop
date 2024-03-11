@@ -1,66 +1,61 @@
 import styles from "./AdminProductDescWidget.module.scss";
-import { FC } from "react";
+
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Button, Card, Input, Textarea, Typography } from "@material-tailwind/react";
-import { ErrorMessage } from "@hookform/error-message";
-
-interface IAdminProductDescWidget {}
+import InputError from "@/components/InputError/InputError";
+import { TrashIcon } from "@heroicons/react/24/solid";
+import { useCallback } from "react";
 
 const initialValue = {
 	head: "",
 	body: "",
 };
 
-const AdminProductDescWidget: FC<IAdminProductDescWidget> = (props) => {
+const AdminProductDescWidget = () => {
 	const {
 		register,
 		control,
-		getValues,
 		formState: { errors },
 	} = useFormContext();
-	const { fields, remove, insert, append } = useFieldArray({
+	const { fields, remove, append } = useFieldArray({
 		control,
 		name: "descriptions",
 	});
 
+	const removeItem = useCallback((index: number) => remove(index), []);
+
 	return (
-		<Card color="transparent" shadow={false} className="mt-6">
+		<Card color="transparent" shadow={false} className={styles.widget}>
 			<div className={styles.wrapper}>
-				<Typography className="mb-2"> Descriptions :</Typography>
-				<div className="grid gap-6">
-					{fields.map((field, index: number) => {
-						return (
-							<Card key={`${field.id}.${index}`} className="grid gap-6 p-4 shadow-2xl">
-								<div>
-									<div className="flex items-center gap-6">
-										<Input
-											{...register(`descriptions.${index}.head`)}
-											crossOrigin="false"
-											label="Head"
-											placeholder="Head"
-											className="shadow-none"
-										/>
-										<Button className="h-10" onClick={() => remove(index)}>
-											X
-										</Button>
-									</div>
-									<ErrorMessage
-										errors={errors}
-										name={`descriptions.${index}.head`}
-										render={({ message }) => <p className="text-red-700 animate-shake">{message}</p>}
+				<Typography className={styles.title}> Descriptions </Typography>
+				<div className={styles.wrapper}>
+					{fields.map((field, index: number) => (
+						<Card key={field.id} className={styles.card}>
+							<div>
+								<div className={styles.description}>
+									<Input
+										{...register(`descriptions.${index}.head`)}
+										crossOrigin="false"
+										label="Head"
+										placeholder="Head"
+										className="input"
 									/>
+									<Button className={styles.removeButton} onClick={() => removeItem(index)}>
+										<TrashIcon width={20} />
+									</Button>
 								</div>
-								<div>
-									<Textarea label="Body" className="shadow-none" {...register(`descriptions.${index}.body`)} />
-									<ErrorMessage
-										errors={errors}
-										name={`descriptions.${index}.body`}
-										render={({ message }) => <p className="text-red-700 animate-shake">{message}</p>}
-									/>
-								</div>
-							</Card>
-						);
-					})}
+								<InputError errors={errors} name={`descriptions.${index}.head`} />
+							</div>
+							<div>
+								<Textarea
+									label="Body"
+									className="input"
+									{...register(`descriptions.${index}.body`)}
+								/>
+								<InputError errors={errors} name={`descriptions.${index}.body`} />
+							</div>
+						</Card>
+					))}
 					<Button onClick={() => append(initialValue)}>Add Desc</Button>
 				</div>
 			</div>

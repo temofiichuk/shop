@@ -1,48 +1,52 @@
 import styles from "./AdminAddImageForm.module.scss";
-import { memo, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import useOutsideEvent from "@/lib/hooks/useOutsideEvent";
-import { SubmitHandler, useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { ProductImage } from "@/types/types";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { imageSchema } from "@/components/AdminProductForm/schema";
+import imageSchema from "@/components/AdminAddImageForm/schema";
 import { Button, Card, Collapse, Input } from "@material-tailwind/react";
 import { toRegularCase } from "@/lib/functions";
-import { ErrorMessage } from "@hookform/error-message";
+import InputError from "@/components/InputError/InputError";
 
 const initialValues: Pick<ProductImage, "name" | "url"> = {
 	name: "",
 	url: "",
 };
 
-const AdminAddImageForm = memo(({ isMain }: { isMain: boolean }) => {
+interface IAdminAddImageForm {
+	isMain: boolean;
+	append: (data: ProductImage) => void;
+}
+
+const AdminAddImageForm: FC<IAdminAddImageForm> = ({ isMain, append }) => {
 	const [openAddForm, setOpenAddForm] = useState(false);
 	const ref = useOutsideEvent<HTMLDivElement, () => void>("click", () => setOpenAddForm(false));
 
 	const {
 		register,
 		handleSubmit,
+		reset,
 		formState: { defaultValues, errors },
 	} = useForm<ProductImage>({
 		resolver: yupResolver(imageSchema),
 		defaultValues: initialValues,
 	});
 
-	const { control } = useFormContext();
+	const onSubmit: SubmitHandler<ProductImage> = useCallback(
+		(data) => {
+			append({ ...data, is_main: !isMain });
+			setOpenAddForm(false);
+			reset();
+		},
+		[isMain]
+	);
 
-	const { append } = useFieldArray({
-		control,
-		name: "images",
-	});
-
-	const onSubmit: SubmitHandler<ProductImage> = useCallback((data) => append({ ...data, is_main: !isMain }), [isMain]);
-
-	const fields = useMemo(() => Object.keys({ ...defaultValues }), [defaultValues]);
-
-	const FormCollapse = memo(() => {
-		return (
+	const form = useMemo(
+		() => (
 			<Card className={styles.form}>
-				{fields.map((key) => (
-					<div key={key}>
+				{Object.keys({ ...defaultValues }).map((key) => (
+					<div key={`add_image.${key}`}>
 						<Input
 							crossOrigin="false"
 							variant="standard"
@@ -51,22 +55,14 @@ const AdminAddImageForm = memo(({ isMain }: { isMain: boolean }) => {
 							label={toRegularCase(key)}
 							{...register(key as keyof ProductImage)}
 						/>
-						<ErrorMessage
-							errors={errors}
-							name={key}
-							render={({ message }) => <span className="animate-shake">{message}</span>}
-						/>
+						<InputError errors={errors} name={key} />
 					</div>
 				))}
 				<Button onClick={handleSubmit(onSubmit)}> ADD </Button>
-				<Button onClick={() => append({ name: "Some Name", url: "/marguerite.jpg", is_main: !isMain })}>
-					Img (test)
-				</Button>
 			</Card>
-		);
-	});
-
-	FormCollapse.displayName = "FormCollapse";
+		),
+		[errors, isMain]
+	);
 
 	return (
 		<div ref={ref}>
@@ -74,11 +70,11 @@ const AdminAddImageForm = memo(({ isMain }: { isMain: boolean }) => {
 				Add Image
 			</Button>
 			<Collapse open={openAddForm} className={styles.collapse}>
-				<FormCollapse />
+				{form}
 			</Collapse>
 		</div>
 	);
-});
+};
 
 AdminAddImageForm.displayName = "AdminAddImageForm";
 

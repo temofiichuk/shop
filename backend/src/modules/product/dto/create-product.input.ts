@@ -45,6 +45,7 @@ export class CreateProductInput {
 	name: string;
 
 	@Field({ nullable: true })
+	@IsOptional()
 	@IsString()
 	slug?: string;
 

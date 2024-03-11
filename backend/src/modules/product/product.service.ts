@@ -28,31 +28,43 @@ export class ProductService {
 			if (!mainImage) images[0].is_main = true;
 		}
 
-		return this.prisma.product.create({
-			data: {
-				...fields,
-				slug: slugify(fields.name, { lower: true }),
-				images: {
-					createMany: {
-						data: images.map(({ ...fields }) => ({ ...fields })),
+		return this.prisma.$transaction(async (prisma) => {
+			const product = await prisma.product.create({
+				data: {
+					...fields,
+					slug: slugify(fields.name, { lower: true }),
+					images: {
+						createMany: {
+							data: images.map(({ ...fields }) => ({ ...fields })),
+						},
+					},
+					admin: {
+						connect: { id: admin_id },
+					},
+					descriptions: {
+						createMany: {
+							data: descriptions.map(({ ...fields }) => ({ ...fields })),
+						},
+					},
+					category: {
+						connect: { id: category_id },
+					},
+					subcategory: {
+						connect: { id: subcategory_id },
 					},
 				},
-				admin: {
-					connect: { id: admin_id },
-				},
-				descriptions: {
-					createMany: {
-						data: descriptions.map(({ ...fields }) => ({ ...fields })),
-					},
-				},
-				category: {
-					connect: { id: category_id },
-				},
-				subcategory: {
-					connect: { id: subcategory_id },
-				},
-			},
-			include: productRelativeFields,
+				include: productRelativeFields,
+			});
+
+			images.forEach(({ url, name, is_main }) => {
+				prisma.image.upsert({
+					where: { url },
+					update: { is_main },
+					create: { url, name, is_main, product: { connect: { id: product.id } } },
+					select: { id: true },
+				});
+			});
+			return product;
 		});
 	}
 
@@ -60,47 +72,49 @@ export class ProductService {
 		admin_id: number,
 		{ id, descriptions, images, ...updateFields }: UpdateProductInput
 	) {
-		const descIds = await Promise.all(
-			descriptions.map(({ id: desc_id = -1, head, body }) => {
-				return this.prisma.description.upsert({
-					where: { id: desc_id },
-					update: { head, body },
-					create: { head, body, product: { connect: { id } } },
-					select: { id: true },
-				});
-			})
-		).then((data) => data.map((obj) => obj.id));
+		return this.prisma.$transaction(async (prisma) => {
+			const descIds = await Promise.all(
+				descriptions.map(({ id: desc_id = -1, head, body }) => {
+					return prisma.description.upsert({
+						where: { id: desc_id },
+						update: { head, body },
+						create: { head, body, product: { connect: { id } } },
+						select: { id: true },
+					});
+				})
+			).then((data) => data.map((obj) => obj.id));
 
-		const imgIds = await Promise.all(
-			images.map(({ url, name, is_main }) => {
-				return this.prisma.image.upsert({
-					where: { url },
-					update: { is_main },
-					create: { url, name, is_main, product: { connect: { id } } },
-					select: { id: true },
-				});
-			})
-		).then((data) => data.map((obj) => obj.id));
+			const imgIds = await Promise.all(
+				images.map(({ url, name, is_main }) => {
+					return prisma.image.upsert({
+						where: { url },
+						update: { is_main },
+						create: { url, name, is_main, product: { connect: { id } } },
+						select: { id: true },
+					});
+				})
+			).then((data) => data.map((obj) => obj.id));
 
-		return this.prisma.product.update({
-			where: { id },
-			data: {
-				admin_id,
-				...updateFields,
-				images: {
-					deleteMany: {
-						id: { notIn: imgIds },
-						product_id: id,
+			return prisma.product.update({
+				where: { id },
+				data: {
+					admin_id,
+					...updateFields,
+					images: {
+						deleteMany: {
+							id: { notIn: imgIds },
+							product_id: id,
+						},
+					},
+					descriptions: {
+						deleteMany: {
+							id: { notIn: descIds },
+							product_id: id,
+						},
 					},
 				},
-				descriptions: {
-					deleteMany: {
-						id: { notIn: descIds },
-						product_id: id,
-					},
-				},
-			},
-			include: productRelativeFields,
+				include: productRelativeFields,
+			});
 		});
 	}
 

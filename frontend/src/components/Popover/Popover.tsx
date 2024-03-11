@@ -2,7 +2,7 @@ import styles from "./Popover.module.scss";
 import { FC, HTMLAttributes, ReactElement, useState } from "react";
 import useOutsideEvent from "@/lib/hooks/useOutsideEvent";
 
-interface IPopover {
+interface IPopover extends HTMLAttributes<HTMLElement> {
 	children: [ReactElement, ReactElement];
 	contentProps?: HTMLAttributes<HTMLElement>;
 	handlerProps?: HTMLAttributes<HTMLElement>;
@@ -14,12 +14,12 @@ interface IPopover {
  * This component expects exactly two children, where the first child serves as the handler
  * and the second child serves as the content.
  */
-const Popover: FC<IPopover> = ({ children, handlerProps, contentProps }) => {
+const Popover: FC<IPopover> = ({ children, handlerProps, contentProps, ...props }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const ref = useOutsideEvent<HTMLDivElement, () => void>("click", () => setIsOpen(false));
 
 	return (
-		<div ref={ref}>
+		<div ref={ref} {...props}>
 			<div
 				{...handlerProps}
 				className={`${styles.handler} ${handlerProps?.className ?? ""}`}

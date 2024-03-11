@@ -2,7 +2,7 @@
 import styles from "./AdminProductForm.module.scss";
 
 import { Button, Card } from "@material-tailwind/react";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_PRODUCT, UPDATE_PRODUCT, CREATE_PRODUCT } from "@/lib/graphql/queries";
 import { Product } from "@/types/types";
@@ -18,10 +18,8 @@ import productSchema from "@/components/AdminProductForm/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AdminProductDescWidget from "@/components/AdminProductDescWidget/AdminProductDescWidget";
 import AdminProductCatWidget from "@/components/AdminProductCatWidget/AdminProductCatWidget";
-import { ErrorMessage } from "@hookform/error-message";
 import { useAppDispatch } from "@/store/hooks";
 import { EnumMessage, setMessage } from "@/store/features/message.slice";
-import { isEqual } from "lodash";
 
 const initialValues = {
 	name: "",
@@ -34,17 +32,17 @@ const initialValues = {
 };
 
 const AdminProductForm = () => {
-	const productID = useSearchParams().get("product_id");
+	const searchParams = useSearchParams();
+	const productID = searchParams.get("product_id");
+
 	const [fetchProduct, { data, loading, error }] = useLazyQuery<{ productGetByID: Product }>(
 		GET_PRODUCT
 	);
-	const [updateProduct, { data: updatedProduct, loading: isUpdateLoading, error: hasUpdateError }] =
-		useMutation(UPDATE_PRODUCT);
-	const [createProduct, { data: createdProduct, loading: isCreateLoading, error: hasCreateError }] =
-		useMutation(CREATE_PRODUCT);
+	const [updateProduct, { data: updatedProduct, loading: isLoadingUpdate, error: errorsUpdate }] =
+		useMutation<{ productUpdate: Product }>(UPDATE_PRODUCT);
+	const [createProduct, { data: createdProduct, loading: isLoadingCreate, error: errorsCreate }] =
+		useMutation<{ productCreate: Product }>(CREATE_PRODUCT);
 	const dispatch = useAppDispatch();
-
-	const [isChanged, setIsChanged] = useState(false);
 
 	const product = useMemo(() => data?.productGetByID, [data]);
 
@@ -62,16 +60,10 @@ const AdminProductForm = () => {
 		createProduct({ variables: { createProductInput: data } });
 	};
 
-	useEffect(() => {
-		if (!isChanged && !isEqual(product ?? initialValues, methods.getValues())) {
-			setIsChanged(true);
-		}
-	}, [isChanged]);
-
 	// Handling Server Errors
 	useEffect(() => {
-		if (!hasUpdateError && !hasCreateError) return;
-		const generalError = (hasUpdateError ?? hasCreateError)?.graphQLErrors?.[0];
+		if (!errorsUpdate && !errorsCreate) return;
+		const generalError = (errorsUpdate ?? errorsCreate)?.graphQLErrors?.[0];
 
 		const validationErrors = generalError?.extensions?.validation_errors;
 
@@ -79,20 +71,32 @@ const AdminProductForm = () => {
 			Object.entries(validationErrors).forEach(([key, message]) =>
 				methods.setError(key as keyof Product, { message })
 			);
+			return;
 		}
 
-		if (generalError) methods.setError("root", { message: generalError.message });
-	}, [hasCreateError, hasUpdateError]);
+		if (generalError) {
+			dispatch(
+				setMessage({
+					value: `Product wasn't ${createdProduct ? "created" : "updated"}: ${
+						generalError.message
+					}`,
+					type: EnumMessage.FAILURE,
+					reset: true,
+					timer: 10000,
+				})
+			);
+		}
+	}, [errorsCreate, errorsUpdate]);
 
 	// Handling Success
 	useEffect(() => {
-		if (!createdProduct && !updatedProduct) return;
+		const data = createdProduct?.productCreate ?? updatedProduct?.productUpdate;
+		if (!data) return;
 		dispatch(
 			setMessage({
 				value: `Product was ${createdProduct ? "created" : "updated"}`,
 				type: EnumMessage.SUCCESS,
 				reset: true,
-				timer: 5000,
 			})
 		);
 	}, [createdProduct, updatedProduct]);
@@ -112,23 +116,17 @@ const AdminProductForm = () => {
 		<Card shadow={false} className={styles.formWrapper}>
 			<FormProvider {...methods}>
 				<form className={styles.form} onSubmit={methods.handleSubmit(onSubmit)}>
-					<ErrorMessage
-						name="root"
-						render={({ message }) => <p className="text-red-700 animate-shake">{message}</p>}
-					/>
 					<div className={styles.wrapper}>
 						<div className={styles.main}>
 							<AdminProductTextFieldsWidget />
 							<AdminProductDescWidget />
 						</div>
 						<div className={styles.aside}>
-							{isChanged && (
-								<Button type="submit" disabled={isUpdateLoading || isCreateLoading}>
-									SAFE
-								</Button>
-							)}
 							<AdminProductImageWidget />
 							<AdminProductCatWidget />
+							<Button type="submit" disabled={isLoadingUpdate || isLoadingCreate}>
+								SAFE
+							</Button>
 						</div>
 					</div>
 				</form>

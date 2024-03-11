@@ -1,11 +1,5 @@
 import { array, number, object, string } from "yup";
-
-export const imageSchema = object({
-	name: string().required("Image name is required field"),
-	url: string()
-		.required("Url is required field")
-		.matches(/\.(jpe?g|png|webp)$/i, "Invalid format"),
-});
+import imageSchema from "@/components/AdminAddImageForm/schema";
 
 export default object().shape({
 	name: string().required("Name is required field").min(5).max(50),
@@ -26,6 +20,7 @@ export default object().shape({
 			body: string().required("Body is required field"),
 		})
 	),
+	images: array().of(imageSchema).min(1, "There must be at least one image"),
 	category_id: number()
 		.positive("Category is required field")
 		.required("Category is required field"),

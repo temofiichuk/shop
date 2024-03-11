@@ -16,7 +16,7 @@ export type User = {
 };
 
 export type Category = {
-	id?: number;
+	id: number;
 	name: string;
 	slug?: string;
 	created_at?: Date;
@@ -26,7 +26,7 @@ export type Category = {
 };
 
 export type Subcategory = {
-	id?: number;
+	id: number;
 	name: string;
 	slug?: string;
 	created_at?: Date;
