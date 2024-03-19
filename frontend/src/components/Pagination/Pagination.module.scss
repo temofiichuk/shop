@@ -1,19 +1,27 @@
 .pagination {
-  @apply flex items-center gap-4 m-4 justify-center;
+	@apply flex items-center gap-4 m-4 justify-center;
 }
 
 .link {
-  @apply relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0;
+	@apply relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0;
 }
 
 .current {
-  @apply z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
+	@apply z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
 }
 
 .button {
-  @apply flex items-center gap-2;
+	@apply flex items-center gap-2;
 }
 
 .iconButton {
-  @apply transition-none;
+	@apply transition-none;
+}
+
+.buttons {
+	@apply hidden md:block;
+}
+
+.input {
+	@apply md:hidden;
 }

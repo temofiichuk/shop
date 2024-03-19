@@ -61,6 +61,10 @@ export type Product = {
 	combinations?: Combination[];
 };
 
+export type ProductWithID = {
+	id: number;
+} & Product;
+
 export type Product2 = {
 	name: string;
 	price: number;

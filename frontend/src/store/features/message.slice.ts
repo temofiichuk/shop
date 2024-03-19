@@ -15,7 +15,7 @@ type MessageType = {
 
 const initialState: MessageType = {
 	value: "",
-	reset: false,
+	reset: true,
 	type: EnumMessage.INFORMATION,
 	timer: 5000,
 };

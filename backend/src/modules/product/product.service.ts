@@ -33,11 +33,6 @@ export class ProductService {
 				data: {
 					...fields,
 					slug: slugify(fields.name, { lower: true }),
-					images: {
-						createMany: {
-							data: images.map(({ ...fields }) => ({ ...fields })),
-						},
-					},
 					admin: {
 						connect: { id: admin_id },
 					},
@@ -59,7 +54,7 @@ export class ProductService {
 			images.forEach(({ url, name, is_main }) => {
 				prisma.image.upsert({
 					where: { url },
-					update: { is_main },
+					update: { is_main, name },
 					create: { url, name, is_main, product: { connect: { id: product.id } } },
 					select: { id: true },
 				});
@@ -123,6 +118,8 @@ export class ProductService {
 	}
 
 	async findManyBySearch(pattern: string, max: number = 10) {
+		const daley = new Promise((resolve) => setTimeout(resolve, 2000));
+		await daley;
 		return this.prisma.product.findMany({
 			where: {
 				OR: [
