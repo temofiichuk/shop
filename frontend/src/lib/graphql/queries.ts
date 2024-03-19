@@ -65,6 +65,7 @@ export const GET_CURRENT_ADMIN_AVATAR = gql`
 export const GET_PRODUCTS = gql`
 	query getProducts($skip: Float!, $take: Float!) {
 		productGetMany(skip: $skip, take: $take) {
+			id
 			...productAttrs
 		}
 	}
@@ -80,9 +81,26 @@ export const GET_PRODUCT = gql`
 	${productFragment}
 `;
 
+export const SEARCH_PRODUCTS = gql`
+	query searchProduct($pattern: String!) {
+		productBySearch(pattern: $pattern) {
+			id
+			name
+		}
+	}
+`;
+
 export const GET_PRODUCTS_COUNT = gql`
 	query {
 		productCount
+	}
+`;
+
+export const REMOVE_PRODUCT = gql`
+	mutation productRemove($id: Float!) {
+		productRemove(id: $id) {
+			name
+		}
 	}
 `;
 

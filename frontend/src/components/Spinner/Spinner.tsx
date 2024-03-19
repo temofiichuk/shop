@@ -1,12 +1,12 @@
 import styles from "./Spinner.module.scss";
-import { RiLoader5Fill } from "react-icons/ri";
+import { ArrowPathRoundedSquareIcon } from "@heroicons/react/24/solid";
 
-const Spinner = () => {
-  return (
-    <div className={`animate-spinner flex justify-center items-center w-full`}>
-      <RiLoader5Fill className="w-full h-full" />
-    </div>
-  );
+interface ISpinner {
+	width?: number;
+}
+
+const Spinner = ({ width }: ISpinner) => {
+	return <ArrowPathRoundedSquareIcon width={width ?? 20} className="animate-spinner h-auto" />;
 };
 
 export default Spinner;
