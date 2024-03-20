@@ -86,7 +86,7 @@ type Category {
   id: Int!
   name: String!
   slug: String!
-  subcategories: Subcategory!
+  subcategories: [Subcategory!]!
   products: [Product!]!
   created_at: DateTime!
   updated_at: DateTime!

@@ -17,10 +17,10 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
 			<body suppressHydrationWarning={true}>
 				<ApolloProvider>
 					<ReduxProvider>
-						<div className="max-w-screen-2xl m-auto min-h-screen overflow-hidden p-6 pb-20 2xl:overflow-visible 2xl:px-0">
+						<div className="w-screen h-screen">
 							<Message />
 							<Loading />
-							{children}
+							<section>{children}</section>
 						</div>
 					</ReduxProvider>
 				</ApolloProvider>

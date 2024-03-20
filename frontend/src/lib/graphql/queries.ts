@@ -110,6 +110,11 @@ export const GET_CATEGORIES = gql`
 			id
 			name
 			slug
+			subcategories {
+				id
+				name
+				slug
+			}
 		}
 	}
 `;

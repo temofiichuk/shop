@@ -45,10 +45,6 @@ const AdminProductCatWidget = () => {
 		categoryGetAll: Category[];
 	}>(GET_CATEGORIES);
 
-	const [fetchSubcategories, { data: subcategories }] = useLazyQuery<{
-		subcategoryGetAll: Subcategory[];
-	}>(GET_SUBCATEGORIES);
-
 	const catID = useWatch({ name: "category_id" });
 
 	const categoriesChildren = useMemo(() => {
@@ -56,22 +52,20 @@ const AdminProductCatWidget = () => {
 	}, [categories]);
 
 	const subcategoriesChildren = useMemo(() => {
-		return subcategories?.subcategoryGetAll.map(mapCallback);
-	}, [subcategories]);
-
-	useEffect(() => {
-		if (catID !== 0) fetchSubcategories({ variables: { id: +catID } });
+		if (catID === 0) return;
+		const currentCat = categories?.categoryGetAll.find((cat) => cat.id === +catID);
+		return currentCat?.subcategories?.map(mapCallback);
 	}, [catID]);
 
 	return (
 		<Card className={styles.wrapper}>
-			{categories && (
+			{categoriesChildren && (
 				<ControlledSelect name="category_id" label="Category">
 					{categoriesChildren}
 				</ControlledSelect>
 			)}
 
-			{subcategories && (
+			{subcategoriesChildren && (
 				<ControlledSelect name="subcategory_id" label="Subcategory">
 					{subcategoriesChildren}
 				</ControlledSelect>
