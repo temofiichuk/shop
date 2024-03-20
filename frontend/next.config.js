@@ -7,6 +7,9 @@ const nextConfig = {
 	images: {
 		domains: ["www.google.com", "loremflickr.com", "picsum.photos"],
 	},
+	async redirects() {
+		return [{ source: "/", destination: "/shop", permanent: true }];
+	},
 };
 
 module.exports = nextConfig;

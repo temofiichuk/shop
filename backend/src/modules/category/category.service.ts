@@ -4,44 +4,53 @@ import { UpdateCategoryInput } from "./dto/update-category.input";
 import { PrismaService } from "../../prisma.service";
 
 import slugify from "slugify";
+import { Category, Subcategory } from "@prisma/client";
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly prisma: PrismaService) {}
-  create(createCategoryInput: CreateCategoryInput) {
-    return this.prisma.category.create({
-      data: {
-        ...createCategoryInput,
-        slug: slugify(createCategoryInput.name, { lower: true }),
-      },
-    });
-  }
+	constructor(private readonly prisma: PrismaService) {}
+	async create(createCategoryInput: CreateCategoryInput) {
+		return this.prisma.category.create({
+			data: {
+				...createCategoryInput,
+				slug: slugify(createCategoryInput.name, { lower: true }),
+			},
+		});
+	}
 
-  findAll() {
-    return this.prisma.category.findMany();
-  }
+	async findAll() {
+		return this.prisma.category.findMany({ include: { subcategories: true } });
+	}
 
-  findOne(name: string) {
-    return this.prisma.category.findFirst({
-      where: {
-        name: {
-          contains: name,
-        },
-      },
-    });
-  }
+	async getAllWith() {
+		return this.prisma.$transaction(async (prisma) => {
+			let navigation = {};
+			const categories = await prisma.category.findMany();
+			const subcategories = await prisma.subcategory.findMany();
+		});
+	}
 
-  update(id: number, updateCategoryInput: UpdateCategoryInput) {
-    return this.prisma.category.update({
-      where: { id },
-      data: {
-        ...updateCategoryInput,
-        slug: slugify(updateCategoryInput.name, { lower: true }),
-      },
-    });
-  }
+	async findOne(name: string) {
+		return this.prisma.category.findFirst({
+			where: {
+				name: {
+					contains: name,
+				},
+			},
+		});
+	}
 
-  remove(id: number) {
-    return this.prisma.category.delete({ where: { id } });
-  }
+	async update(id: number, updateCategoryInput: UpdateCategoryInput) {
+		return this.prisma.category.update({
+			where: { id },
+			data: {
+				...updateCategoryInput,
+				slug: slugify(updateCategoryInput.name, { lower: true }),
+			},
+		});
+	}
+
+	async remove(id: number) {
+		return this.prisma.category.delete({ where: { id } });
+	}
 }
