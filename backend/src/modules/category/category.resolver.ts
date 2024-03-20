@@ -6,37 +6,30 @@ import { UpdateCategoryInput } from "./dto/update-category.input";
 
 @Resolver(() => Category)
 export class CategoryResolver {
-  constructor(private readonly categoryService: CategoryService) {}
+	constructor(private readonly categoryService: CategoryService) {}
 
-  @Mutation(() => Category)
-  categoryCreate(
-    @Args("createCategoryInput") createCategoryInput: CreateCategoryInput
-  ) {
-    return this.categoryService.create(createCategoryInput);
-  }
+	@Mutation(() => Category)
+	categoryCreate(@Args("createCategoryInput") createCategoryInput: CreateCategoryInput) {
+		return this.categoryService.create(createCategoryInput);
+	}
 
-  @Query(() => [Category])
-  categoryGetAll() {
-    return this.categoryService.findAll();
-  }
+	@Query(() => [Category])
+	categoryGetAll() {
+		return this.categoryService.findAll();
+	}
 
-  @Query(() => Category)
-  categoryFindOne(@Args("name") name: string) {
-    return this.categoryService.findOne(name);
-  }
+	@Query(() => Category)
+	categoryFindOne(@Args("name") name: string) {
+		return this.categoryService.findOne(name);
+	}
 
-  @Mutation(() => Category)
-  categoryUpdate(
-    @Args("updateCategoryInput") updateCategoryInput: UpdateCategoryInput
-  ) {
-    return this.categoryService.update(
-      updateCategoryInput.id,
-      updateCategoryInput
-    );
-  }
+	@Mutation(() => Category)
+	categoryUpdate(@Args("updateCategoryInput") updateCategoryInput: UpdateCategoryInput) {
+		return this.categoryService.update(updateCategoryInput.id, updateCategoryInput);
+	}
 
-  @Mutation(() => Category)
-  categoryRemove(@Args("id") id: number) {
-    return this.categoryService.remove(id);
-  }
+	@Mutation(() => Category)
+	categoryRemove(@Args("id") id: number) {
+		return this.categoryService.remove(id);
+	}
 }

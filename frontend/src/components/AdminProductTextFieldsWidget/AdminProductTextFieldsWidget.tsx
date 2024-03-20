@@ -4,10 +4,9 @@ import { Card, Input } from "@material-tailwind/react";
 import { toRegularCase } from "@/lib/functions";
 import { memo, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
 import InputError from "@/components/InputError/InputError";
 
-const simpleFields = ["name", "price", "slug", "stock"];
+const simpleFields = ["name", "price", "slug", "stock", "sku"];
 
 const AdminProductTextFieldsWidget = memo(() => {
 	const {

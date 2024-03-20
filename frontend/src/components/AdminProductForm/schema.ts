@@ -25,6 +25,11 @@ export default object().shape({
 		.positive("Category is required field")
 		.required("Category is required field"),
 	subcategory_id: number()
-		.positive("Subcategory is required field")
-		.required("Subcategory is required field"),
+		.moreThan(-1, "Subcategory is required field")
+		.required("Subcategory is required field")
+		.optional(),
+	group_id: number().positive("Group is required field").required("Group is required field"),
+	type_id: number()
+		.positive("Product Type is required field")
+		.required("Product Type is required field"),
 });

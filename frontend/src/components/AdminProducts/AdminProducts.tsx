@@ -6,13 +6,14 @@ import { GET_PRODUCTS_COUNT } from "@/lib/graphql/queries";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import Pagination from "@/components/Pagination/Pagination";
 import { getPagination } from "@/utils/paginationHelper";
-import { Card, Option, Select } from "@material-tailwind/react";
+import { Button, Card, Option, Select } from "@material-tailwind/react";
 
 import Spinner from "@/components/Spinner/Spinner";
 import AdminSearchProducts from "@/components/AdminSearchProducts/AdminSearchProducts";
 import AdminProductsList from "@/components/AdminProductsList/AdminProductsList";
+import Link from "next/link";
 
-const numberOfVisible = [10, 15, 20, 50];
+const numberOfVisible = [10, 15, 30, 50];
 
 const AdminProducts = () => {
 	const [take, setTake] = useState<number>(15);
@@ -39,16 +40,25 @@ const AdminProducts = () => {
 						value={take.toString()}
 						onChange={(value) => value && setTake(+value)}>
 						{numberOfVisible.map((num) => (
-							<Option value={num.toString()}>{num}</Option>
+							<Option key={num} value={num.toString()}>
+								{num}
+							</Option>
 						))}
 					</Select>
 				</div>
 				<div className={styles.search}>
 					<AdminSearchProducts />
 				</div>
+				<Link href={"products/manage"}>
+					<Button>Add</Button>
+				</Link>
 			</div>
 			<Suspense fallback={<Spinner width={50} />}>
-				<AdminProductsList pagination={pagination} refetchPagination={refetchPagination} />
+				{data && data?.productCount > 0 ? (
+					<AdminProductsList pagination={pagination} refetchPagination={refetchPagination} />
+				) : (
+					<span>No Products</span>
+				)}
 			</Suspense>
 			<div className={styles.pagination}>
 				{data && (

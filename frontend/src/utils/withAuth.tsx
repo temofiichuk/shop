@@ -4,26 +4,26 @@ import { redirect } from "next/navigation";
 import { EnumUserRole } from "@/types/auth.types";
 import { setIsLoading } from "@/store/features/is-loading.slice";
 
-const withAuth = <C extends object>(
-  authFor: EnumUserRole,
-  Component: ComponentType<C>
-) => {
-  const authComponent: FC<C> = (props) => {
-    const currentUser = useAppSelector((state) => state.auth.user);
-    const dispatch = useAppDispatch();
+const withAuth = <C extends object>(authFor: EnumUserRole, Component: ComponentType<C>) => {
+	const authComponent: FC<C> = (props) => {
+		const [isAuth, setIsAuth] = useState(false);
+		const currentUser = useAppSelector((state) => state.auth.user);
+		const dispatch = useAppDispatch();
 
-    useEffect(() => {
-      dispatch(setIsLoading(true));
-      if (currentUser?.role !== authFor) {
-        redirect(authFor === EnumUserRole.ADMIN ? "/admin" : "/login");
-      }
-      dispatch(setIsLoading(false));
-    }, []);
+		useEffect(() => {
+			dispatch(setIsLoading(true));
+			if (currentUser?.role !== authFor) {
+				redirect(authFor === EnumUserRole.ADMIN ? "/admin" : "/login");
+			} else {
+				setIsAuth(true);
+			}
+			dispatch(setIsLoading(false));
+		}, []);
 
-    return <Component {...props} />;
-  };
+		if (isAuth) return <Component {...props} />;
+	};
 
-  return authComponent;
+	return authComponent;
 };
 
 export default withAuth;
