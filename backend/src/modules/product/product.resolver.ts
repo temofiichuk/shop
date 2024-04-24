@@ -15,14 +15,20 @@ export class ProductResolver {
 	@Mutation(() => Product)
 	@UsePipes(CustomValidationPipe)
 	@AuthAdmin()
-	productCreate(@CurrentAdmin("id") id: number, @Args("createProductInput") createProductInput: CreateProductInput) {
+	productCreate(
+		@CurrentAdmin("id") id: number,
+		@Args("createProductInput") createProductInput: CreateProductInput
+	) {
 		return this.productService.create(id, createProductInput);
 	}
 
 	@Mutation(() => Product)
 	@UsePipes(CustomValidationPipe)
 	@AuthAdmin()
-	productUpdate(@CurrentAdmin("id") id: number, @Args("updateProductInput") updateProductInput: UpdateProductInput) {
+	productUpdate(
+		@CurrentAdmin("id") id: number,
+		@Args("updateProductInput") updateProductInput: UpdateProductInput
+	) {
 		return this.productService.update(id, updateProductInput);
 	}
 
@@ -53,7 +59,10 @@ export class ProductResolver {
 	}
 
 	@Query(() => Product)
-	async productSetMainImage(@Args("product_id") product_id: number, @Args("image_id") image_id: number) {
+	async productSetMainImage(
+		@Args("product_id") product_id: number,
+		@Args("image_id") image_id: number
+	) {
 		return this.productService.setMainImage(product_id, image_id);
 	}
 }

@@ -52,6 +52,7 @@ model Category {
   created_at    DateTime      @default(now())
   updated_at    DateTime      @updatedAt
   subcategories Subcategory[]
+  groups        Group[]
   products      Product[]
   slug          String        @unique
 }
@@ -62,9 +63,36 @@ model Subcategory {
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   products    Product[]
+  groups      Group[]
   category    Category? @relation(fields: [category_id], references: [id])
   category_id Int?
   slug        String    @unique
+  description String?
+}
+
+model Group {
+  id             Int          @id @unique @default(autoincrement())
+  name           String       @unique
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+  products       Product[]
+  types          Type[]
+  category       Category?    @relation(fields: [category_id], references: [id])
+  category_id    Int?
+  subcategory    Subcategory? @relation(fields: [subcategory_id], references: [id])
+  subcategory_id Int?
+  slug           String       @unique
+}
+
+model Type {
+  id         Int       @id @unique @default(autoincrement())
+  name       String    @unique
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  products   Product[]
+  group      Group? @relation(fields: [group_id], references: [id])
+  group_id   Int?
+  slug       String    @unique
 }
 
 model Product {
@@ -85,11 +113,16 @@ model Product {
   category_id    Int?
   subcategory    Subcategory?  @relation(fields: [subcategory_id], references: [id])
   subcategory_id Int?
+  group          Group?        @relation(fields: [group_id], references: [id])
+  group_id       Int?
+  type           Type?         @relation(fields: [type_id], references: [id])
+  type_id        Int?
   order_items    OrderItem[]
   user           User?         @relation(fields: [user_id], references: [id])
   user_id        Int?
   attributes     Attribute[]
   combinations   Combination[]
+  sku            String
 }
 
 model Combination {

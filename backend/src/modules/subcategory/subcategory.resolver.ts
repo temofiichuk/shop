@@ -17,13 +17,13 @@ export class SubcategoryResolver {
 	}
 
 	@Query(() => [Subcategory])
-	subcategoryGetAll(@Args("id") id: number) {
-		return this.subcategoryService.findAll(id);
+	subcategoryGetAll(@Args("category_id") category_id: number) {
+		return this.subcategoryService.findAll(category_id);
 	}
 
 	@Query(() => Subcategory)
-	subcategoryFindOne(@Args("name") name: string) {
-		return this.subcategoryService.findOne(name);
+	subcategoryFindOne(@Args("id") id: number) {
+		return this.subcategoryService.findOne(id);
 	}
 
 	@Mutation(() => Subcategory)

@@ -1,30 +1,34 @@
 import { ObjectType, Field, Int } from "@nestjs/graphql";
 import { Product } from "../../product/entities/product.entity";
 import { Category } from "../../category/entities/category.entity";
+import { Group } from "../../group/entities/group.entity";
 
 @ObjectType()
 export class Subcategory {
-  @Field(() => Int)
-  id: number;
+	@Field(() => Int)
+	id: number;
 
-  @Field()
-  name: string;
+	@Field()
+	name: string;
 
-  @Field()
-  slug: string;
+	@Field()
+	slug: string;
 
-  @Field(() => [Product])
-  products: Product[];
+	@Field(() => [Product])
+	products: Product[];
 
-  @Field(() => Category)
-  category: Category;
+	@Field(() => Category)
+	category: Category;
 
-  @Field(() => Int)
-  category_id: number;
+	@Field(() => Int)
+	category_id: number;
 
-  @Field()
-  created_at: Date;
+	@Field(() => [Group])
+	groups: Group[];
 
-  @Field()
-  updated_at: Date;
+	@Field()
+	created_at: Date;
+
+	@Field()
+	updated_at: Date;
 }

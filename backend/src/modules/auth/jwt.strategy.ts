@@ -11,44 +11,42 @@ type ValidationPayloadType = { id: number; role: string };
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, "jwt") {
-  constructor(
-    private configService: ConfigService,
-    private userService: UserService
-  ) {
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: configService.get("JWT_SECRET"),
-    });
-  }
+	constructor(
+		private configService: ConfigService,
+		private userService: UserService
+	) {
+		super({
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			ignoreExpiration: false,
+			secretOrKey: configService.get("JWT_SECRET"),
+		});
+	}
 
-  async validate({ id, role }: ValidationPayloadType): Promise<User> {
-    const user = await this.userService.getById(+id);
-    if (role !== EnumUserRole.USER && !user) throw new UnauthorizedException();
-    return user;
-  }
+	async validate({ id, role }: ValidationPayloadType): Promise<User> {
+		const user = await this.userService.getById(+id);
+		if (role !== EnumUserRole.USER && !user) throw new UnauthorizedException();
+		return user;
+	}
 }
 
 @Injectable()
-export class JwtAuthAdminStrategy extends PassportStrategy(
-  Strategy,
-  "adminJwt"
-) {
-  constructor(
-    private configService: ConfigService,
-    private adminService: AdminService
-  ) {
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: configService.get("JWT_SECRET"),
-    });
-  }
+export class JwtAuthAdminStrategy extends PassportStrategy(Strategy, "adminJwt") {
+	constructor(
+		private configService: ConfigService,
+		private adminService: AdminService
+	) {
+		super({
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			ignoreExpiration: false,
+			secretOrKey: configService.get("JWT_SECRET"),
+		});
+	}
 
-  async validate({ id, role }: ValidationPayloadType): Promise<Admin> {
-    const admin = await this.adminService.getById(+id);
-    if (role !== EnumUserRole.ADMIN || !admin)
-      throw new UnauthorizedException();
-    return admin;
-  }
+	async validate({ id, role }: ValidationPayloadType): Promise<Admin> {
+		const admin = await this.adminService.getById(+id);
+		if (role !== EnumUserRole.ADMIN || !admin) {
+			throw new UnauthorizedException();
+		}
+		return admin;
+	}
 }
