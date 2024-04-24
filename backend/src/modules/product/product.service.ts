@@ -6,6 +6,7 @@ import { PrismaService } from "../../prisma.service";
 import { productRelativeFields } from "./dto/product.output";
 import { ConfigService } from "@nestjs/config";
 import slugify from "slugify";
+import { faker } from "@faker-js/faker";
 
 @Injectable()
 export class ProductService {
@@ -14,10 +15,12 @@ export class ProductService {
 		private configService: ConfigService
 	) {}
 
-	async create(admin_id: number, createProductInput: CreateProductInput) {
+	async create(admin_id: number = 1, createProductInput: CreateProductInput) {
 		const {
 			category_id,
 			subcategory_id,
+			group_id,
+			type_id,
 			descriptions = [],
 			images = [],
 			...fields
@@ -28,39 +31,68 @@ export class ProductService {
 			if (!mainImage) images[0].is_main = true;
 		}
 
-		return this.prisma.$transaction(async (prisma) => {
-			const product = await prisma.product.create({
-				data: {
-					...fields,
-					slug: slugify(fields.name, { lower: true }),
-					admin: {
-						connect: { id: admin_id },
-					},
-					descriptions: {
-						createMany: {
-							data: descriptions.map(({ ...fields }) => ({ ...fields })),
+		function generateSKU() {
+			const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			let sku = "";
+			for (let i = 0; i < 8; i++) {
+				sku += chars.charAt(Math.floor(Math.random() * chars.length));
+			}
+			return sku;
+		}
+
+		try {
+			return this.prisma.$transaction(async (prisma) => {
+				const product = await prisma.product.create({
+					data: {
+						...fields,
+						slug: slugify(fields.name, { lower: true }),
+						sku: generateSKU(),
+						admin: {
+							connect: { id: admin_id },
+						},
+						descriptions: {
+							createMany: {
+								data: descriptions.map(({ ...fields }) => ({ ...fields })),
+							},
+						},
+						category: {
+							connect: { id: category_id },
+						},
+						group: {
+							connect: { id: group_id },
+						},
+						type: {
+							connect: { id: type_id },
 						},
 					},
-					category: {
-						connect: { id: category_id },
-					},
-					subcategory: {
-						connect: { id: subcategory_id },
-					},
-				},
-				include: productRelativeFields,
-			});
-
-			images.forEach(({ url, name, is_main }) => {
-				prisma.image.upsert({
-					where: { url },
-					update: { is_main, name },
-					create: { url, name, is_main, product: { connect: { id: product.id } } },
-					select: { id: true },
+					include: productRelativeFields,
 				});
+
+				if (subcategory_id !== 0) {
+					await this.prisma.product.update({
+						where: { id: product.id },
+						data: {
+							subcategory: {
+								connect: { id: subcategory_id },
+							},
+						},
+					});
+				}
+
+				images.forEach(({ url, name, is_main }) => {
+					prisma.image.upsert({
+						where: { url },
+						update: { is_main, name },
+						create: { url, name, is_main, product: { connect: { id: product.id } } },
+						// select: { id: true },
+					});
+				});
+				return product;
 			});
-			return product;
-		});
+		} catch (error) {
+			console.log("error");
+			console.log(error);
+		}
 	}
 
 	async update(
@@ -118,8 +150,6 @@ export class ProductService {
 	}
 
 	async findManyBySearch(pattern: string, max: number = 10) {
-		const daley = new Promise((resolve) => setTimeout(resolve, 2000));
-		await daley;
 		return this.prisma.product.findMany({
 			where: {
 				OR: [
@@ -141,6 +171,7 @@ export class ProductService {
 	}
 
 	async getMany(skip: number, take: number = 10) {
+		console.log(skip, "--------------- skip -------------");
 		return this.prisma.product.findMany({
 			skip,
 			take,

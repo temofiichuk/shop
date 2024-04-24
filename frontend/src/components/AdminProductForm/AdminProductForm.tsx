@@ -22,13 +22,21 @@ import { useAppDispatch } from "@/store/hooks";
 import { EnumMessage, setMessage } from "@/store/features/message.slice";
 
 const initialValues = {
-	name: "",
-	price: 0,
-	stock: 0,
-	images: [],
-	descriptions: [{ head: "", body: "" }],
-	category_id: 0,
+	name: "Test",
+	price: 12,
+	stock: 2,
+	images: [{ name: "test", url: "/pexels-christian-heitz-842711.jpg", is_main: true }],
+	descriptions: [
+		{
+			head: "Test",
+			body: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis dignissimos doloribus maxime suscipit veritatis voluptates.",
+		},
+	],
+	category_id: 1,
 	subcategory_id: 0,
+	group_id: 1,
+	type_id: 1,
+	// sku: "",
 };
 
 const AdminProductForm = () => {
@@ -41,7 +49,7 @@ const AdminProductForm = () => {
 	const [updateProduct, { data: updatedProduct, loading: isLoadingUpdate, error: errorsUpdate }] =
 		useMutation<{ productUpdate: Product }>(UPDATE_PRODUCT);
 	const [createProduct, { data: createdProduct, loading: isLoadingCreate, error: errorsCreate }] =
-		useMutation<{ productCreate: Product }>(CREATE_PRODUCT);
+		useMutation(CREATE_PRODUCT);
 	const dispatch = useAppDispatch();
 
 	const product = useMemo(() => data?.productGetByID, [data]);
@@ -77,9 +85,7 @@ const AdminProductForm = () => {
 		if (generalError) {
 			dispatch(
 				setMessage({
-					value: `Product wasn't ${createdProduct ? "created" : "updated"}: ${
-						generalError.message
-					}`,
+					value: `Product wasn't ${!productID ? "created" : "updated"}: ${generalError.message}`,
 					type: EnumMessage.FAILURE,
 					reset: true,
 					timer: 10000,
@@ -88,13 +94,13 @@ const AdminProductForm = () => {
 		}
 	}, [errorsCreate, errorsUpdate]);
 
-	// Handling Success
+	// Success Handling
 	useEffect(() => {
 		const data = createdProduct?.productCreate ?? updatedProduct?.productUpdate;
 		if (!data) return;
 		dispatch(
 			setMessage({
-				value: `Product was ${createdProduct ? "created" : "updated"}`,
+				value: `Product was ${!productID ? "created" : "updated"}`,
 				type: EnumMessage.SUCCESS,
 				reset: true,
 			})

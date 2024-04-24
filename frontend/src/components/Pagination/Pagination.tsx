@@ -12,6 +12,7 @@ interface IPagination {
 }
 
 const Pagination = ({ count, take, active, setActive, visibleButtons }: IPagination) => {
+	if (count < 1) return;
 	const [inputValue, setInputValue] = useState<number | string>(active);
 
 	const length = Math.ceil(count / take);

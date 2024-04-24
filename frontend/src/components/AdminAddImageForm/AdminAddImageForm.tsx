@@ -8,6 +8,7 @@ import imageSchema from "@/components/AdminAddImageForm/schema";
 import { Button, Card, Collapse, Input } from "@material-tailwind/react";
 import { toRegularCase } from "@/lib/functions";
 import InputError from "@/components/InputError/InputError";
+import resetFields from "@/utils/resetFieldsHelper";
 
 const initialValues: Pick<ProductImage, "name" | "url"> = {
 	name: "",
@@ -26,7 +27,7 @@ const AdminAddImageForm: FC<IAdminAddImageForm> = ({ isMain, append }) => {
 	const {
 		register,
 		handleSubmit,
-		reset,
+		resetField,
 		formState: { defaultValues, errors },
 	} = useForm<ProductImage>({
 		resolver: yupResolver(imageSchema),
@@ -37,7 +38,7 @@ const AdminAddImageForm: FC<IAdminAddImageForm> = ({ isMain, append }) => {
 		(data) => {
 			append({ ...data, is_main: !isMain });
 			setOpenAddForm(false);
-			reset();
+			resetFields(["name", "url"], resetField);
 		},
 		[isMain]
 	);

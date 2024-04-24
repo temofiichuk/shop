@@ -66,15 +66,17 @@ type AdminAvatar {
     avatar: String
 }
 
-type Subcategory {
+type Type {
     id: Int!
     name: String!
-    slug: String!
-    products: [Product!]!
-    category: Category!
-    category_id: Int!
     created_at: DateTime!
     updated_at: DateTime!
+    products: [Product!]
+    group: Category
+    group_id: Int
+    Group: Group
+    groupId: Int
+    slug: String
 }
 
 """
@@ -82,11 +84,38 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Group {
+    id: ID!
+    name: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    products: [Product!]
+    types: [Type!]
+    category: Category
+    category_id: Int
+    subcategory: Subcategory
+    subcategory_id: Int
+    slug: String
+}
+
+type Subcategory {
+    id: Int!
+    name: String!
+    slug: String!
+    products: [Product!]!
+    category: Category!
+    category_id: Int!
+    groups: [Group!]!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
 type Category {
     id: Int!
     name: String!
     slug: String!
     subcategories: [Subcategory!]!
+    groups: [Group!]!
     products: [Product!]!
     created_at: DateTime!
     updated_at: DateTime!
@@ -113,8 +142,12 @@ type Product {
     descriptions: [ProductDescription!]!
     category: Category!
     category_id: Int!
-    subcategory: Subcategory!
-    subcategory_id: Int!
+    subcategory: Subcategory
+    subcategory_id: Int
+    group: Group!
+    group_id: Int!
+    type: Type!
+    type_id: Int!
     images: [ProductImage!]!
     quantity: Float!
     stock: Float!
@@ -165,9 +198,13 @@ type Query {
     reviewGetByUser: Review!
     categoryGetAll: [Category!]!
     categoryFindOne(name: String!): Category!
-    subcategoryGetAll(id: Float!): [Subcategory!]!
-    subcategoryFindOne(name: String!): Subcategory!
+    subcategoryGetAll(category_id: Float!): [Subcategory!]!
+    subcategoryFindOne(id: Float!): Subcategory!
     attributeGetAll: [Attribute!]!
+    findAllGroups(category_id: Float, subcategory_id: Float): [Group!]!
+    findOneGroup(id: Int!): Group!
+    findAllTypes(group_id: Float!): [Type!]!
+    findOneType(id: Int!): Type!
 }
 
 input LoginUserInput {
@@ -205,6 +242,12 @@ type Mutation {
     attributeCreate(createAttributeInput: CreateAttributeInput!): Attribute!
     attributeUpdate(updateAttributeInput: UpdateAttributeInput!): Attribute!
     attributeRemove(id: Float!): Attribute!
+    createGroup(createGroupInput: CreateGroupInput!): Group!
+    updateGroup(updateGroupInput: UpdateGroupInput!): Group!
+    removeGroup(id: Float!): Group!
+    createType(createTypeInput: CreateTypeInput!): Type!
+    updateType(updateTypeInput: UpdateTypeInput!): Type!
+    removeType(id: Int!): Type!
 }
 
 input CreateUserInput {
@@ -244,6 +287,7 @@ input UpdateAdminInput {
 input CreateProductInput {
     name: String!
     slug: String
+    sku: String
     price: Int!
     combination_id: Int
     descriptions: [DescriptionInput!]
@@ -251,7 +295,9 @@ input CreateProductInput {
     rating: Int
     images: [ImageInput!]
     category_id: Float!
-    subcategory_id: Float!
+    subcategory_id: Float
+    group_id: Float!
+    type_id: Float!
 }
 
 input DescriptionInput {
@@ -268,6 +314,7 @@ input ImageInput {
 input UpdateProductInput {
     name: String
     slug: String
+    sku: String
     price: Int
     combination_id: Int
     stock: Int
@@ -275,6 +322,8 @@ input UpdateProductInput {
     images: [ImageInput!]
     category_id: Float
     subcategory_id: Float
+    group_id: Float
+    type_id: Float
     id: Int!
     descriptions: [UpdateDescriptionInput!]!
 }
@@ -302,13 +351,11 @@ input UpdateCategoryInput {
 
 input CreateSubcategoryInput {
     name: String!
-    slug: String!
     category_id: Int!
 }
 
 input UpdateSubcategoryInput {
     name: String
-    slug: String
     category_id: Int
     id: Int!
 }
@@ -331,4 +378,28 @@ input UpdateAttributeInput {
 input UpdateAttributeValueInput {
     value: String
     id: Int
+}
+
+input CreateGroupInput {
+    name: String!
+    category_id: Int
+    subcategory_id: Int
+}
+
+input UpdateGroupInput {
+    name: String
+    category_id: Int
+    subcategory_id: Int
+    id: Int!
+}
+
+input CreateTypeInput {
+    name: String!
+    group_id: Int!
+}
+
+input UpdateTypeInput {
+    name: String
+    group_id: Int
+    id: Int!
 }

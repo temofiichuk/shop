@@ -18,28 +18,6 @@ export class CategoryService {
 		});
 	}
 
-	async findAll() {
-		return this.prisma.category.findMany({ include: { subcategories: true } });
-	}
-
-	async getAllWith() {
-		return this.prisma.$transaction(async (prisma) => {
-			let navigation = {};
-			const categories = await prisma.category.findMany();
-			const subcategories = await prisma.subcategory.findMany();
-		});
-	}
-
-	async findOne(name: string) {
-		return this.prisma.category.findFirst({
-			where: {
-				name: {
-					contains: name,
-				},
-			},
-		});
-	}
-
 	async update(id: number, updateCategoryInput: UpdateCategoryInput) {
 		return this.prisma.category.update({
 			where: { id },
@@ -52,5 +30,19 @@ export class CategoryService {
 
 	async remove(id: number) {
 		return this.prisma.category.delete({ where: { id } });
+	}
+
+	async findAll() {
+		return this.prisma.category.findMany();
+	}
+
+	async findOne(name: string) {
+		return this.prisma.category.findFirst({
+			where: {
+				name: {
+					contains: name,
+				},
+			},
+		});
 	}
 }

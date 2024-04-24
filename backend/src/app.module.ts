@@ -13,6 +13,8 @@ import { CategoryModule } from "./modules/category/category.module";
 import { SubcategoryModule } from "./modules/subcategory/subcategory.module";
 import { graphqlConfig } from "./config/graphql.config";
 import { AttributeModule } from './modules/attribute/attribute.module';
+import { GroupModule } from './modules/group/group.module';
+import { TypeModule } from './modules/type/type.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { AttributeModule } from './modules/attribute/attribute.module';
     CategoryModule,
     SubcategoryModule,
     AttributeModule,
+    GroupModule,
+    TypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

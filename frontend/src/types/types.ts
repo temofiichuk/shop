@@ -22,6 +22,7 @@ export type Category = {
 	created_at?: Date;
 	updated_at?: Date;
 	subcategories?: Subcategory[];
+	groups?: Group[];
 	products?: Product[];
 };
 
@@ -34,6 +35,30 @@ export type Subcategory = {
 	products?: Product[];
 	category?: Category;
 	category_id?: number | null;
+};
+
+export type Group = {
+	id: number;
+	name: string;
+	slug?: string;
+	created_at?: Date;
+	updated_at?: Date;
+	products?: Product[];
+	category?: Category;
+	category_id?: number | null;
+	subcategory?: Subcategory;
+	subcategory_id?: number | null;
+};
+
+export type Type = {
+	id: number;
+	name: string;
+	slug?: string;
+	created_at?: Date;
+	updated_at?: Date;
+	products?: Product[];
+	group?: Group;
+	group_id?: number | null;
 };
 
 export type Product = {

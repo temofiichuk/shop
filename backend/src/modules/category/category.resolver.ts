@@ -13,16 +13,6 @@ export class CategoryResolver {
 		return this.categoryService.create(createCategoryInput);
 	}
 
-	@Query(() => [Category])
-	categoryGetAll() {
-		return this.categoryService.findAll();
-	}
-
-	@Query(() => Category)
-	categoryFindOne(@Args("name") name: string) {
-		return this.categoryService.findOne(name);
-	}
-
 	@Mutation(() => Category)
 	categoryUpdate(@Args("updateCategoryInput") updateCategoryInput: UpdateCategoryInput) {
 		return this.categoryService.update(updateCategoryInput.id, updateCategoryInput);
@@ -31,5 +21,15 @@ export class CategoryResolver {
 	@Mutation(() => Category)
 	categoryRemove(@Args("id") id: number) {
 		return this.categoryService.remove(id);
+	}
+
+	@Query(() => [Category])
+	categoryGetAll() {
+		return this.categoryService.findAll();
+	}
+
+	@Query(() => Category)
+	categoryFindOne(@Args("name") name: string) {
+		return this.categoryService.findOne(name);
 	}
 }
