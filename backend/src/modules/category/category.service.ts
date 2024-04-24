@@ -4,6 +4,7 @@ import { UpdateCategoryInput } from "./dto/update-category.input";
 import { PrismaService } from "../../prisma.service";
 
 import slugify from "slugify";
+import { Category, Subcategory } from "@prisma/client";
 
 @Injectable()
 export class CategoryService {
@@ -35,7 +36,6 @@ export class CategoryService {
 		return this.prisma.category.findMany();
 	}
 
-	// ?
 	async findOne(name: string) {
 		return this.prisma.category.findFirst({
 			where: {
