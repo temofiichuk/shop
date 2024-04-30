@@ -15,7 +15,7 @@ export class CategoryResolver {
 
 	@Mutation(() => Category)
 	categoryUpdate(@Args("updateCategoryInput") updateCategoryInput: UpdateCategoryInput) {
-		return this.categoryService.update(updateCategoryInput.id, updateCategoryInput);
+		return this.categoryService.update(updateCategoryInput);
 	}
 
 	@Mutation(() => Category)

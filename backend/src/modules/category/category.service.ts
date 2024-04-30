@@ -2,29 +2,25 @@ import { Injectable } from "@nestjs/common";
 import { CreateCategoryInput } from "./dto/create-category.input";
 import { UpdateCategoryInput } from "./dto/update-category.input";
 import { PrismaService } from "../../prisma.service";
-
-import slugify from "slugify";
-import { Category, Subcategory } from "@prisma/client";
+import { ConfigService } from "@nestjs/config";
+import { Category } from "@prisma/client";
 
 @Injectable()
 export class CategoryService {
-	constructor(private readonly prisma: PrismaService) {}
-	async create(createCategoryInput: CreateCategoryInput) {
+	constructor(
+		private readonly prisma: PrismaService,
+		private configService: ConfigService
+	) {}
+	async create({ parent_id, ...createCategoryInput }: CreateCategoryInput) {
 		return this.prisma.category.create({
-			data: {
-				...createCategoryInput,
-				slug: slugify(createCategoryInput.name, { lower: true }),
-			},
+			data: { ...createCategoryInput, parent_id: parent_id ? parent_id : 0 },
 		});
 	}
 
-	async update(id: number, updateCategoryInput: UpdateCategoryInput) {
+	async update({ id, ...updateCategoryInput }: UpdateCategoryInput) {
 		return this.prisma.category.update({
 			where: { id },
-			data: {
-				...updateCategoryInput,
-				slug: slugify(updateCategoryInput.name, { lower: true }),
-			},
+			data: updateCategoryInput,
 		});
 	}
 
@@ -32,8 +28,9 @@ export class CategoryService {
 		return this.prisma.category.delete({ where: { id } });
 	}
 
-	async findAll() {
-		return this.prisma.category.findMany();
+	async findAll(parent_id: number | undefined) {
+		if (!parent_id) return this.prisma.category.findMany();
+		return this.prisma.category.findMany({ where: { parent_id } });
 	}
 
 	async findOne(name: string) {
@@ -44,5 +41,28 @@ export class CategoryService {
 				},
 			},
 		});
+	}
+
+	async getCategoryTree(): Promise<Category[]> {
+		const categories = await this.prisma.category.findMany({ include: { children: true } });
+		return this.buildCategoryTree(categories);
+	}
+
+	private buildCategoryTree(categories: Category[]) {
+		const topLevelCategories: Category[] = [];
+
+		// A function for recursive construction of a tree of categories
+		const buildTree = (parentId: number | null): Category[] => {
+			const children = categories.filter((category) => category.parent_id === parentId);
+			return children.map((child) => ({
+				...child,
+				children: buildTree(child.id), // Рекурсивний виклик для побудови дочірніх категорій
+			}));
+		};
+
+		// Build the top-level tree
+		topLevelCategories.push(...buildTree(null));
+
+		return topLevelCategories;
 	}
 }

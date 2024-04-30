@@ -1,7 +1,6 @@
 import { ObjectType, Field, Int } from "@nestjs/graphql";
-import { Subcategory } from "../../subcategory/entities/subcategory.entity";
 import { Product } from "../../product/entities/product.entity";
-import { Group } from "../../group/entities/group.entity";
+import { EnumCategoryType } from "@prisma/client";
 
 @ObjectType()
 export class Category {
@@ -12,13 +11,16 @@ export class Category {
 	name: string;
 
 	@Field()
-	slug: string;
+	type: EnumCategoryType;
 
-	@Field(() => [Subcategory])
-	subcategories: Subcategory[];
+	@Field()
+	parent_id: number;
 
-	@Field(() => [Group])
-	groups: Group[];
+	@Field()
+	parent: Category;
+
+	@Field()
+	children: Category[];
 
 	@Field(() => [Product])
 	products: Product[];
