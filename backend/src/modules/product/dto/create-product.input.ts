@@ -1,6 +1,5 @@
 import { InputType, Field, Int } from "@nestjs/graphql";
 import { IsBoolean, IsNumber, IsOptional, IsString, Matches } from "class-validator";
-import { ProductImage } from "../entities/product.entity";
 
 @InputType()
 export class DescriptionInput {
@@ -31,6 +30,13 @@ export class ImageInput {
 }
 
 @InputType()
+export class CategoryId {
+	@Field(() => Int)
+	@IsNumber()
+	id: number;
+}
+
+@InputType()
 export class CreateProductInput {
 	@Field()
 	@IsString()
@@ -58,7 +64,7 @@ export class CreateProductInput {
 
 	@Field(() => [DescriptionInput], { nullable: true })
 	@IsOptional()
-	descriptions?: DescriptionInput[];
+	descriptions: DescriptionInput[];
 
 	@Field(() => Int)
 	@IsNumber()
@@ -73,20 +79,6 @@ export class CreateProductInput {
 	@IsOptional()
 	images?: ImageInput[];
 
-	@Field()
-	@IsNumber()
-	category_id: number;
-
-	@Field({ nullable: true })
-	@IsNumber()
-	@IsOptional()
-	subcategory_id: number;
-
-	@Field()
-	@IsNumber()
-	group_id: number;
-
-	@Field()
-	@IsNumber()
-	type_id: number;
+	@Field(() => [Int])
+	category_ids: number[];
 }

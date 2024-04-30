@@ -6,7 +6,6 @@ import { PrismaService } from "../../prisma.service";
 import { productRelativeFields } from "./dto/product.output";
 import { ConfigService } from "@nestjs/config";
 import slugify from "slugify";
-import { faker } from "@faker-js/faker";
 
 @Injectable()
 export class ProductService {
@@ -16,15 +15,7 @@ export class ProductService {
 	) {}
 
 	async create(admin_id: number = 1, createProductInput: CreateProductInput) {
-		const {
-			category_id,
-			subcategory_id,
-			group_id,
-			type_id,
-			descriptions = [],
-			images = [],
-			...fields
-		} = createProductInput;
+		const { descriptions = [], category_ids, images = [], ...fields } = createProductInput;
 
 		if (images.length > 0) {
 			const mainImage = images.find((item) => item.is_main);
@@ -55,29 +46,12 @@ export class ProductService {
 								data: descriptions.map(({ ...fields }) => ({ ...fields })),
 							},
 						},
-						category: {
-							connect: { id: category_id },
-						},
-						group: {
-							connect: { id: group_id },
-						},
-						type: {
-							connect: { id: type_id },
+						categories: {
+							connect: category_ids.map((id) => ({ id })),
 						},
 					},
 					include: productRelativeFields,
 				});
-
-				if (subcategory_id !== 0) {
-					await this.prisma.product.update({
-						where: { id: product.id },
-						data: {
-							subcategory: {
-								connect: { id: subcategory_id },
-							},
-						},
-					});
-				}
 
 				images.forEach(({ url, name, is_main }) => {
 					prisma.image.upsert({
@@ -90,8 +64,7 @@ export class ProductService {
 				return product;
 			});
 		} catch (error) {
-			console.log("error");
-			console.log(error);
+			throw new Error(error);
 		}
 	}
 
@@ -146,15 +119,16 @@ export class ProductService {
 	}
 
 	async remove(id: number) {
-		return this.prisma.product.delete({ where: { id } });
+		const deletedProduct = await this.prisma.product.delete({ where: { id } });
+		await this.prisma.description.deleteMany({ where: { product_id: deletedProduct.id } });
+		return deletedProduct;
 	}
 
 	async findManyBySearch(pattern: string, max: number = 10) {
 		return this.prisma.product.findMany({
 			where: {
 				OR: [
-					{ category: { name: { contains: pattern } } },
-					{ subcategory: { name: { contains: pattern } } },
+					// { categories: { name: { contains: pattern } } },
 					{
 						descriptions: {
 							some: {
@@ -171,7 +145,6 @@ export class ProductService {
 	}
 
 	async getMany(skip: number, take: number = 10) {
-		console.log(skip, "--------------- skip -------------");
 		return this.prisma.product.findMany({
 			skip,
 			take,
