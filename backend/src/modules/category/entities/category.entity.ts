@@ -18,7 +18,7 @@ export class Category implements CategoryEntity {
 	type_name: string;
 
 	@Field(() => Int, { nullable: true })
-	parent_id: number;
+	parent_id: number | null;
 
 	@Field(() => Category)
 	parent: Category;

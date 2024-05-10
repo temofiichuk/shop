@@ -263,7 +263,7 @@ input ImageInput {
 
 input SetCategoryInput {
   id: Float!
-  parent_id: Float!
+  parent_id: Int
 }
 
 input UpdateProductInput {
@@ -295,13 +295,13 @@ input CreateReviewInput {
 input CreateCategoryInput {
   name: String!
   type_name: String!
-  parent_id: Float
+  parent_id: Int
 }
 
 input UpdateCategoryInput {
   name: String
   type_name: String
-  parent_id: Float
+  parent_id: Int
   id: Int!
 }
 

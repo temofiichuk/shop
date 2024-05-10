@@ -30,7 +30,6 @@ export class CategoryService {
 	async findAll(parent_id: number | undefined) {
 		try {
 			if (!parent_id) {
-				console.log(await this.prisma.category.findMany());
 				return this.prisma.category.findMany();
 			}
 			return this.prisma.category.findMany({ where: { parent_id } });

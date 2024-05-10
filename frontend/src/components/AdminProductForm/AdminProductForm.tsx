@@ -57,7 +57,6 @@ const AdminProductForm = () => {
 	});
 
 	const onSubmit: SubmitHandler<Product> = (data) => {
-		console.log(data, "form data");
 		if (productID) {
 			data.id = +productID;
 			updateProduct({ variables: { updateProductInput: data } });

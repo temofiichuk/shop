@@ -20,6 +20,7 @@ export const productCategoryFragment = gql`
 	fragment productCatAttrs on Category {
 		id
 		name
+		parent_id
 	}
 `;
 

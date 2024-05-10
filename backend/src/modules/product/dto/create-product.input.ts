@@ -40,10 +40,12 @@ export class CategoryId {
 @InputType()
 export class SetCategoryInput extends PickType(Category, ["id", "parent_id"]) {
 	@Field()
+	@IsNumber()
 	id: number;
 
-	@Field()
-	parent_id: number | null;
+	@Field(() => Int, { nullable: true })
+	@IsNumber()
+	parent_id: number;
 }
 
 @InputType()

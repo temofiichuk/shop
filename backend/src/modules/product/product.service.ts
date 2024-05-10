@@ -23,9 +23,10 @@ export class ProductService {
 		return sku;
 	}
 
-	async create(admin_id: number = 1, createProductInput: CreateProductInput) {
-		const { descriptions = [], categories, images = [], ...fields } = createProductInput;
-
+	async create(
+		admin_id: number = 1,
+		{ descriptions = [], categories, images = [], ...fields }: CreateProductInput
+	) {
 		if (images.length > 0) {
 			const mainImage = images.find((item) => item.is_main);
 			if (!mainImage) images[0].is_main = true;
@@ -53,14 +54,16 @@ export class ProductService {
 					include: productRelativeFields,
 				});
 
-				images.forEach(({ url, name, is_main }) => {
-					prisma.image.upsert({
-						where: { url },
-						update: { is_main, name },
-						create: { url, name, is_main, product: { connect: { id: product.id } } },
-						// select: { id: true },
-					});
-				});
+				await Promise.all(
+					images.map(({ url, name, is_main }) =>
+						prisma.image.upsert({
+							where: { url, product_id: product.id },
+							update: { is_main, name },
+							create: { url, name, is_main, product: { connect: { id: product.id } } },
+						})
+					)
+				);
+
 				return product;
 			});
 		} catch (error) {
