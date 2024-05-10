@@ -21,15 +21,11 @@ export default object().shape({
 		})
 	),
 	images: array().of(imageSchema).min(1, "There must be at least one image"),
-	category_id: number()
-		.positive("Category is required field")
-		.required("Category is required field"),
-	subcategory_id: number()
-		.moreThan(-1, "Subcategory is required field")
-		.required("Subcategory is required field")
-		.optional(),
-	group_id: number().positive("Group is required field").required("Group is required field"),
-	type_id: number()
-		.positive("Product Type is required field")
-		.required("Product Type is required field"),
+	categories: array().of(
+		object({
+			id: number()
+				.positive("This category is required field")
+				.required("This category is required field"),
+		})
+	),
 });

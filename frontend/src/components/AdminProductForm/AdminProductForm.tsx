@@ -32,10 +32,7 @@ const initialValues = {
 			body: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis dignissimos doloribus maxime suscipit veritatis voluptates.",
 		},
 	],
-	category_id: 1,
-	subcategory_id: 0,
-	group_id: 1,
-	type_id: 1,
+	categories: [{ id: 0, parent_id: null }],
 	// sku: "",
 };
 

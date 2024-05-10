@@ -20,15 +20,35 @@ export const productCategoryFragment = gql`
 	fragment productCatAttrs on Category {
 		id
 		name
-		slug
 	}
 `;
 
-export const productSubcategoryFragment = gql`
-	fragment productSubCatAttrs on Subcategory {
+export const productCategoryWithChildrenFragment = gql`
+	fragment productCatWithChildrenAttrs on Category {
 		id
 		name
-		slug
+		parent_id
+		children {
+			id
+			name
+			parent_id
+			children {
+				id
+				name
+				parent_id
+
+				children {
+					id
+					name
+					parent_id
+					children {
+						id
+						name
+						parent_id
+					}
+				}
+			}
+		}
 	}
 `;
 
@@ -44,11 +64,13 @@ export const productFragment = gql`
 		images {
 			...productImgAttrs
 		}
-		category_id
-		subcategory_id
+		categories {
+			...productCatAttrs
+		}
 	}
 	${productDescriptionFragment}
 	${productImageFragment}
+	${productCategoryFragment}
 `;
 
 export const authFragment = gql`

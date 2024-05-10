@@ -18,47 +18,21 @@ export type User = {
 export type Category = {
 	id: number;
 	name: string;
-	slug?: string;
+	parent_id: number | null;
+	children: Category[];
+	type: CategoryType;
+	type_name: string;
 	created_at?: Date;
 	updated_at?: Date;
-	subcategories?: Subcategory[];
-	groups?: Group[];
 	products?: Product[];
 };
 
-export type Subcategory = {
+export type CategoryType = {
 	id: number;
 	name: string;
-	slug?: string;
 	created_at?: Date;
 	updated_at?: Date;
-	products?: Product[];
-	category?: Category;
-	category_id?: number | null;
-};
-
-export type Group = {
-	id: number;
-	name: string;
-	slug?: string;
-	created_at?: Date;
-	updated_at?: Date;
-	products?: Product[];
-	category?: Category;
-	category_id?: number | null;
-	subcategory?: Subcategory;
-	subcategory_id?: number | null;
-};
-
-export type Type = {
-	id: number;
-	name: string;
-	slug?: string;
-	created_at?: Date;
-	updated_at?: Date;
-	products?: Product[];
-	group?: Group;
-	group_id?: number | null;
+	categories?: Category[];
 };
 
 export type Product = {
@@ -75,10 +49,7 @@ export type Product = {
 	reviews?: Review[];
 	admin?: User;
 	admin_id?: number | null;
-	category?: Category;
-	category_id?: number | null;
-	subcategory?: Subcategory;
-	subcategory_id?: number | null;
+	categories?: Category[];
 	order_items?: OrderItem[];
 	user?: User;
 	user_id?: number | null;
@@ -206,4 +177,18 @@ export type OrderItem = {
 	order_id?: number | null;
 	created_at: Date;
 	updated_at: Date;
+};
+
+// Response
+
+export type CategoriesResponse = {
+	getCategories: Category[];
+};
+
+export type CategoryTreeResponse = {
+	getCategoryTree: Category[];
+};
+
+export type CategoryTypesResponse = {
+	getCategoryType: CategoryType[];
 };

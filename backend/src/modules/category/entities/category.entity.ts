@@ -1,9 +1,10 @@
 import { ObjectType, Field, Int } from "@nestjs/graphql";
 import { Product } from "../../product/entities/product.entity";
-import { EnumCategoryType } from "@prisma/client";
+import { Category as CategoryEntity } from "@prisma/client";
+import { CategoryType } from "../../category-type/entities/category-type.entity";
 
 @ObjectType()
-export class Category {
+export class Category implements CategoryEntity {
 	@Field(() => Int)
 	id: number;
 
@@ -11,15 +12,18 @@ export class Category {
 	name: string;
 
 	@Field()
-	type: EnumCategoryType;
+	type: CategoryType;
 
 	@Field()
+	type_name: string;
+
+	@Field(() => Int, { nullable: true })
 	parent_id: number;
 
-	@Field()
+	@Field(() => Category)
 	parent: Category;
 
-	@Field()
+	@Field(() => [Category])
 	children: Category[];
 
 	@Field(() => [Product])

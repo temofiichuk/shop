@@ -1,6 +1,5 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { IsNumber, IsOptional, IsString, Matches } from "class-validator";
-import { EnumCategoryType } from "@prisma/client";
 
 @InputType()
 export class CreateCategoryInput {
@@ -10,7 +9,8 @@ export class CreateCategoryInput {
 	name: string;
 
 	@Field()
-	type: EnumCategoryType;
+	@IsString()
+	type_name: string;
 
 	@Field({ nullable: true })
 	@IsNumber()

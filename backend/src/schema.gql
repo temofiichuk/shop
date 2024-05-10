@@ -66,12 +66,10 @@ type AdminAvatar {
   avatar: String
 }
 
-type Category {
+type CategoryType {
   id: Int!
   name: String!
-  type: String!
-  parent_id: Float!
-  products: [Product!]!
+  categories: [Category!]!
   created_at: DateTime!
   updated_at: DateTime!
 }
@@ -80,6 +78,19 @@ type Category {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type Category {
+  id: Int!
+  name: String!
+  type: CategoryType!
+  type_name: String!
+  parent_id: Int
+  parent: Category!
+  children: [Category!]!
+  products: [Product!]!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
 
 type ProductDescription {
   id: Int!
@@ -149,9 +160,10 @@ type Query {
   reviewFindOne(pattern: String!): Review!
   reviewGetByProduct(id: Float!): Review!
   reviewGetByUser: Review!
-  categoryGetAll: [Category!]!
-  categoryFindOne(name: String!): Category!
+  getCategories(parent_id: Float): [Category!]!
+  getCategoryTree: [Category!]!
   attributeGetAll: [Attribute!]!
+  getCategoryTypes: [CategoryType!]!
 }
 
 input LoginUserInput {
@@ -180,12 +192,15 @@ type Mutation {
   reviewCreate(createReviewInput: CreateReviewInput!): Review!
   reviewUpdateStatus(id: Float!, status: String!): Review!
   reviewRemove(id: Float!): Review!
-  categoryCreate(createCategoryInput: CreateCategoryInput!): Category!
-  categoryUpdate(updateCategoryInput: UpdateCategoryInput!): Category!
-  categoryRemove(id: Float!): Category!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: Float!): Category!
   attributeCreate(createAttributeInput: CreateAttributeInput!): Attribute!
   attributeUpdate(updateAttributeInput: UpdateAttributeInput!): Attribute!
   attributeRemove(id: Float!): Attribute!
+  createCategoryType(createCategoryTypeInput: CreateCategoryTypeInput!): CategoryType!
+  updateCategoryType(updateCategoryTypeInput: UpdateCategoryTypeInput!): CategoryType!
+  removeCategoryType(id: Int!): CategoryType!
 }
 
 input CreateUserInput {
@@ -274,13 +289,13 @@ input CreateReviewInput {
 
 input CreateCategoryInput {
   name: String!
-  type: String!
+  type_name: String!
   parent_id: Float
 }
 
 input UpdateCategoryInput {
   name: String
-  type: String
+  type_name: String
   parent_id: Float
   id: Int!
 }
@@ -303,4 +318,13 @@ input UpdateAttributeInput {
 input UpdateAttributeValueInput {
   value: String
   id: Int
+}
+
+input CreateCategoryTypeInput {
+  name: String!
+}
+
+input UpdateCategoryTypeInput {
+  name: String
+  id: Int!
 }

@@ -47,21 +47,24 @@ enum EnumAdminType {
 }
 
 model Category {
-  id         Int              @id @unique @default(autoincrement())
+  id         Int           @id @unique @default(autoincrement())
   name       String
-  type       EnumCategoryType
-  parent     Category?        @relation("ParentChild", fields: [parent_id], references: [id])
-  parent_id  Int
-  children   Category[]       @relation("ParentChild")
-  created_at DateTime         @default(now())
-  updated_at DateTime         @updatedAt
+  type       CategoryType? @relation("Type", fields: [type_name], references: [name])
+  type_name  String?
+  parent     Category?     @relation("ParentChild", fields: [parent_id], references: [id])
+  parent_id  Int?
+  children   Category[]    @relation("ParentChild")
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
   products   Product[]
 }
 
-enum EnumCategoryType {
-  ROOT
-  SUB
-  CHILD
+model CategoryType {
+  id         Int        @id @unique @default(autoincrement())
+  name       String     @unique
+  categories Category[] @relation("Type")
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
 }
 
 model Product {
