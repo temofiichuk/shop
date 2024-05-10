@@ -247,7 +247,7 @@ input CreateProductInput {
     stock: Int!
     rating: Int
     images: [ImageInput!]
-    category_ids: [Int!]!
+    categories: [SetCategoryInput!]!
 }
 
 input DescriptionInput {
@@ -261,6 +261,11 @@ input ImageInput {
     is_main: Boolean!
 }
 
+input SetCategoryInput {
+    id: Float!
+    parent_id: Float!
+}
+
 input UpdateProductInput {
     name: String
     slug: String
@@ -270,7 +275,7 @@ input UpdateProductInput {
     stock: Int
     rating: Int
     images: [ImageInput!]
-    category_ids: [Int!]
+    categories: [SetCategoryInput!]
     id: Int!
     descriptions: [UpdateDescriptionInput!]!
 }

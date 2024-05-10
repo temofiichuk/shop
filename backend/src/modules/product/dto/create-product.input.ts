@@ -1,5 +1,6 @@
-import { InputType, Field, Int } from "@nestjs/graphql";
+import { InputType, Field, Int, PickType } from "@nestjs/graphql";
 import { IsBoolean, IsNumber, IsOptional, IsString, Matches } from "class-validator";
+import { Category } from "../../category/entities/category.entity";
 
 @InputType()
 export class DescriptionInput {
@@ -34,6 +35,15 @@ export class CategoryId {
 	@Field(() => Int)
 	@IsNumber()
 	id: number;
+}
+//
+@InputType()
+export class SetCategoryInput extends PickType(Category, ["id", "parent_id"]) {
+	@Field()
+	id: number;
+
+	@Field()
+	parent_id: number | null;
 }
 
 @InputType()
@@ -79,6 +89,6 @@ export class CreateProductInput {
 	@IsOptional()
 	images?: ImageInput[];
 
-	@Field(() => [Int])
-	category_ids: number[];
+	@Field(() => [SetCategoryInput])
+	categories: SetCategoryInput[];
 }
