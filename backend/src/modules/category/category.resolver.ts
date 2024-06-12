@@ -3,7 +3,6 @@ import { CategoryService } from "./category.service";
 import { Category } from "./entities/category.entity";
 import { CreateCategoryInput } from "./dto/create-category.input";
 import { UpdateCategoryInput } from "./dto/update-category.input";
-import { Auth } from "../auth/decorators/auth.decorators";
 import { AuthAdmin } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => Category)

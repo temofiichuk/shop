@@ -196,7 +196,7 @@ const AdminManageCategory = () => {
 	if (loadingCategoryTree) return <Spinner />;
 
 	return (
-		<Card className={"p-5 pl-0"}>
+		<Card className={"p-5 pl-0 mt-5"}>
 			<Typography variant="h2" className={"p-5"}>
 				Categories
 			</Typography>

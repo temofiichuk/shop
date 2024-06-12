@@ -3,26 +3,24 @@ import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "@/lib/graphql/queries";
 import { Card, Option, Select } from "@material-tailwind/react";
 import Spinner from "@/components/Spinner/Spinner";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { CategoriesResponse, Category } from "@/types/types";
 import React from "react";
 import InputError from "@/components/InputError/InputError";
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 const AdminProductCatWidget = () => {
 	const {
 		setValue,
-		getValues,
+		watch,
 		formState: { errors },
 		register,
 	} = useFormContext();
 
-	const {
-		data: dataCategories,
-		loading: loadingCategories,
-		error: errorCategories,
-		refetch: refetchCategories,
-	} = useQuery<CategoriesResponse>(GET_CATEGORIES);
+	const { data: dataCategories, loading: loadingCategories } =
+		useQuery<CategoriesResponse>(GET_CATEGORIES);
+
+	const currentCategories = watch("categories");
 
 	const categoriesMap = useMemo(() => {
 		const categoriesMap = new Map<number | null, Category[]>();
@@ -38,7 +36,6 @@ const AdminProductCatWidget = () => {
 	}, [dataCategories]);
 
 	const onChangeHandler = (value: string, parent_id: number | null) => {
-		const currentCategories = getValues("categories");
 		const updatedCategories = [];
 		let updated = false;
 
@@ -61,11 +58,15 @@ const AdminProductCatWidget = () => {
 		setValue("categories", updatedCategories);
 	};
 
+	useEffect(() => {
+		console.log(currentCategories);
+	}, [currentCategories]);
+
 	if (loadingCategories) return <Spinner />;
 
 	return (
 		<Card className={styles.wrapper}>
-			{getValues("categories").map(({ parent_id, id }: Category, i: number) => {
+			{currentCategories.map(({ parent_id, id }: Category, i: number) => {
 				if (!categoriesMap.has(parent_id)) return;
 				return (
 					<div key={parent_id}>
