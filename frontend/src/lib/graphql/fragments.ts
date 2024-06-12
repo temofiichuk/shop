@@ -29,23 +29,45 @@ export const productCategoryWithChildrenFragment = gql`
 		id
 		name
 		parent_id
+		type_name
 		children {
 			id
 			name
 			parent_id
+			type_name
 			children {
 				id
 				name
 				parent_id
-
+				type_name
 				children {
 					id
 					name
 					parent_id
+					type_name
 					children {
 						id
 						name
 						parent_id
+						type_name
+						children {
+							id
+							name
+							parent_id
+							type_name
+							children {
+								id
+								name
+								parent_id
+								type_name
+								children {
+									id
+									name
+									parent_id
+									type_name
+								}
+							}
+						}
 					}
 				}
 			}

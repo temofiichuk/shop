@@ -162,7 +162,17 @@ export const REMOVE_CATEGORY = gql`
 export const UPDATE_CATEGORY = gql`
 	mutation categoryUpdate($updateCategoryInput: UpdateCategoryInput!) {
 		updateCategory(updateCategoryInput: $updateCategoryInput) {
-			id
+			...productCatWithChildrenAttrs
 		}
 	}
+	${productCategoryWithChildrenFragment}
+`;
+
+export const SYNC_CATEGORIES = gql`
+	mutation categorySync($newCategories: [UpdateCategoryInput!]!) {
+		syncCategories(newCategories: $newCategories) {
+			...productCatWithChildrenAttrs
+		}
+	}
+	${productCategoryWithChildrenFragment}
 `;

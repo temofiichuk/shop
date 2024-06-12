@@ -193,7 +193,8 @@ type Mutation {
     reviewUpdateStatus(id: Float!, status: String!): Review!
     reviewRemove(id: Float!): Review!
     createCategory(createCategoryInput: CreateCategoryInput!): Category!
-    updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+    updateCategory(updateCategoryInput: UpdateCategoryInput!): [Category!]!
+    syncCategories(newCategories: [UpdateCategoryInput!]!): [Category!]!
     removeCategory(id: Float!): Category!
     attributeCreate(createAttributeInput: CreateAttributeInput!): Attribute!
     attributeUpdate(updateAttributeInput: UpdateAttributeInput!): Attribute!
@@ -302,7 +303,8 @@ input UpdateCategoryInput {
     name: String
     type_name: String
     parent_id: Int
-    id: Int!
+    id: Int
+    children: [UpdateCategoryInput!]
 }
 
 input CreateAttributeInput {

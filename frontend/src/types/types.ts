@@ -20,7 +20,7 @@ export type Category = {
 	name: string;
 	parent_id: number | null;
 	children: Category[];
-	type: CategoryType;
+	type?: CategoryType;
 	type_name: string;
 	created_at?: Date;
 	updated_at?: Date;
@@ -184,11 +184,15 @@ export type OrderItem = {
 export type CategoriesResponse = {
 	getCategories: Category[];
 };
-
 export type CategoryTreeResponse = {
 	getCategoryTree: Category[];
 };
-
+export type UpdateCategoriesResponse = {
+	updateCategories: Category[];
+};
+export type SyncCategoriesResponse = {
+	syncCategories: Category[];
+};
 export type CategoryTypesResponse = {
 	getCategoryType: CategoryType[];
 };
