@@ -14,21 +14,22 @@ export class ProductService {
 		private configService: ConfigService
 	) {}
 
-	async create(admin_id: number = 1, createProductInput: CreateProductInput) {
-		const { descriptions = [], category_ids, images = [], ...fields } = createProductInput;
+	generateSKU() {
+		const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		let sku = "";
+		for (let i = 0; i < 8; i++) {
+			sku += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+		return sku;
+	}
 
+	async create(
+		admin_id: number = 1,
+		{ descriptions = [], categories, images = [], ...fields }: CreateProductInput
+	) {
 		if (images.length > 0) {
 			const mainImage = images.find((item) => item.is_main);
 			if (!mainImage) images[0].is_main = true;
-		}
-
-		function generateSKU() {
-			const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-			let sku = "";
-			for (let i = 0; i < 8; i++) {
-				sku += chars.charAt(Math.floor(Math.random() * chars.length));
-			}
-			return sku;
 		}
 
 		try {
@@ -37,7 +38,7 @@ export class ProductService {
 					data: {
 						...fields,
 						slug: slugify(fields.name, { lower: true }),
-						sku: generateSKU(),
+						sku: fields?.sku ?? this.generateSKU(),
 						admin: {
 							connect: { id: admin_id },
 						},
@@ -47,20 +48,22 @@ export class ProductService {
 							},
 						},
 						categories: {
-							connect: category_ids.map((id) => ({ id })),
+							connect: categories.map(({ id }) => ({ id })),
 						},
 					},
 					include: productRelativeFields,
 				});
 
-				images.forEach(({ url, name, is_main }) => {
-					prisma.image.upsert({
-						where: { url },
-						update: { is_main, name },
-						create: { url, name, is_main, product: { connect: { id: product.id } } },
-						// select: { id: true },
-					});
-				});
+				await Promise.all(
+					images.map(({ url, name, is_main }) =>
+						prisma.image.upsert({
+							where: { url, product_id: product.id },
+							update: { is_main, name },
+							create: { url, name, is_main, product: { connect: { id: product.id } } },
+						})
+					)
+				);
+
 				return product;
 			});
 		} catch (error) {
@@ -111,6 +114,9 @@ export class ProductService {
 							id: { notIn: descIds },
 							product_id: id,
 						},
+					},
+					categories: {
+						set: updateFields.categories.map((category) => ({ id: category.id })),
 					},
 				},
 				include: productRelativeFields,

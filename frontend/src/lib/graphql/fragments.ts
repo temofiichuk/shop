@@ -20,15 +20,58 @@ export const productCategoryFragment = gql`
 	fragment productCatAttrs on Category {
 		id
 		name
-		slug
+		parent_id
 	}
 `;
 
-export const productSubcategoryFragment = gql`
-	fragment productSubCatAttrs on Subcategory {
+export const productCategoryWithChildrenFragment = gql`
+	fragment productCatWithChildrenAttrs on Category {
 		id
 		name
-		slug
+		parent_id
+		type_name
+		children {
+			id
+			name
+			parent_id
+			type_name
+			children {
+				id
+				name
+				parent_id
+				type_name
+				children {
+					id
+					name
+					parent_id
+					type_name
+					children {
+						id
+						name
+						parent_id
+						type_name
+						children {
+							id
+							name
+							parent_id
+							type_name
+							children {
+								id
+								name
+								parent_id
+								type_name
+								children {
+									id
+									name
+									parent_id
+									type_name
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 `;
 
@@ -44,11 +87,13 @@ export const productFragment = gql`
 		images {
 			...productImgAttrs
 		}
-		category_id
-		subcategory_id
+		categories {
+			...productCatAttrs
+		}
 	}
 	${productDescriptionFragment}
 	${productImageFragment}
+	${productCategoryFragment}
 `;
 
 export const authFragment = gql`

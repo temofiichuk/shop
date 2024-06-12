@@ -1,3 +1,4 @@
+"use client";
 import { ComponentType, FC, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { redirect } from "next/navigation";

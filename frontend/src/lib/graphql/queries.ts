@@ -1,5 +1,10 @@
 import { gql } from "@apollo/client";
-import { authFragment, productFragment } from "@/lib/graphql/fragments";
+import {
+	authFragment,
+	productCategoryFragment,
+	productCategoryWithChildrenFragment,
+	productFragment,
+} from "@/lib/graphql/fragments";
 
 // ------------ USER ----------- //
 
@@ -110,24 +115,38 @@ export const REMOVE_PRODUCT = gql`
 
 // ----------- CATEGORIES -------------- //
 
-export const GET_CATEGORIES = gql`
+export const GET_CATEGORY_TREE = gql`
 	query {
-		categoryGetAll {
+		getCategoryTree {
+			...productCatWithChildrenAttrs
+		}
+	}
+	${productCategoryWithChildrenFragment}
+`;
+
+export const GET_CATEGORIES = gql`
+	query getCategories($parent_id: Float) {
+		getCategories(parent_id: $parent_id) {
 			id
 			name
-			slug
-			subcategories {
-				id
-				name
-				slug
-			}
+			parent_id
+			type_name
+		}
+	}
+`;
+
+export const GET_CATEGORY_TYPES = gql`
+	query {
+		getCategoryTypes {
+			id
+			name
 		}
 	}
 `;
 
 export const CREATE_CATEGORY = gql`
 	mutation categoryCreate($createCategoryInput: CreateCategoryInput!) {
-		categoryCreate(createCategoryInput: $createCategoryInput) {
+		createCategory(createCategoryInput: $createCategoryInput) {
 			id
 		}
 	}
@@ -135,122 +154,25 @@ export const CREATE_CATEGORY = gql`
 
 export const REMOVE_CATEGORY = gql`
 	mutation categoryRemove($id: Float!) {
-		categoryRemove(id: $id) {
+		removeCategory(id: $id) {
 			id
 		}
 	}
 `;
 export const UPDATE_CATEGORY = gql`
 	mutation categoryUpdate($updateCategoryInput: UpdateCategoryInput!) {
-		categoryUpdate(updateCategoryInput: $updateCategoryInput) {
-			id
+		updateCategory(updateCategoryInput: $updateCategoryInput) {
+			...productCatWithChildrenAttrs
 		}
 	}
+	${productCategoryWithChildrenFragment}
 `;
 
-// ----------- SUBCATEGORIES -------------- //
-
-export const GET_SUBCATEGORIES = gql`
-	query subcategoryGetAll($category_id: Float!) {
-		subcategoryGetAll(category_id: $category_id) {
-			id
-			name
-			slug
+export const SYNC_CATEGORIES = gql`
+	mutation categorySync($newCategories: [UpdateCategoryInput!]!) {
+		syncCategories(newCategories: $newCategories) {
+			...productCatWithChildrenAttrs
 		}
 	}
-`;
-
-export const CREATE_SUBCATEGORY = gql`
-	mutation subcategoryCreate($createSubcategoryInput: CreateSubcategoryInput!) {
-		subcategoryCreate(createSubcategoryInput: $createSubcategoryInput) {
-			id
-		}
-	}
-`;
-
-export const REMOVE_SUBCATEGORY = gql`
-	mutation subcategoryRemove($id: Float!) {
-		subcategoryRemove(id: $id) {
-			id
-		}
-	}
-`;
-export const UPDATE_SUBCATEGORY = gql`
-	mutation subcategoryUpdate($updateSubcategoryInput: UpdateSubcategoryInput!) {
-		subcategoryUpdate(updateSubcategoryInput: $updateSubcategoryInput) {
-			id
-		}
-	}
-`;
-
-// ----------- GROUPS -------------- //
-
-export const GET_GROUPS = gql`
-	query getAllGroups($category_id: Float, $subcategory_id: Float) {
-		findAllGroups(category_id: $category_id, subcategory_id: $subcategory_id) {
-			id
-			name
-			slug
-		}
-	}
-`;
-
-export const CREATE_GROUP = gql`
-	mutation createGroup($createGroupInput: CreateGroupInput!) {
-		createGroup(createGroupInput: $createGroupInput) {
-			id
-		}
-	}
-`;
-
-export const REMOVE_GROUP = gql`
-	mutation removeGroup($id: Float!) {
-		removeGroup(id: $id) {
-			id
-		}
-	}
-`;
-
-export const UPDATE_GROUP = gql`
-	mutation updateGroup($updateGroupInput: UpdateGroupInput!) {
-		updateGroup(updateGroupInput: $updateGroupInput) {
-			id
-		}
-	}
-`;
-
-// ----------- TYPES -------------- //
-
-export const GET_TYPES = gql`
-	query getAllTypes($group_id: Float!) {
-		findAllTypes(group_id: $group_id) {
-			id
-			name
-			slug
-		}
-	}
-`;
-
-export const CREATE_TYPE = gql`
-	mutation createType($createTypeInput: CreateTypeInput!) {
-		createType(createTypeInput: $createTypeInput) {
-			id
-		}
-	}
-`;
-
-export const REMOVE_TYPE = gql`
-	mutation removeType($id: Int!) {
-		removeType(id: $id) {
-			id
-		}
-	}
-`;
-
-export const UPDATE_TYPE = gql`
-	mutation updateType($updateTypeInput: UpdateTypeInput!) {
-		updateType(updateTypeInput: $updateTypeInput) {
-			id
-		}
-	}
+	${productCategoryWithChildrenFragment}
 `;

@@ -1,261 +1,183 @@
 import styles from "./AdminProductCatWidget.module.scss";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { FieldName, FieldValues, useFormContext, useWatch } from "react-hook-form";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import {
-	CREATE_CATEGORY,
-	CREATE_SUBCATEGORY,
-	GET_CATEGORIES,
-	GET_SUBCATEGORIES,
-	GET_GROUPS,
-	GET_TYPES,
-	CREATE_GROUP,
-	CREATE_TYPE,
-} from "@/lib/graphql/queries";
-import { Category, Subcategory, Group, Type as ProductType } from "@/types/types";
-import AdminControlledSelect from "@/components/AdminControlledSelect/AdminControlledSelect";
-import { Button, ButtonGroup, Card } from "@material-tailwind/react";
-import resetFields from "@/utils/resetFieldsHelper";
-
-type MapOptions = (val: { id: number; name: string }) => { value: string; label: string };
-
-const mapOptions: MapOptions = ({ id, name }) => ({
-	value: id.toString(),
-	label: name,
-});
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORIES } from "@/lib/graphql/queries";
+import { Card, Option, Select } from "@material-tailwind/react";
+import Spinner from "@/components/Spinner/Spinner";
+import { useEffect, useMemo } from "react";
+import { CategoriesResponse, Category } from "@/types/types";
+import React from "react";
+import InputError from "@/components/InputError/InputError";
+import { useFormContext } from "react-hook-form";
 
 const AdminProductCatWidget = () => {
-	const [isShownFields, setIsShownFields] = useState({
-		subcategory: false,
-		group: false,
-	});
+	const {
+		setValue,
+		watch,
+		formState: { errors },
+		register,
+	} = useFormContext();
 
-	const { resetField } = useFormContext();
+	const { data: dataCategories, loading: loadingCategories } =
+		useQuery<CategoriesResponse>(GET_CATEGORIES);
 
-	// Fetching
-	const { data: categories, refetch: refetchCategories } = useQuery<{
-		categoryGetAll: Category[];
-	}>(GET_CATEGORIES);
+	const currentCategories = watch("categories");
 
-	const [
-		fetchSubcategories,
-		{ data: subcategories, refetch: refetchSubcategories, loading: loadingSubcategories },
-	] = useLazyQuery<{
-		subcategoryGetAll: Subcategory[];
-	}>(GET_SUBCATEGORIES);
-
-	const [
-		fetchGroups,
-		{ data: groups, refetch: refetchGroups, error: errorGroup, loading: loadingGroups },
-	] = useLazyQuery<{
-		findAllGroups: Group[];
-	}>(GET_GROUPS);
-
-	const [fetchProductTypes, { data: productTypes, refetch: refetchProductTypes }] = useLazyQuery<{
-		findAllTypes: ProductType[];
-	}>(GET_TYPES);
-
-	// Creating
-	const [
-		createCategory,
-		{ data: createdCategory, loading: createCatLoading, error: createCatError },
-	] = useMutation<{
-		categoryCreate: Category[];
-	}>(CREATE_CATEGORY);
-
-	const [
-		createSubcategory,
-		{ data: createdSubcategory, loading: createSubcatLoading, error: createSubcatError },
-	] = useMutation<{
-		subcategoryCreate: Subcategory[];
-	}>(CREATE_SUBCATEGORY);
-
-	const [
-		createGroup,
-		{ data: createdGroup, loading: createGroupLoading, error: createGroupError },
-	] = useMutation<{
-		createGroup: Group[];
-	}>(CREATE_GROUP);
-
-	const [
-		createProductType,
-		{ data: createdProductType, loading: createTypeLoading, error: createTypeError },
-	] = useMutation<{
-		createType: ProductType[];
-	}>(CREATE_TYPE);
-
-	// Watching
-	const catID = useWatch({ name: "category_id" });
-	const subcatID = useWatch({ name: "subcategory_id" });
-	const groupID = useWatch({ name: "group_id" });
-
-	// Memoization
-	const categoriesOptions = useMemo(() => {
-		return categories?.categoryGetAll.map(mapOptions);
-	}, [categories]);
-
-	const subcategoriesOptions = useMemo(() => {
-		return subcategories?.subcategoryGetAll.map(mapOptions);
-	}, [subcategories]);
-
-	const groupsOptions = useMemo(() => {
-		return groups?.findAllGroups.map(mapOptions);
-	}, [groups]);
-
-	const typesOptions = useMemo(() => {
-		return productTypes?.findAllTypes.map(mapOptions);
-	}, [productTypes]);
-
-	const createCategoryHandler = useCallback(
-		(value: string) => createCategory({ variables: { createCategoryInput: { name: value } } }),
-		[]
-	);
-
-	const createSubcategoryHandler = useCallback(
-		(value: string) =>
-			createSubcategory({
-				variables: { createSubcategoryInput: { name: value, category_id: +catID } },
-			}),
-		[catID]
-	);
-
-	const createGroupHandler = useCallback(
-		(value: string) => {
-			if (subcatID && subcatID !== 0) {
-				createGroup({
-					variables: { createGroupInput: { name: value, subcategory_id: +subcatID } },
-				});
-				return;
-			}
-			createGroup({
-				variables: { createGroupInput: { name: value, category_id: +catID } },
-			});
-		},
-		[subcatID, catID]
-	);
-
-	const createProductTypeHandler = useCallback(
-		(value: string) =>
-			createProductType({
-				variables: { createTypeInput: { name: value, group_id: +groupID } },
-			}),
-		[groupID]
-	);
-
-	// ReFetching
-	useEffect(() => {
-		if (!createdCategory) return;
-		refetchCategories();
-	}, [createdCategory]);
-
-	useEffect(() => {
-		if (!createdSubcategory) return;
-		refetchSubcategories();
-	}, [createdSubcategory]);
-
-	useEffect(() => {
-		if (!createdGroup) return;
-		refetchGroups();
-	}, [createdGroup]);
-
-	useEffect(() => {
-		if (!createdProductType) return;
-		refetchProductTypes();
-	}, [createdProductType]);
-
-	// Fetching after Select
-	useEffect(() => {
-		resetFields(["subcategory_id", "group_id", "type_id"], resetField);
-
-		if (catID === 0) return;
-		const options = { variables: { category_id: +catID } };
-		setIsShownFields({ subcategory: false, group: false });
-		fetchSubcategories(options);
-		fetchGroups(options);
-	}, [catID]);
-
-	useEffect(() => {
-		resetFields(["group_id", "type_id"], resetField);
-		setIsShownFields({ subcategory: true, group: false });
-		if (subcatID === 0) return;
-		fetchGroups({ variables: { subcategory_id: +subcatID } });
-	}, [subcatID]);
-
-	useEffect(() => {
-		resetField("type_id");
-		if (groupID === 0) return;
-		fetchProductTypes({ variables: { group_id: +groupID } });
-	}, [groupID]);
-
-	useEffect(() => {
-		setIsShownFields({
-			subcategory: !!subcategories && subcategories?.subcategoryGetAll.length > 0,
-			group: !!groups && groups?.findAllGroups.length > 0,
+	const categoriesMap = useMemo(() => {
+		const categoriesMap = new Map<number | null, Category[]>();
+		dataCategories?.getCategories.map((category) => {
+			categoriesMap.set(
+				category.parent_id,
+				categoriesMap.has(category.parent_id)
+					? [...(categoriesMap.get(category.parent_id) ?? []), category]
+					: [category]
+			);
 		});
-	}, [subcategories, groups]);
+		return categoriesMap;
+	}, [dataCategories]);
 
-	// Comparisons
-	const isSubcategory = !!subcategoriesOptions && catID !== 0 && !loadingSubcategories;
-	const isGroup = !!groupsOptions && (subcatID !== 0 || catID !== 0) && !loadingGroups;
-	const isType = (subcatID !== 0 || catID !== 0) && !!typesOptions && groupID !== 0;
-	const isShownButtons =
-		catID !== 0 &&
-		!isShownFields.group &&
-		!isShownFields.subcategory &&
-		!loadingSubcategories &&
-		!loadingGroups;
+	const onChangeHandler = (value: string, parent_id: number | null) => {
+		const updatedCategories = [];
+		let updated = false;
+
+		for (let i = 0; i < currentCategories.length; i++) {
+			if (updated) break;
+			const category = currentCategories[i];
+
+			if (category.parent_id === parent_id) {
+				updatedCategories.push({ ...category, id: Number(value) });
+				updated = true;
+			} else {
+				updatedCategories.push(category);
+			}
+		}
+
+		if (categoriesMap.has(Number(value))) {
+			updatedCategories.push({ id: 0, parent_id: Number(value) });
+		}
+
+		setValue("categories", updatedCategories);
+	};
+
+	useEffect(() => {
+		console.log(currentCategories);
+	}, [currentCategories]);
+
+	if (loadingCategories) return <Spinner />;
 
 	return (
 		<Card className={styles.wrapper}>
-			{categoriesOptions && (
-				<AdminControlledSelect
-					label="Category"
-					name="category_id"
-					options={categoriesOptions}
-					onCreateOption={createCategoryHandler}
-					isLoading={createCatLoading}
-				/>
-			)}
-			{isShownButtons && (
-				<ButtonGroup size={"sm"} className={"m-auto"}>
-					<Button onClick={() => setIsShownFields({ subcategory: true, group: false })}>
-						Add Subcategory
-					</Button>
-					<Button onClick={() => setIsShownFields({ subcategory: false, group: true })}>
-						Add Group
-					</Button>
-				</ButtonGroup>
-			)}
-			{isSubcategory && isShownFields.subcategory && (
-				<AdminControlledSelect
-					label="Subcategory"
-					name="subcategory_id"
-					options={subcategoriesOptions}
-					onCreateOption={createSubcategoryHandler}
-					isLoading={createSubcatLoading}
-				/>
-			)}
-			{isGroup && isShownFields.group && (
-				<AdminControlledSelect
-					label="Group"
-					name="group_id"
-					options={groupsOptions}
-					onCreateOption={createGroupHandler}
-					isLoading={createGroupLoading}
-				/>
-			)}
-			{isType && (
-				<AdminControlledSelect
-					label="Type"
-					name="type_id"
-					options={typesOptions}
-					onCreateOption={createProductTypeHandler}
-					isLoading={createTypeLoading}
-				/>
-			)}
+			{currentCategories.map(({ parent_id, id }: Category, i: number) => {
+				if (!categoriesMap.has(parent_id)) return;
+				return (
+					<div key={parent_id}>
+						<Select
+							{...register(`categories.${i}.id`)}
+							label="Category"
+							key={parent_id}
+							onChange={(value) => value && onChangeHandler(value, parent_id)}
+							value={id.toString()}
+							children={categoriesMap
+								.get(parent_id)
+								?.map((cat) => (
+									<Option key={cat.id} value={cat.id.toString()} children={cat.name} />
+								))}
+						/>
+						<InputError errors={errors} name={`categories.${i}.id`} />
+					</div>
+				);
+			})}
 		</Card>
 	);
 };
 
 AdminProductCatWidget.displayName = "AdminProductCatWidget";
 export default AdminProductCatWidget;
+
+// const AdminProductCatWidget = () => {
+// 	const {
+// 		setValue,
+// 		getValues,
+// 		formState: { errors },
+// 		register,
+// 	} = useFormContext();
+//
+// 	const [categories, setCategories] = useState<Pick<Category, "id" | "parent_id">[]>(
+// 		getValues("categories")
+// 	);
+// 	// const [fields, setFields] = useState([{ id: "", parent_id: 0 }]);
+//
+// 	const {
+// 		data: dataCategories,
+// 		loading: loadingCategories,
+// 		error: errorCategories,
+// 		refetch: refetchCategories,
+// 	} = useQuery<CategoriesResponse>(GET_CATEGORIES);
+//
+// 	const categoriesMap = useMemo(() => {
+// 		const categoriesMap = new Map<number | 0, Category[]>();
+// 		dataCategories?.getCategories.map((category) => {
+// 			categoriesMap.set(
+// 				category.parent_id ?? 0,
+// 				categoriesMap.has(category.parent_id ?? 0)
+// 					? [...categoriesMap.get(category.parent_id ?? 0)!, category]
+// 					: [category]
+// 			);
+// 		});
+// 		return categoriesMap;
+// 	}, [dataCategories]);
+//
+// 	const onChangeHandler = useCallback(
+// 		(value: string, parent_id: number | null) => {
+// 			setCategories((prevState) => {
+// 				let newState: Pick<Category, "id" | "parent_id">[] = [];
+// 				let isReset = false;
+//
+// 				for (let j = 0; j < prevState.length; j++) {
+// 					if (isReset) break;
+// 					if (prevState[j].parent_id === parent_id) {
+// 						prevState[j].id = Number(value);
+// 						isReset = true;
+// 					}
+// 					newState.push(prevState[j]);
+// 				}
+//
+// 				return categoriesMap.has(Number(value))
+// 					? [...newState, { id: 0, parent_id: Number(value) }]
+// 					: [...newState];
+// 			});
+// 		},
+// 		[categoriesMap]
+// 	);
+//
+// 	useEffect(() => {
+// 		setValue("categories", categories);
+// 		console.log(categories);
+// 	}, [categories]);
+//
+// 	if (loadingCategories) return <Spinner />;
+//
+// 	return (
+// 		<Card className={styles.wrapper}>
+// 			{categories.map(({ parent_id, id }, i) => {
+// 				if (!categoriesMap.has(parent_id ?? 0)) return;
+// 				return (
+// 					<div key={parent_id}>
+// 						<Select
+// 							{...register(`categories.${i}.id`)}
+// 							label="Category"
+// 							key={parent_id}
+// 							onChange={(value) => value && onChangeHandler(value, parent_id ?? 0)}
+// 							value={id.toString()}
+// 							children={categoriesMap
+// 								.get(parent_id ?? 0)
+// 								?.map((cat) => (
+// 									<Option key={cat.id} value={cat.id.toString()} children={cat.name} />
+// 								))}
+// 						/>
+// 						<InputError errors={errors} name={`categories.${i}.id`} />
+// 					</div>
+// 				);
+// 			})}
+// 		</Card>
+// 	);
+// };

@@ -3,21 +3,38 @@ import { CategoryService } from "./category.service";
 import { Category } from "./entities/category.entity";
 import { CreateCategoryInput } from "./dto/create-category.input";
 import { UpdateCategoryInput } from "./dto/update-category.input";
+import { AuthAdmin } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => Category)
 export class CategoryResolver {
 	constructor(private readonly categoryService: CategoryService) {}
 
+	@AuthAdmin()
 	@Mutation(() => Category)
 	createCategory(@Args("createCategoryInput") createCategoryInput: CreateCategoryInput) {
 		return this.categoryService.create(createCategoryInput);
 	}
 
-	@Mutation(() => Category)
-	updateCategory(@Args("updateCategoryInput") updateCategoryInput: UpdateCategoryInput) {
+	@AuthAdmin()
+	@Mutation(() => [Category])
+	updateCategory(
+		@Args("updateCategoryInput")
+		updateCategoryInput: UpdateCategoryInput
+	) {
 		return this.categoryService.update(updateCategoryInput);
 	}
 
+	@AuthAdmin()
+	@Mutation(() => [Category])
+	syncCategories(
+		@Args("newCategories", { type: () => [UpdateCategoryInput] })
+		newCategories: UpdateCategoryInput[]
+	) {
+		console.log(1);
+		return this.categoryService.sync(newCategories);
+	}
+
+	@AuthAdmin()
 	@Mutation(() => Category)
 	removeCategory(@Args("id") id: number) {
 		return this.categoryService.remove(id);
