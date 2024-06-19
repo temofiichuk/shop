@@ -30,7 +30,6 @@ export class CategoryResolver {
 		@Args("newCategories", { type: () => [UpdateCategoryInput] })
 		newCategories: UpdateCategoryInput[]
 	) {
-		console.log(await this.categoryService.sync(newCategories));
 		return this.categoryService.sync(newCategories);
 	}
 

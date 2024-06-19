@@ -34,7 +34,7 @@ export class CategoryService {
 
 				// Process new categories
 				for (const category of newCategories) {
-					await this.upsertCategory(category, null, existingCategoriesMap);
+					await this.upsert(category, null, existingCategoriesMap);
 				}
 
 				// Delete categories that are not in the new array
@@ -42,7 +42,7 @@ export class CategoryService {
 					await this.prisma.category.delete({ where: { id } });
 				}
 
-				return this.buildCategoryTree(await this.prisma.category.findMany());
+				return this.buildTree(await this.prisma.category.findMany());
 			});
 		} catch (error) {
 			throw new GraphQLError(error);
@@ -57,7 +57,7 @@ export class CategoryService {
 		return this.prisma.category.delete({ where: { id } });
 	}
 
-	async findAll(parent_id: number = null) {
+	async findAll(parent_id: number) {
 		return this.prisma.category.findMany({ where: { parent_id } });
 	}
 
@@ -79,7 +79,7 @@ export class CategoryService {
 		};
 	}
 
-	private async buildCategoryTree(categories: CategoryFromPrisma[]) {
+	private async buildTree(categories: CategoryFromPrisma[]) {
 		const topLevelCategories: Category[] = [];
 
 		// A function for recursive construction of a tree of categories
@@ -97,7 +97,7 @@ export class CategoryService {
 		return topLevelCategories;
 	}
 
-	private async flattenCategoryTree(categoryTree: Category[]) {
+	private async flattenTree(categoryTree: Category[]) {
 		const flatCategories: Category[] = [];
 
 		// A recursive function to flatten the tree
@@ -136,7 +136,7 @@ export class CategoryService {
 		return Number(response[0].max_depth);
 	}
 
-	private async upsertCategory(
+	private async upsert(
 		category: UpdateCategoryInput,
 		parentId: number,
 		existingCategoriesMap: Map<number, Category>
@@ -176,7 +176,7 @@ export class CategoryService {
 		// Recursively process children
 		if (children?.length > 0) {
 			for (const child of children) {
-				await this.upsertCategory(child, newCategoryID ?? id, existingCategoriesMap);
+				await this.upsert(child, newCategoryID ?? id, existingCategoriesMap);
 			}
 		}
 	}
