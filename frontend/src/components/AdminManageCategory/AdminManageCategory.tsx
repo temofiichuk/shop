@@ -122,17 +122,15 @@ const Item = memo(
 );
 
 const AdminManageCategory = () => {
-	// console.clear();
 	const {
 		data: dataCategoryTree,
 		loading: loadingCategoryTree,
 		error: errorCategoryTree,
-		refetch: refetchCategoryTree,
 	} = useQuery<CategoryTreeResponse>(GET_CATEGORY_TREE);
 
 	const [
 		syncCategories,
-		{ data: dataSyncCategories, loading: loadingSyncCategories, error: errorUpdateCategories },
+		{ data: dataSyncCategories, loading: loadingSyncCategories, error: errorSyncCategories },
 	] = useMutation<SyncCategoriesResponse>(SYNC_CATEGORIES);
 
 	// const {
@@ -149,34 +147,11 @@ const AdminManageCategory = () => {
 
 	const { fields, append, remove } = useFieldArray({ control, name: "categories" });
 
-	// const flattenCategoryTree = useCallback((categoryTree: Category[]) => {
-	// 	const flatCategories: Category[] = [];
-	//
-	// 	// A recursive function to flatten the tree
-	// 	const flatten = (categories: Category[]) => {
-	// 		for (const category of categories) {
-	// 			const { children, ...categoryWithoutChildren } = category;
-	// 			flatCategories.unshift(categoryWithoutChildren as Category);
-	//
-	// 			children?.length > 0 && flatten(children);
-	// 		}
-	// 	};
-	//
-	// 	// Start flattening from the top-level categories
-	// 	flatten(categoryTree);
-	//
-	// 	return flatCategories;
-	// }, []);
-
 	const onSubmitHandler = useCallback(
 		({ categories }: IFormCategories) => {
-			console.log(categories);
-
-			syncCategories({ variables: { newCategories: categories } });
-			// updateCategories({ variables: { updateCategoryInput: flattenCategoryTree(categories) } });
+			syncCategories({ variables: { newCategories: categories } }).catch((e) => console.dir(e));
 		},
 		[syncCategories]
-		// [updateCategories, flattenCategoryTree]
 	);
 
 	// Sync Form Values

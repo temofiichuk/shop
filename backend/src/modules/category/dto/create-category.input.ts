@@ -16,4 +16,9 @@ export class CreateCategoryInput {
 	@IsNumber()
 	@IsOptional()
 	parent_id: number | null;
+
+	@Field({ nullable: true })
+	@IsString()
+	@IsOptional()
+	slug: string;
 }

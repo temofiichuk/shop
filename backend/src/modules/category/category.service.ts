@@ -5,6 +5,8 @@ import { PrismaService } from "../../prisma.service";
 import { ConfigService } from "@nestjs/config";
 import { Category } from "./entities/category.entity";
 import { Category as CategoryFromPrisma, Prisma } from "@prisma/client";
+import slugify from "slugify";
+import { GraphQLError } from "graphql/error/GraphQLError";
 
 @Injectable()
 export class CategoryService {
@@ -18,29 +20,33 @@ export class CategoryService {
 	}
 
 	async sync(newCategories: UpdateCategoryInput[]) {
-		await this.prisma.$transaction(async (prisma) => {
-			// Fetch all existing categories from the database
-			const existingCategories = (await prisma.category.findMany({
-				include: { children: true },
-			})) as Category[];
+		try {
+			return this.prisma.$transaction(async (prisma) => {
+				// Fetch all existing categories from the database
+				const existingCategories = (await prisma.category.findMany({
+					include: { children: true },
+				})) as Category[];
 
-			// Create a map of existing categories by ID for quick lookup
-			const existingCategoriesMap = new Map<number, Category>(
-				existingCategories.map((cat) => [cat.id, cat])
-			);
+				// Create a map of existing categories by ID for quick lookup
+				const existingCategoriesMap = new Map<number, Category>(
+					existingCategories.map((cat) => [cat.id, cat])
+				);
 
-			// Process new categories
-			for (const category of newCategories) {
-				await this.upsertCategory(category, null, existingCategoriesMap);
-			}
+				// Process new categories
+				for (const category of newCategories) {
+					await this.upsertCategory(category, null, existingCategoriesMap);
+				}
 
-			// Delete categories that are not in the new array
-			for (const [id] of existingCategoriesMap) {
-				await this.prisma.category.delete({ where: { id } });
-			}
-		});
+				// Delete categories that are not in the new array
+				for (const [id] of existingCategoriesMap) {
+					await this.prisma.category.delete({ where: { id } });
+				}
 
-		return await this.buildCategoryTree(await this.prisma.category.findMany());
+				return this.buildCategoryTree(await this.prisma.category.findMany());
+			});
+		} catch (error) {
+			throw new GraphQLError(error);
+		}
 	}
 
 	async update({ id, children, ...category }: UpdateCategoryInput) {
@@ -51,15 +57,8 @@ export class CategoryService {
 		return this.prisma.category.delete({ where: { id } });
 	}
 
-	async findAll(parent_id: number) {
-		try {
-			if (!parent_id) {
-				return this.prisma.category.findMany();
-			}
-			return this.prisma.category.findMany({ where: { parent_id } });
-		} catch (e) {
-			console.log(e);
-		}
+	async findAll(parent_id: number = null) {
+		return this.prisma.category.findMany({ where: { parent_id } });
 	}
 
 	async getCategoryTree() {
@@ -155,6 +154,7 @@ export class CategoryService {
 					name,
 					parent: parentId ? { connect: { id: parentId } } : undefined,
 					type: type_name ? { connect: { name: type_name } } : undefined,
+					slug: slugify(name),
 				},
 			});
 
@@ -167,6 +167,7 @@ export class CategoryService {
 					name,
 					parent: parentId ? { connect: { id: parentId } } : undefined,
 					type: type_name ? { connect: { name: type_name } } : undefined,
+					slug: slugify(name),
 				},
 			});
 			newCategoryID = newCategory.id;

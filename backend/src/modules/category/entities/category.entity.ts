@@ -30,6 +30,9 @@ export class Category implements CategoryEntity {
 	products: Product[];
 
 	@Field()
+	slug: string;
+
+	@Field()
 	created_at: Date;
 
 	@Field()
