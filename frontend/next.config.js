@@ -9,7 +9,7 @@ const nextConfig = {
 	},
 	async redirects() {
 		return [
-			{ source: "/", destination: "/shop/shoes", permanent: true },
+			{ source: "/", destination: "/shop/woman", permanent: true },
 			{
 				source: "/shop",
 				destination: `/shop/${process.env.NEXT_PUBLIC_MAIN_PAGE}`,
