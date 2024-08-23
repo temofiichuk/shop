@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
-import { PrismaService } from "src/prisma.service";
+import { LoginUserInput } from "./dto/login-auth-user.input";
+import { Prisma, User } from "@prisma/client";
 import { verify } from "argon2";
+import { PrismaService } from "../../prisma.service";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import { LoginUserInput } from "./dto/login-user.input";
-import { Prisma, User } from "@prisma/client";
 
 @Injectable()
-export class AuthService {
+export class AuthUserService {
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly jwt: JwtService,

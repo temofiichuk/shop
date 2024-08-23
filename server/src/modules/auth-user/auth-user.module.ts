@@ -1,20 +1,20 @@
 import { Module } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { AuthResolver } from "./auth.resolver";
+import { AuthUserService } from "./auth-user.service";
+import { AuthUserResolver } from "./auth-user.resolver";
 import { PrismaService } from "src/prisma.service";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { getJWTConfig } from "src/config/jwt.config";
-import { JwtAuthStrategy } from "./jwt.strategy";
+import { JwtAuthUserStrategy } from "./jwt.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { UserService } from "../user/user.service";
 
 @Module({
 	providers: [
-		AuthResolver,
-		AuthService,
+		AuthUserResolver,
+		AuthUserService,
 		PrismaService,
-		JwtAuthStrategy,
+		JwtAuthUserStrategy,
 		UserService,
 	],
 	imports: [
@@ -27,5 +27,5 @@ import { UserService } from "../user/user.service";
 		PassportModule,
 	],
 })
-export class AuthModule {
+export class AuthUserModule {
 }

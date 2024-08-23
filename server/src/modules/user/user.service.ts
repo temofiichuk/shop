@@ -11,49 +11,56 @@ export class UserService {
 	}
 
 	async create(createUserInput: CreateUserInput) {
-		const availableUser = await this.prisma.user.findUnique({
-			where: { email: createUserInput.email },
+		const availableUsers = await this.prisma.user.findMany({
+			where: { OR: [{ email: createUserInput.email }, { username: createUserInput.username }] },
 		});
-		if (availableUser) throw new BadGatewayException("User already exists");
+		if (!!availableUsers.length) throw new BadGatewayException("User with this username or email already exists");
 
 		createUserInput.password = await hash(createUserInput.password);
 
-		const user = await this.prisma.user.create({ data: createUserInput });
-		if (!user) throw new BadGatewayException("User not created");
-
-		return { message: "User was created" };
+		try {
+			return await this.prisma.user.create({ data: createUserInput });
+		} catch (e) {
+			throw new BadGatewayException("User not created", { cause: e });
+		}
 	}
 
-	async getById(id: number, selects: Prisma.UserSelect = {}) {
-		const users = await this.prisma.user.findUnique({
+	async getById(id: number, select: Prisma.UserSelect = {}) {
+		const user = await this.prisma.user.findUnique({
 			where: { id: id },
-			select: {
-				...selects,
-			},
+			select,
 		});
-		if (!users) throw new BadGatewayException("Users not found");
-		return users;
+		if (!user) throw new BadGatewayException("User not found");
+		return user;
 	}
 
 	async update(id: number, updateUserInput: UpdateUserInput) {
-		const availableUser = await this.prisma.user.findUnique({
-			where: { email: updateUserInput.email },
+		const availableUsers = await this.prisma.user.findMany({
+			where: {
+				OR: [
+					{ email: updateUserInput.email },
+					{ username: updateUserInput.username },
+				],
+			},
+			select: { id: true },
 		});
-		if (availableUser && availableUser.id !== id) {
-			throw new BadGatewayException("User with this email already exists");
+		if (!!availableUsers.length) {
+			throw new BadGatewayException(`User with this username or email already exists`);
 		}
-
-		const user = await this.prisma.user.update({
-			where: { id },
-			data: updateUserInput,
-		});
-		if (!user) throw new BadGatewayException("User wasn't update");
-		return new HttpException({ message: "User was updated" }, HttpStatus.OK);
+		try {
+			return await this.prisma.user.update({
+				where: { id },
+				data: updateUserInput,
+			});
+		} catch (e) {
+			throw new BadGatewayException("User wasn't update", { cause: e });
+		}
 	}
 
-	async remove(id: number) {
+	async remove(current_user_id: number) {
+
 		const user = await this.prisma.user.delete({
-			where: { id },
+			where: { id: current_user_id },
 		});
 		if (!user) throw new BadGatewayException("User wasn't deleted");
 		return new HttpException({ message: "User was deleted" }, HttpStatus.OK);

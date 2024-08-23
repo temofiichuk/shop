@@ -14,9 +14,23 @@ type AuthData {
   refreshToken: String!
 }
 
+type AuthUser {
+  id: Float!
+  username: String
+  email: String!
+}
+
+type AuthUserResponse {
+  user: AuthUser!
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   authLogin(loginInput: LoginUserInput!): AuthData!
   authNewTokens(refresh_token: String!): AuthData!
+  authUserLogin(loginInput: LoginUserInput!): AuthUserResponse!
+  authUserNewTokens(refresh_token: String!): AuthUserResponse!
 }
 
 input LoginUserInput {

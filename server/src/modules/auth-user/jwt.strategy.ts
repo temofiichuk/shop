@@ -11,7 +11,7 @@ type ValidationPayloadType = {
 };
 
 @Injectable()
-export class JwtAuthStrategy extends PassportStrategy(Strategy, "jwt") {
+export class JwtAuthUserStrategy extends PassportStrategy(Strategy, "jwt") {
 	constructor(
 		private configService: ConfigService,
 		private userService: UserService,
