@@ -6,6 +6,8 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { AuthModule } from "src/modules/auth.example/auth.module";
 import { graphqlConfig } from "./config/graphql.config";
 import { AuthUserModule } from "./modules/auth-user/auth-user.module";
+import { AdminModule } from './modules/admin/admin.module';
+import { AuthAdminModule } from './modules/auth-admin/auth-admin.module';
 
 @Module({
 	imports: [
@@ -13,6 +15,8 @@ import { AuthUserModule } from "./modules/auth-user/auth-user.module";
 		GraphQLModule.forRoot(graphqlConfig),
 		AuthModule,
 		AuthUserModule,
+		AdminModule,
+		AuthAdminModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

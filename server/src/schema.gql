@@ -26,14 +26,74 @@ type AuthUserResponse {
   refreshToken: String!
 }
 
+type Admin {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+  role: String!
+  is_active: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type AuthAdmin {
+  id: Float!
+  role: String
+  email: String!
+}
+
+type AuthAdminResponse {
+  user: AuthAdmin!
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   authLogin(loginInput: LoginUserInput!): AuthData!
   authNewTokens(refresh_token: String!): AuthData!
   authUserLogin(loginInput: LoginUserInput!): AuthUserResponse!
   authUserNewTokens(refresh_token: String!): AuthUserResponse!
+  adminById(id: Int!): Admin!
+  authAdminLogin(loginInput: LoginAdminInput!): AuthAdminResponse!
+  authAdminNewTokens(refresh_token: String!): AuthAdminResponse!
 }
 
 input LoginUserInput {
   email: String!
   password: String!
+}
+
+input LoginAdminInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  adminCreate(createAdminInput: CreateAdminInput!): Admin!
+  adminUpdate(updateAdminInput: UpdateAdminInput!): Admin!
+  adminRemove: Admin!
+}
+
+input CreateAdminInput {
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+  role: String!
+}
+
+input UpdateAdminInput {
+  first_name: String
+  last_name: String
+  email: String
+  password: String
+  role: String
+  id: Int!
 }

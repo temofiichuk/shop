@@ -1,4 +1,4 @@
-import { BadGatewayException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { BadGatewayException, Injectable } from "@nestjs/common";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { hash } from "argon2";
@@ -58,11 +58,10 @@ export class UserService {
 	}
 
 	async remove(current_user_id: number) {
-
-		const user = await this.prisma.user.delete({
-			where: { id: current_user_id },
-		});
-		if (!user) throw new BadGatewayException("User wasn't deleted");
-		return new HttpException({ message: "User was deleted" }, HttpStatus.OK);
+		try {
+			return await this.prisma.user.delete({ where: { id: current_user_id } });
+		} catch (e) {
+			throw new BadGatewayException("User wasn't deleted", { cause: e });
+		}
 	}
 }
