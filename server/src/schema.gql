@@ -1,0 +1,25 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserAuthData {
+  id: Float!
+  username: String!
+  email: String!
+}
+
+type AuthData {
+  user: UserAuthData!
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Query {
+  authLogin(loginInput: LoginUserInput!): AuthData!
+  authNewTokens(refresh_token: String!): AuthData!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
