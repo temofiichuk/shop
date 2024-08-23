@@ -1,1 +1,0 @@
-export declare const CurrentAdmin: (...dataOrPipes: ("id" | "username" | "first_name" | "last_name" | "email" | "password" | "created_at" | "updated_at" | import("@nestjs/common").PipeTransform<any, any> | import("@nestjs/common").Type<import("@nestjs/common").PipeTransform<any, any>> | "role" | "is_active")[]) => ParameterDecorator;

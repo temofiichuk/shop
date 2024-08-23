@@ -7,8 +7,8 @@
 /client/build/
 
 # Nest.js
-/backend/dist/
-/backend/nest-cli.json
+/server/dist/
+/server/nest-cli.json
 
 # IDE and Editors
 .idea/
