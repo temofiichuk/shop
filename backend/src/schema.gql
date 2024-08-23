@@ -88,6 +88,7 @@ type Category {
   parent: Category!
   children: [Category!]!
   products: [Product!]!
+  slug: String!
   created_at: DateTime!
   updated_at: DateTime!
 }
@@ -297,12 +298,14 @@ input CreateCategoryInput {
   name: String!
   type_name: String!
   parent_id: Int
+  slug: String
 }
 
 input UpdateCategoryInput {
   name: String
   type_name: String
   parent_id: Int
+  slug: String
   id: Int
   children: [UpdateCategoryInput!]
 }

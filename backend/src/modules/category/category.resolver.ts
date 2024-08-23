@@ -26,11 +26,10 @@ export class CategoryResolver {
 
 	@AuthAdmin()
 	@Mutation(() => [Category])
-	syncCategories(
+	async syncCategories(
 		@Args("newCategories", { type: () => [UpdateCategoryInput] })
 		newCategories: UpdateCategoryInput[]
 	) {
-		console.log(1);
 		return this.categoryService.sync(newCategories);
 	}
 
