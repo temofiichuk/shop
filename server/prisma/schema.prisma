@@ -1,0 +1,207 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          Int      @id @unique @default(autoincrement())
+  username    String
+  first_name  String
+  last_name   String
+  email       String   @unique
+  password    String
+  phone       String?  @default("-")
+  address     String?
+  is_verified Boolean  @default(false)
+  image       String?
+  reviews     Review[]
+  rating      Int?
+  orders      Order[]
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+enum EnumAdminRole {
+  ROOTADMIN
+  ADMIN
+}
+
+model Admin {
+  id               Int           @id @unique @default(autoincrement())
+  username         String
+  first_name       String
+  last_name        String
+  email            String        @unique
+  password         String
+  role             EnumAdminRole
+  is_active        Boolean
+  created_products Product[]
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+}
+
+model Product {
+  id          Int                @id @unique @default(autoincrement())
+  name        String             @unique
+  description String
+  sku         String             @unique
+  base_price  Int
+  slug        String             @unique
+  stock       Int
+  rating      Int                @default(0)
+  reviews     Review[]
+  admin       Admin?             @relation(fields: [admin_id], references: [id])
+  admin_id    Int?
+  created_at  DateTime           @default(now())
+  updated_at  DateTime           @updatedAt
+  variants    ProductVariant[]
+  categories  ProductCategory[]
+  images      ProductImage[]
+  promotions  ProductPromotion[]
+}
+
+model Category {
+  id         Int               @id @unique @default(autoincrement())
+  name       String
+  parent_id  Int
+  parent     Category          @relation("CategoryToChildren", fields: [parent_id], references: [id])
+  slug       String
+  created_at DateTime          @default(now())
+  updated_at DateTime          @updatedAt
+  categories ProductCategory[]
+  children   Category[]        @relation("CategoryToChildren")
+}
+
+model ProductCategory {
+  id          Int      @id @unique @default(autoincrement())
+  product     Product  @relation(fields: [product_id], references: [id])
+  product_id  Int
+  category    Category @relation(fields: [category_id], references: [id])
+  category_id Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model ProductAttribute {
+  id         Int              @id @unique @default(autoincrement())
+  name       String
+  created_at DateTime         @default(now())
+  updated_at DateTime         @updatedAt
+  variants   ProductVariant[]
+}
+
+model ProductVariant {
+  id             Int               @id @unique @default(autoincrement())
+  product_id     Int
+  product        Product?          @relation(fields: [product_id], references: [id])
+  attribute_id   Int
+  attribute      ProductAttribute? @relation(fields: [attribute_id], references: [id])
+  value          String
+  price_modifier Int
+  stock_quantity Int
+  created_at     DateTime          @default(now())
+  updated_at     DateTime          @updatedAt
+  order_item     OrderItem[]
+}
+
+model UserFavoriteProducts {
+  id         Int      @id @unique @default(autoincrement())
+  user_id    Int
+  product_id Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model ProductImage {
+  id         Int      @id @unique @default(autoincrement())
+  product    Product? @relation(fields: [product_id], references: [id])
+  product_id Int?
+  name       String
+  url        String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  is_main    Boolean  @default(false)
+}
+
+enum DiscountType {
+  FIXED
+  PERCENTED
+}
+
+model Promotion {
+  id           Int                @id @unique @default(autoincrement())
+  name         String
+  description  String
+  dicount_type DiscountType
+  start_date   DateTime
+  end_data     DateTime
+  created_at   DateTime           @default(now())
+  updated_at   DateTime           @updatedAt
+  promotions   ProductPromotion[]
+}
+
+model ProductPromotion {
+  id           Int       @id @unique @default(autoincrement())
+  product      Product   @relation(fields: [product_id], references: [id])
+  product_id   Int
+  promotion    Promotion @relation(fields: [promotion_id], references: [id])
+  promotion_id Int
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+}
+
+enum EnumReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Review {
+  id         Int              @id @unique @default(autoincrement())
+  comment    String
+  product    Product?         @relation(fields: [product_id], references: [id])
+  product_id Int?
+  user       User?            @relation(fields: [user_id], references: [id])
+  user_id    Int?
+  status     EnumReviewStatus @default(PENDING)
+  created_at DateTime         @default(now())
+  updated_at DateTime         @updatedAt
+}
+
+enum EnumOrderStatus {
+  PENDING
+  CANCELED
+  AWAITING_PAYMENT
+  PAYED
+  SHIPPED
+  DELIVERED
+  FINISHED
+}
+
+model Order {
+  id          Int             @id @unique @default(autoincrement())
+  user        User?           @relation(fields: [user_id], references: [id])
+  user_id     Int?
+  total_price Int
+  status      EnumOrderStatus @default(PENDING)
+  order_items OrderItem[]
+  created_at  DateTime        @default(now())
+  updated_at  DateTime        @updatedAt
+}
+
+model OrderItem {
+  id                 Int            @id @unique @default(autoincrement())
+  order              Order?         @relation(fields: [order_id], references: [id])
+  order_id           Int?
+  product_variant    ProductVariant @relation(fields: [product_variant_id], references: [id])
+  product_variant_id Int
+  quantity           Int            @default(1)
+  price              Int
+  total_price        Int
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+}

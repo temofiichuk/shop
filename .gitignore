@@ -2,9 +2,9 @@
 **/node_modules/
 
 # Next.js
-/frontend/.next/
-/frontend/out/
-/frontend/build/
+/client/.next/
+/client/out/
+/client/build/
 
 # Nest.js
 /backend/dist/
