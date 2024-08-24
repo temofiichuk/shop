@@ -32,5 +32,5 @@ next-env.d.ts
 todos.txt
 **/*.example
 **/*.example.*
-/server/db_seeder
+**/db_seeder/seeder.mjs
 
