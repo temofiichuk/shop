@@ -5,8 +5,8 @@ import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { UsePipes } from "@nestjs/common";
 import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
-import { Auth } from "../auth/decorators/auth.decorators";
-import { CurrentUser } from "../auth/decorators/current-user.decorators";
+import { IsUserAuth } from "../auth-user/decorators/auth.decorators";
+import { CurrentUser } from "../auth-user/decorators/current-user.decorators";
 
 @Resolver(() => User)
 export class UserResolver {
@@ -21,7 +21,7 @@ export class UserResolver {
 
 	@Mutation(() => User)
 	@UsePipes(CustomValidationPipe)
-	@Auth()
+	@IsUserAuth()
 	userUpdate(
 		@CurrentUser("id") id: number,
 		@Args("updateUserInput") updateUserInput: UpdateUserInput,
@@ -30,15 +30,15 @@ export class UserResolver {
 	}
 
 	@Mutation(() => User)
-	@Auth()
-	userRemove(@Args("id") id: number) {
-		return this.userService.remove(id);
+	@IsUserAuth()
+	userRemove(@CurrentUser("id") current_user_id: number) {
+		return this.userService.remove(current_user_id);
 	}
 
 	@Query(() => User)
-	@Auth()
+	@IsUserAuth()
 	userById(@Args("id", { type: () => Int }) id: number) {
 		return this.userService.getById(id);
 	}
-	
+
 }
