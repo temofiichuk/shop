@@ -5,8 +5,8 @@ import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { UsePipes } from "@nestjs/common";
 import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
-import { CurrentUser } from "../auth.example/decorators/current-user.decorators";
 import { IsUserAuth } from "../auth-user/decorators/auth.decorators";
+import { CurrentUser } from "../auth-user/decorators/current-user.decorators";
 
 @Resolver(() => User)
 export class UserResolver {

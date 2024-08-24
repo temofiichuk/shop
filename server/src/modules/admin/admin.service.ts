@@ -25,7 +25,7 @@ export class AdminService {
 		}
 	}
 
-	async getById(id: number, select: Prisma.AdminSelect = {}) {
+	async getById(id: number, select: Prisma.AdminSelect = undefined) {
 		const admin = await this.prisma.admin.findUnique({
 			where: { id: id },
 			select,

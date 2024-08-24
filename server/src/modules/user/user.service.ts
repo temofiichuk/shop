@@ -25,9 +25,10 @@ export class UserService {
 		}
 	}
 
-	async getById(id: number, select: Prisma.UserSelect = {}) {
+	async getById(id: number, select: Prisma.UserSelect = undefined) {
+		console.log(id, "getById");
 		const user = await this.prisma.user.findUnique({
-			where: { id: id },
+			where: { id },
 			select,
 		});
 		if (!user) throw new BadGatewayException("User not found");

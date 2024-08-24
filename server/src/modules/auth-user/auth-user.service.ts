@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { LoginUserInput } from "./dto/login-auth-user.input";
 import { Prisma, User } from "@prisma/client";
-import { verify } from "argon2";
 import { PrismaService } from "../../prisma.service";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -20,11 +19,12 @@ export class AuthUserService {
 
 		if (!availableUser) throw new NotFoundException("User Not Found");
 
-		const isPasswordCorrect = await verify(
-			availableUser.password,
-			data.password,
-		);
+		// const isPasswordCorrect = await verify(
+		// 	availableUser.password,
+		// 	data.password,
+		// );
 
+		const isPasswordCorrect = data.password === availableUser.password;
 		if (!isPasswordCorrect) {
 			throw new UnauthorizedException("Password Incorrect");
 		}
@@ -49,19 +49,20 @@ export class AuthUserService {
 	}
 
 	private async getAuthFields({ id, email, username }: User) {
+		const user = { id, email, username };
 		return {
-			user: { id, email, username },
-			...(await this.createNewTokens(id)),
+			user,
+			...(await this.createNewTokens(user as User)),
 		};
 	}
 
-	private async createNewTokens(id: number) {
+	private async createNewTokens(user: User) {
 		const accessToken = await this.jwt.signAsync(
-			{ id },
+			{ user },
 			{ expiresIn: this.configService.get("LIFECYCLE_ACCESS_TOKEN") },
 		);
 		const refreshToken = await this.jwt.signAsync(
-			{ id },
+			{ user },
 			{ expiresIn: this.configService.get("LIFECYCLE_REFRESH_TOKEN") },
 		);
 

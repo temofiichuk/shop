@@ -1,10 +1,10 @@
 import { Args, Query, Resolver } from "@nestjs/graphql";
 import { AuthAdminService } from "./auth-admin.service";
-import { UsePipes } from "@nestjs/common";
-import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
 import { AuthAdminResponse } from "./entities/auth-admin.entity";
 import { LoginAdminInput } from "./dto/login-auth-admin.input";
 import { IsAdminAuth } from "./decorators/auth.decorators";
+import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
+import { UsePipes } from "@nestjs/common";
 
 @Resolver()
 export class AuthAdminResolver {
@@ -13,8 +13,9 @@ export class AuthAdminResolver {
 
 	@Query(() => AuthAdminResponse)
 	@UsePipes(CustomValidationPipe)
-	authAdminLogin(@Args("loginInput") loginInput: LoginAdminInput) {
-		return this.authAdminService.login(loginInput);
+	async authAdminLogin(@Args("loginInput") loginInput: LoginAdminInput) {
+		// console.log(await this.authAdminService.login(loginInput));
+		return await this.authAdminService.login(loginInput);
 	}
 
 	@Query(() => AuthAdminResponse)

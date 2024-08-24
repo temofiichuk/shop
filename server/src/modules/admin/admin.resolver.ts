@@ -5,7 +5,8 @@ import { CreateAdminInput } from "./dto/create-admin.input";
 import { UpdateAdminInput } from "./dto/update-admin.input";
 import { UsePipes } from "@nestjs/common";
 import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
-import { CurrentAdmin } from "../auth.example/decorators/current-admin.decorators";
+import { CurrentAdmin } from "../auth-admin/decorators/current-admin.decorators";
+import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
 
 @Resolver(() => Admin)
 export class AdminResolver {
@@ -20,7 +21,7 @@ export class AdminResolver {
 
 	@Mutation(() => Admin)
 	@UsePipes(CustomValidationPipe)
-	// @Auth()
+	@IsAdminAuth()
 	adminUpdate(
 		@CurrentAdmin("id") id: number,
 		@Args("updateAdminInput") updateAdminInput: UpdateAdminInput,
@@ -29,13 +30,13 @@ export class AdminResolver {
 	}
 
 	@Mutation(() => Admin)
-	// @Auth()
+	@IsAdminAuth()
 	adminRemove(@CurrentAdmin("id") current_admin_id: number) {
 		return this.adminService.remove(current_admin_id);
 	}
 
 	@Query(() => Admin)
-	// @Auth()
+	@IsAdminAuth()
 	adminById(@Args("id", { type: () => Int }) id: number) {
 		return this.adminService.getById(id);
 	}

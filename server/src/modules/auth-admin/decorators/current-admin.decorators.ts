@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
-import { User } from "@prisma/client";
+import { Admin } from "@prisma/client";
 import { GqlExecutionContext } from "@nestjs/graphql";
 
 export const CurrentAdmin = createParamDecorator(
-	(select: keyof User, context: ExecutionContext) => {
+	(select: keyof Admin, context: ExecutionContext) => {
 		const ctx = GqlExecutionContext.create(context);
 		const req = ctx.getContext().req;
 		if (req.user)

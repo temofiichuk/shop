@@ -8,21 +8,22 @@ generator client {
 }
 
 model User {
-  id          Int      @id @unique @default(autoincrement())
-  username    String   @unique
+  id          Int        @id @unique @default(autoincrement())
+  username    String     @unique
   first_name  String
   last_name   String
-  email       String   @unique
+  email       String     @unique
   password    String
-  phone       String?  @default("-")
+  phone       String?    @default("-")
   address     String?
-  is_verified Boolean  @default(false)
+  is_verified Boolean    @default(false)
   image       String?
   reviews     Review[]
   rating      Int?
   orders      Order[]
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  wishlist    Wishlist[]
 }
 
 enum EnumAdminRole {
@@ -50,7 +51,7 @@ model Product {
   sku         String             @unique
   base_price  Int
   slug        String             @unique
-  stock       Int
+  stock       Int?               @default(0)
   rating      Int                @default(0)
   reviews     Review[]
   admin       Admin?             @relation(fields: [admin_id], references: [id])
@@ -61,14 +62,15 @@ model Product {
   categories  ProductCategory[]
   images      ProductImage[]
   promotions  ProductPromotion[]
+  wishlist    Wishlist[]
 }
 
 model Category {
   id         Int               @id @unique @default(autoincrement())
-  name       String
-  parent_id  Int
-  parent     Category          @relation("CategoryToChildren", fields: [parent_id], references: [id])
-  slug       String
+  name       String            @unique
+  parent_id  Int?              @default(0)
+  parent     Category?         @relation("CategoryToChildren", fields: [parent_id], references: [id])
+  slug       String?
   created_at DateTime          @default(now())
   updated_at DateTime          @updatedAt
   categories ProductCategory[]
@@ -87,7 +89,7 @@ model ProductCategory {
 
 model ProductAttribute {
   id         Int              @id @unique @default(autoincrement())
-  name       String
+  name       String           @unique
   created_at DateTime         @default(now())
   updated_at DateTime         @updatedAt
   variants   ProductVariant[]
@@ -105,42 +107,50 @@ model ProductVariant {
   created_at     DateTime          @default(now())
   updated_at     DateTime          @updatedAt
   order_item     OrderItem[]
+  wishlist       Wishlist[]
+  ProductImage   ProductImage[]
 }
 
-model UserFavoriteProducts {
-  id         Int      @id @unique @default(autoincrement())
-  user_id    Int
-  product_id Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model Wishlist {
+  id                 Int             @id @unique @default(autoincrement())
+  user_id            Int
+  user               User            @relation(fields: [user_id], references: [id])
+  product_id         Int?
+  product            Product?        @relation(fields: [product_id], references: [id])
+  product_variant_id Int?
+  product_variant    ProductVariant? @relation(fields: [product_variant_id], references: [id])
+  created_at         DateTime        @default(now())
+  updated_at         DateTime        @updatedAt
 }
 
 model ProductImage {
-  id         Int      @id @unique @default(autoincrement())
-  product    Product? @relation(fields: [product_id], references: [id])
-  product_id Int?
-  name       String
-  url        String   @unique
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  is_main    Boolean  @default(false)
+  id                 Int             @id @unique @default(autoincrement())
+  product            Product?        @relation(fields: [product_id], references: [id])
+  product_id         Int?
+  product_variant    ProductVariant? @relation(fields: [product_variant_id], references: [id])
+  product_variant_id Int?
+  name               String
+  url                String          @unique
+  created_at         DateTime        @default(now())
+  updated_at         DateTime        @updatedAt
+  is_main            Boolean         @default(false)
 }
 
-enum DiscountType {
+enum EnumDiscountType {
   FIXED
-  PERCENTED
+  PERCENTAGE
 }
 
 model Promotion {
-  id           Int                @id @unique @default(autoincrement())
-  name         String
-  description  String
-  dicount_type DiscountType
-  start_date   DateTime
-  end_data     DateTime
-  created_at   DateTime           @default(now())
-  updated_at   DateTime           @updatedAt
-  promotions   ProductPromotion[]
+  id            Int                @id @unique @default(autoincrement())
+  name          String
+  description   String?
+  start_date    DateTime
+  discount_type EnumDiscountType
+  end_data      DateTime
+  created_at    DateTime           @default(now())
+  updated_at    DateTime           @updatedAt
+  promotions    ProductPromotion[]
 }
 
 model ProductPromotion {
@@ -160,15 +170,15 @@ enum EnumReviewStatus {
 }
 
 model Review {
-  id         Int              @id @unique @default(autoincrement())
+  id         Int               @id @unique @default(autoincrement())
   comment    String
-  product    Product?         @relation(fields: [product_id], references: [id])
+  product    Product?          @relation(fields: [product_id], references: [id])
   product_id Int?
-  user       User?            @relation(fields: [user_id], references: [id])
+  user       User?             @relation(fields: [user_id], references: [id])
   user_id    Int?
-  status     EnumReviewStatus @default(PENDING)
-  created_at DateTime         @default(now())
-  updated_at DateTime         @updatedAt
+  status     EnumReviewStatus? @default(PENDING)
+  created_at DateTime          @default(now())
+  updated_at DateTime          @updatedAt
 }
 
 enum EnumOrderStatus {

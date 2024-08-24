@@ -10,7 +10,7 @@ import { getJWTConfig } from "../../config/jwt.config";
 import { PassportModule } from "@nestjs/passport";
 
 @Module({
-	providers: [AuthAdminResolver, AuthAdminService, PrismaService, JwtAuthAdminStrategy, AdminService],
+	providers: [AuthAdminResolver, AuthAdminService, PrismaService, JwtAuthAdminStrategy, AdminService, PassportModule],
 	imports: [
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
@@ -20,6 +20,7 @@ import { PassportModule } from "@nestjs/passport";
 		ConfigModule,
 		PassportModule,
 	],
+
 })
 export class AuthAdminModule {
 }

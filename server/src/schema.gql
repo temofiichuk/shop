@@ -2,18 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type UserAuthData {
-  id: Float!
-  username: String!
-  email: String!
-}
-
-type AuthData {
-  user: UserAuthData!
-  accessToken: String!
-  refreshToken: String!
-}
-
 type AuthUser {
   id: Float!
   username: String
@@ -45,24 +33,223 @@ scalar DateTime
 
 type AuthAdmin {
   id: Float!
-  role: String
+  role: EnumAdminRole!
   email: String!
 }
 
+enum EnumAdminRole {
+  ROOTADMIN
+  ADMIN
+}
+
 type AuthAdminResponse {
-  user: AuthAdmin!
+  user: AuthAdmin
   accessToken: String!
   refreshToken: String!
 }
 
+type User {
+  id: Int!
+  username: String!
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+  phone: String
+  address: String
+  image: String
+  is_verified: Boolean!
+  rating: Float!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type Order {
+  id: Int!
+  user: User!
+  user_id: Int
+  total_price: Int!
+  status: String!
+  order_items: [OrderItem!]!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type OrderItem {
+  id: Int!
+  order: Order!
+  order_id: Int
+  product_variant: ProductVariant!
+  product_variant_id: Int!
+  quantity: Int!
+  price: Int!
+  total_price: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type Wishlist {
+  id: Int!
+  user: User!
+  user_id: Int!
+  product: Product!
+  product_id: Int
+  product_variant: ProductVariant!
+  product_variant_id: Int
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type ProductAttribute {
+  id: Int!
+  name: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type ProductVariant {
+  id: Int!
+  product: Product!
+  product_id: Int!
+  attribute: ProductAttribute!
+  attribute_id: Int!
+  value: String!
+  price_modifier: Int!
+  stock_quantity: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+  order_item: [OrderItem!]!
+  Wishlist: [Wishlist!]!
+}
+
+type Category {
+  id: Int!
+  name: String!
+  parent_id: Int
+  parent: Category!
+  slug: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  children: [Category!]!
+}
+
+type ProductCategory {
+  id: Int!
+  product: Product!
+  product_id: Int!
+  category: Category!
+  category_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type Promotion {
+  id: Int!
+  name: String!
+  description: String!
+  discount_type: EnumDiscountType!
+  start_date: DateTime!
+  end_data: DateTime!
+  created_at: DateTime!
+  updated_at: DateTime!
+  promotions: [ProductPromotion!]!
+}
+
+enum EnumDiscountType {
+  FIXED
+  PERCENTAGE
+}
+
+type ProductPromotion {
+  id: Int!
+  product: Product!
+  product_id: Int!
+  promotion: Promotion!
+  promotion_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type ProductImage {
+  id: Int!
+  product: Product!
+  product_id: Int
+  name: String!
+  url: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  is_main: Boolean!
+}
+
+type Product {
+  id: Int!
+  name: String!
+  description: String!
+  sku: String!
+  base_price: Int!
+  slug: String!
+  stock: Int!
+  rating: Int!
+  reviews: [Review!]!
+  admin: Admin!
+  admin_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+  variants: [ProductVariant!]!
+  categories: [ProductCategory!]!
+  images: [ProductImage!]!
+  promotions: [ProductPromotion!]!
+  wishlist: [Wishlist!]!
+}
+
+type Review {
+  id: Int!
+  comment: String!
+  product: Product!
+  product_id: Int
+  user: User!
+  user_id: Int
+  status: EnumReviewStatus!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum EnumReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 type Query {
-  authLogin(loginInput: LoginUserInput!): AuthData!
-  authNewTokens(refresh_token: String!): AuthData!
   authUserLogin(loginInput: LoginUserInput!): AuthUserResponse!
   authUserNewTokens(refresh_token: String!): AuthUserResponse!
   adminById(id: Int!): Admin!
   authAdminLogin(loginInput: LoginAdminInput!): AuthAdminResponse!
   authAdminNewTokens(refresh_token: String!): AuthAdminResponse!
+  categories: [Category!]!
+  category(id: Int!): Category!
+  attribute(id: Int!): ProductAttribute!
+  productCategories: [ProductCategory!]!
+  productCategory(id: Int!): ProductCategory!
+  products: [Product!]!
+  product(id: Int!): Product!
+  productVariants(product_id: Float!): [ProductVariant!]!
+  productVariant(id: Int!): ProductVariant!
+  userWishlist: [Wishlist!]!
+  wishlists: [Wishlist!]!
+  wishlistItem(id: Int!): Wishlist!
+  promotions: [Promotion!]!
+  promotion(id: Int!): Promotion!
+  productPromotions: [ProductPromotion!]!
+  productPromotion(id: Int!): ProductPromotion!
+  reviews: [Review!]!
+  review(id: Int!): Review!
+  orders: [Order!]!
+  order(id: Int!): Order!
+  orderItems: [OrderItem!]!
+  orderItem(id: Int!): OrderItem!
+  productImages(product_id: Float!): [ProductImage!]!
+  productImage(id: Int!): ProductImage!
 }
 
 input LoginUserInput {
@@ -79,6 +266,42 @@ type Mutation {
   adminCreate(createAdminInput: CreateAdminInput!): Admin!
   adminUpdate(updateAdminInput: UpdateAdminInput!): Admin!
   adminRemove: Admin!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: Int!): Category!
+  createAttribute(createAttributeInput: CreateProductAttributeInput!): ProductAttribute!
+  updateAttribute(updateAttributeInput: UpdateProductAttributeInput!): ProductAttribute!
+  removeAttribute(id: Int!): ProductAttribute!
+  createProductCategory(data: CreateProductCategoryInput!): ProductCategory!
+  updateProductCategory(data: UpdateProductCategoryInput!): ProductCategory!
+  deleteProductCategory(id: Int!): ProductCategory!
+  createProduct(data: CreateProductInput!): Product!
+  updateProduct(data: UpdateProductInput!): Product!
+  deleteProduct(id: Int!): Product!
+  createProductVariant(createProductVariantInput: CreateProductVariantInput!): ProductVariant!
+  updateProductVariant(updateProductVariantInput: UpdateProductVariantInput!): ProductVariant!
+  removeProductVariant(id: Int!): ProductVariant!
+  addToWishlist(data: CreateWishlistInput!): Wishlist!
+  updateWishlist(id: Int!, data: UpdateWishlistInput!): Wishlist!
+  deleteFromWishlist(id: Int!): Wishlist!
+  createPromotion(data: CreatePromotionInput!): Promotion!
+  updatePromotion(id: Int!, data: UpdatePromotionInput!): Promotion!
+  deletePromotion(id: Int!): Promotion!
+  createProductPromotion(data: CreateProductPromotionInput!): ProductPromotion!
+  updateProductPromotion(data: UpdateProductPromotionInput!): ProductPromotion!
+  deleteProductPromotion(id: Int!): ProductPromotion!
+  createReview(data: CreateReviewInput!): Review!
+  updateReview(data: UpdateReviewInput!): Review!
+  deleteReview(id: Int!): Review!
+  createOrder(data: CreateOrderInput!): Order!
+  updateOrder(data: UpdateOrderInput!): Order!
+  deleteOrder(id: Int!): Order!
+  createOrderItem(data: CreateOrderItemInput!): OrderItem!
+  updateOrderItem(data: UpdateOrderItemInput!): OrderItem!
+  deleteOrderItem(id: Int!): OrderItem!
+  createProductImage(data: CreateProductImageInput!): ProductImage!
+  updateProductImage(data: UpdateProductImageInput!): ProductImage!
+  deleteProductImage(id: Int!): ProductImage!
 }
 
 input CreateAdminInput {
@@ -95,5 +318,177 @@ input UpdateAdminInput {
   email: String
   password: String
   role: String
+  id: Int!
+}
+
+input CreateCategoryInput {
+  name: String!
+  parent_id: Int = 0
+  slug: String
+}
+
+input UpdateCategoryInput {
+  name: String
+  parent_id: Int = 0
+  slug: String
+  id: Int!
+}
+
+input CreateProductAttributeInput {
+  name: String!
+}
+
+input UpdateProductAttributeInput {
+  name: String
+  id: Int!
+}
+
+input CreateProductCategoryInput {
+  product_id: Int!
+  category_id: Int!
+}
+
+input UpdateProductCategoryInput {
+  product_id: Int
+  category_id: Int
+  id: Int!
+}
+
+input CreateProductInput {
+  name: String!
+  description: String!
+  sku: String!
+  base_price: Int!
+  slug: String!
+  stock: Int = 0
+  rating: Int
+  admin_id: Int
+}
+
+input UpdateProductInput {
+  name: String
+  description: String
+  sku: String
+  base_price: Int
+  slug: String
+  stock: Int = 0
+  rating: Int
+  admin_id: Int
+  id: Int!
+}
+
+input CreateProductVariantInput {
+  product_id: Int!
+  attribute_id: Int!
+  value: String!
+  price_modifier: Int!
+  stock_quantity: Int!
+}
+
+input UpdateProductVariantInput {
+  product_id: Int
+  attribute_id: Int
+  value: String
+  price_modifier: Int
+  stock_quantity: Int
+  id: Int!
+}
+
+input CreateWishlistInput {
+  user_id: Int!
+  product_id: Int
+  product_variant_id: Int
+}
+
+input UpdateWishlistInput {
+  user_id: Int
+  product_id: Int
+  product_variant_id: Int
+  id: Int!
+}
+
+input CreatePromotionInput {
+  name: String!
+  description: String
+  discount_type: EnumDiscountType!
+  start_date: DateTime!
+  end_data: DateTime!
+}
+
+input UpdatePromotionInput {
+  name: String
+  description: String
+  discount_type: EnumDiscountType
+  start_date: DateTime
+  end_data: DateTime
+  id: Int!
+}
+
+input CreateProductPromotionInput {
+  product_id: Int!
+  promotion_id: Int!
+}
+
+input UpdateProductPromotionInput {
+  product_id: Int
+  promotion_id: Int
+  id: Int!
+}
+
+input CreateReviewInput {
+  comment: String!
+  product_id: Int
+  user_id: Int
+  status: EnumReviewStatus!
+}
+
+input UpdateReviewInput {
+  comment: String
+  product_id: Int
+  user_id: Int
+  status: EnumReviewStatus
+  id: Int!
+}
+
+input CreateOrderInput {
+  user_id: Int
+  total_price: Int!
+  order_items: [CreateOrderItemInput!]!
+}
+
+input CreateOrderItemInput {
+  product_variant_id: Int!
+  quantity: Int!
+  price: Int!
+  total_price: Int!
+}
+
+input UpdateOrderInput {
+  user_id: Int
+  total_price: Int
+  order_items: [CreateOrderItemInput!]
+  id: Int!
+}
+
+input UpdateOrderItemInput {
+  product_variant_id: Int
+  quantity: Int
+  price: Int
+  total_price: Int
+  id: Int!
+}
+
+input CreateProductImageInput {
+  product_id: Int!
+  name: String!
+  url: String!
+  is_main: Boolean! = false
+}
+
+input UpdateProductImageInput {
+  product_id: Int
+  name: String
+  url: String
+  is_main: Boolean = false
   id: Int!
 }

@@ -3,8 +3,8 @@ import { AuthUserService } from "./auth-user.service";
 import { AuthUserResponse } from "./entities/auth-user.entity";
 import { UsePipes } from "@nestjs/common";
 import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
-import { LoginUserInput } from "../auth.example/dto/login-user.input";
 import { IsUserAuth } from "./decorators/auth.decorators";
+import { LoginUserInput } from "./dto/login-auth-user.input";
 
 @Resolver(() => AuthUserResponse)
 export class AuthUserResolver {
