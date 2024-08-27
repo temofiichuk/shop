@@ -4,9 +4,8 @@ import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { graphqlConfig } from "./config/graphql.config";
-import { AuthUserModule } from "./modules/auth-user/auth-user.module";
+import { AuthModule } from "./modules/auth/auth.module";
 import { AdminModule } from "./modules/admin/admin.module";
-import { AuthAdminModule } from "./modules/auth-admin/auth-admin.module";
 import { ReviewModule } from "./modules/review/review.module";
 import { OrderItemModule } from "./modules/order-item/order-item.module";
 import { CategoryModule } from "./modules/category/category.module";
@@ -24,9 +23,8 @@ import { ProductImageModule } from "./modules/product-image/product-image.module
 	imports: [
 		ConfigModule.forRoot(),
 		GraphQLModule.forRoot(graphqlConfig),
-		AuthUserModule,
+		AuthModule,
 		AdminModule,
-		AuthAdminModule,
 		CategoryModule,
 		ProductAttributeModule,
 		ProductCategoryModule,
@@ -39,6 +37,7 @@ import { ProductImageModule } from "./modules/product-image/product-image.module
 		OrderModule,
 		OrderItemModule,
 		ProductImageModule,
+		AuthModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

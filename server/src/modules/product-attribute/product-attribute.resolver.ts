@@ -3,7 +3,7 @@ import { ProductAttributeService } from "./product-attribute.service";
 import { ProductAttribute } from "./entities/product-attribute.entity";
 import { CreateProductAttributeInput } from "./dto/create-product-attribute.input";
 import { UpdateProductAttributeInput } from "./dto/update-product-attribute.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => ProductAttribute)
 export class ProductAttributeResolver {

@@ -3,7 +3,7 @@ import { ProductPromotionService } from "./product-promotion.service";
 import { ProductPromotion } from "./entities/product-promotion.entity";
 import { CreateProductPromotionInput } from "./dto/create-product-promotion.input";
 import { UpdateProductPromotionInput } from "./dto/update-product-promotion.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => ProductPromotion)
 export class ProductPromotionResolver {

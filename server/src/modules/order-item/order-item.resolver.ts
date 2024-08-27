@@ -3,7 +3,7 @@ import { OrderItemService } from "./order-item.service";
 import { OrderItem } from "./entities/order-item.entity";
 import { CreateOrderItemInput } from "./dto/create-order-item.input";
 import { UpdateOrderItemInput } from "./dto/update-order-item.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => OrderItem)
 export class OrderItemResolver {

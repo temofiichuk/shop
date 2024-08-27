@@ -4,12 +4,20 @@
 
 type AuthUser {
   id: Float!
-  username: String
+  role: EnumUserRole!
+  first_name: String!
+  last_name: String!
   email: String!
 }
 
-type AuthUserResponse {
-  user: AuthUser!
+enum EnumUserRole {
+  USER
+  ADMIN
+  ROOTADMIN
+}
+
+type AuthResponse {
+  user: AuthUser
   accessToken: String!
   refreshToken: String!
 }
@@ -30,23 +38,6 @@ type Admin {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type AuthAdmin {
-  id: Float!
-  role: EnumAdminRole!
-  email: String!
-}
-
-enum EnumAdminRole {
-  ROOTADMIN
-  ADMIN
-}
-
-type AuthAdminResponse {
-  user: AuthAdmin
-  accessToken: String!
-  refreshToken: String!
-}
 
 type User {
   id: Int!
@@ -221,11 +212,11 @@ enum EnumReviewStatus {
 }
 
 type Query {
-  authUserLogin(loginInput: LoginUserInput!): AuthUserResponse!
-  authUserNewTokens(refresh_token: String!): AuthUserResponse!
+  authAdminLogin(loginInput: LoginInput!): AuthResponse!
+  authAdminNewTokens(refresh_token: String!): AuthResponse!
+  authUserLogin(loginInput: LoginInput!): AuthResponse!
+  authUserNewTokens(refresh_token: String!): AuthResponse!
   adminById(id: Int!): Admin!
-  authAdminLogin(loginInput: LoginAdminInput!): AuthAdminResponse!
-  authAdminNewTokens(refresh_token: String!): AuthAdminResponse!
   categories: [Category!]!
   category(id: Int!): Category!
   attribute(id: Int!): ProductAttribute!
@@ -252,12 +243,7 @@ type Query {
   productImage(id: Int!): ProductImage!
 }
 
-input LoginUserInput {
-  email: String!
-  password: String!
-}
-
-input LoginAdminInput {
+input LoginInput {
   email: String!
   password: String!
 }

@@ -3,7 +3,7 @@ import { OrderService } from "./order.service";
 import { Order } from "./entities/order.entity";
 import { CreateOrderInput } from "./dto/create-order.input";
 import { UpdateOrderInput } from "./dto/update-order.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => Order)
 export class OrderResolver {
@@ -18,11 +18,13 @@ export class OrderResolver {
 	@Query(() => [Order])
 	@IsAdminAuth()
 	async orders() {
+		// console.log(await this.orderService.findAll());
 		return this.orderService.findAll();
 	}
 
 	@Query(() => Order)
 	async order(@Args("id", { type: () => Int }) id: number) {
+		console.log("req", await this.orderService.findOne(id));
 		return this.orderService.findOne(id);
 	}
 

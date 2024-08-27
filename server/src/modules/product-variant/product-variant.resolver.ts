@@ -3,7 +3,7 @@ import { ProductVariantService } from "./product-variant.service";
 import { ProductVariant } from "./entities/product-variant.entity";
 import { CreateProductVariantInput } from "./dto/create-product-variant.input";
 import { UpdateProductVariantInput } from "./dto/update-product-variant.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => ProductVariant)
 export class ProductVariantResolver {

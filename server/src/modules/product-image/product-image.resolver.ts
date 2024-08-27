@@ -3,7 +3,7 @@ import { ProductImageService } from "./product-image.service";
 import { ProductImage } from "./entities/product-image.entity";
 import { CreateProductImageInput } from "./dto/create-product-image.input";
 import { UpdateProductImageInput } from "./dto/update-product-image.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => ProductImage)
 export class ProductImageResolver {

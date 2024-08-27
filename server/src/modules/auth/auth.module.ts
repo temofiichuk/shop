@@ -1,16 +1,16 @@
 import { Module } from "@nestjs/common";
-import { AuthAdminService } from "./auth-admin.service";
-import { AuthAdminResolver } from "./auth-admin.resolver";
+import { AuthService } from "./auth.service";
+import { AuthResolver } from "./auth.resolver";
 import { PrismaService } from "../../prisma.service";
-import { JwtAuthAdminStrategy } from "./jwt.strategy";
-import { AdminService } from "../admin/admin.service";
+import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { getJWTConfig } from "../../config/jwt.config";
-import { PassportModule } from "@nestjs/passport";
+import { JwtAuthAdminStrategy } from "./jwt.admin.strategy";
+import { JwtAuthUserStrategy } from "./jwt.user.strategy";
 
 @Module({
-	providers: [AuthAdminResolver, AuthAdminService, PrismaService, JwtAuthAdminStrategy, AdminService, PassportModule],
+	providers: [AuthResolver, AuthService, PrismaService, JwtAuthAdminStrategy, JwtAuthUserStrategy, PassportModule],
 	imports: [
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
@@ -20,7 +20,6 @@ import { PassportModule } from "@nestjs/passport";
 		ConfigModule,
 		PassportModule,
 	],
-
 })
-export class AuthAdminModule {
+export class AuthModule {
 }

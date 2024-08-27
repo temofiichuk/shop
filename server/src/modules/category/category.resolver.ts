@@ -3,7 +3,7 @@ import { CategoryService } from "./category.service";
 import { Category } from "./entities/category.entity";
 import { CreateCategoryInput } from "./dto/create-category.input";
 import { UpdateCategoryInput } from "./dto/update-category.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => Category)
 export class CategoryResolver {
