@@ -1,42 +1,16 @@
 "use client";
-import { from } from "@apollo/client";
-import {
-  NextSSRInMemoryCache,
-  SSRMultipartLink,
-  ApolloNextAppProvider,
-  NextSSRApolloClient,
-} from "@apollo/experimental-nextjs-app-support/ssr";
+import { PropsWithChildren, useMemo } from "react";
+import { ApolloClient, ApolloProvider as AppApolloProvider, InMemoryCache } from "@apollo/client";
+import httpLink from "@/lib/apollo/apollo.http-link.client";
 
-import { PropsWithChildren } from "react";
-import httpLink from "@/lib/apollo/apollo.http-link";
-import { loadDevMessages, loadErrorMessages } from "@apollo/client/dev";
 
-export const makeClient = () => {
-  return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache(),
-    link:
-      typeof window === "undefined"
-        ? from([
-            new SSRMultipartLink({
-              stripDefer: true,
-            }),
-          ])
-        : httpLink,
-  });
+export const ApolloProvider = ({ children }: PropsWithChildren) => {
+	const client = useMemo(() => new ApolloClient({
+		link: httpLink,
+		cache: new InMemoryCache(),
+	}), []);
+
+	return <AppApolloProvider client={client}>{children}</AppApolloProvider>;
 };
 
-if (process.env.NODE_ENV === "development") {
-  // Adds messages only in a dev environment
-  loadDevMessages();
-  loadErrorMessages();
-}
-
-const ApolloWrapper = ({ children }: PropsWithChildren) => {
-  return (
-    <ApolloNextAppProvider makeClient={makeClient}>
-      {children}
-    </ApolloNextAppProvider>
-  );
-};
-
-export default ApolloWrapper;
+export default ApolloProvider;

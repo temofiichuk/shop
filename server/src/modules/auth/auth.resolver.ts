@@ -4,8 +4,6 @@ import { UsePipes } from "@nestjs/common";
 import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
 import { AuthResponse } from "./entities/auth.entity";
 import { LoginInput } from "./dto/auth.input";
-import { IsAdminAuth } from "./decorators/auth-admin.decorators";
-import { IsUserAuth } from "./decorators/auth-user.decorators";
 
 @Resolver()
 export class AuthResolver {
@@ -19,7 +17,6 @@ export class AuthResolver {
 	}
 
 	@Query(() => AuthResponse)
-	@IsAdminAuth()
 	authAdminNewTokens(@Args("refresh_token") refresh_token: string) {
 		return this.authService.adminTokens(refresh_token);
 	}
@@ -31,7 +28,6 @@ export class AuthResolver {
 	}
 
 	@Query(() => AuthResponse)
-	@IsUserAuth()
 	authUserNewTokens(@Args("refresh_token") refresh_token: string) {
 		return this.authService.userTokens(refresh_token);
 	}

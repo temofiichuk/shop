@@ -21,28 +21,18 @@ type Admin {
   updated_at: DateTime!
 }
 
-type AuthAdmin {
-  id: Float!
-  role: String
-  email: String!
-}
-
-type AuthAdminResponse {
-  user: AuthAdmin!
+type AuthResponse {
+  user: AuthUser
   accessToken: String!
   refreshToken: String!
 }
 
 type AuthUser {
   id: Float!
-  username: String
+  role: EnumUserRole!
+  first_name: String!
+  last_name: String!
   email: String!
-}
-
-type AuthUserResponse {
-  user: AuthUser!
-  accessToken: String!
-  refreshToken: String!
 }
 
 type Category {
@@ -66,13 +56,14 @@ input CreateAdminInput {
 
 input CreateCategoryInput {
   name: String!
-  parent_id: Int
+  parent_id: Int = 0
   slug: String
 }
 
 input CreateOrderInput {
   user_id: Int
   total_price: Int!
+  order_items: [CreateOrderItemInput!]!
 }
 
 input CreateOrderItemInput {
@@ -92,7 +83,7 @@ input CreateProductCategoryInput {
 }
 
 input CreateProductImageInput {
-  product_id: Int
+  product_id: Int!
   name: String!
   url: String!
   is_main: Boolean! = false
@@ -104,7 +95,7 @@ input CreateProductInput {
   sku: String!
   base_price: Int!
   slug: String!
-  stock: Int!
+  stock: Int = 0
   rating: Int
   admin_id: Int
 }
@@ -150,7 +141,7 @@ scalar DateTime
 
 enum EnumDiscountType {
   FIXED
-  PERCENTED
+  PERCENTAGE
 }
 
 enum EnumReviewStatus {
@@ -159,12 +150,13 @@ enum EnumReviewStatus {
   REJECTED
 }
 
-input LoginAdminInput {
-  email: String!
-  password: String!
+enum EnumUserRole {
+  USER
+  ADMIN
+  ROOTADMIN
 }
 
-input LoginUserInput {
+input LoginInput {
   email: String!
   password: String!
 }
@@ -180,10 +172,10 @@ type Mutation {
   updateAttribute(updateAttributeInput: UpdateProductAttributeInput!): ProductAttribute!
   removeAttribute(id: Int!): ProductAttribute!
   createProductCategory(data: CreateProductCategoryInput!): ProductCategory!
-  updateProductCategory(id: Int!, data: UpdateProductCategoryInput!): ProductCategory!
+  updateProductCategory(data: UpdateProductCategoryInput!): ProductCategory!
   deleteProductCategory(id: Int!): ProductCategory!
   createProduct(data: CreateProductInput!): Product!
-  updateProduct(id: Int!, data: UpdateProductInput!): Product!
+  updateProduct(data: UpdateProductInput!): Product!
   deleteProduct(id: Int!): Product!
   createProductVariant(createProductVariantInput: CreateProductVariantInput!): ProductVariant!
   updateProductVariant(updateProductVariantInput: UpdateProductVariantInput!): ProductVariant!
@@ -195,19 +187,19 @@ type Mutation {
   updatePromotion(id: Int!, data: UpdatePromotionInput!): Promotion!
   deletePromotion(id: Int!): Promotion!
   createProductPromotion(data: CreateProductPromotionInput!): ProductPromotion!
-  updateProductPromotion(id: Int!, data: UpdateProductPromotionInput!): ProductPromotion!
+  updateProductPromotion(data: UpdateProductPromotionInput!): ProductPromotion!
   deleteProductPromotion(id: Int!): ProductPromotion!
   createReview(data: CreateReviewInput!): Review!
   updateReview(data: UpdateReviewInput!): Review!
   deleteReview(id: Int!): Review!
   createOrder(data: CreateOrderInput!): Order!
-  updateOrder(id: Int!, data: UpdateOrderInput!): Order!
+  updateOrder(data: UpdateOrderInput!): Order!
   deleteOrder(id: Int!): Order!
   createOrderItem(data: CreateOrderItemInput!): OrderItem!
-  updateOrderItem(id: Int!, data: UpdateOrderItemInput!): OrderItem!
+  updateOrderItem(data: UpdateOrderItemInput!): OrderItem!
   deleteOrderItem(id: Int!): OrderItem!
   createProductImage(data: CreateProductImageInput!): ProductImage!
-  updateProductImage(id: Int!, data: UpdateProductImageInput!): ProductImage!
+  updateProductImage(data: UpdateProductImageInput!): ProductImage!
   deleteProductImage(id: Int!): ProductImage!
 }
 
@@ -322,11 +314,11 @@ type Promotion {
 }
 
 type Query {
-  authUserLogin(loginInput: LoginUserInput!): AuthUserResponse!
-  authUserNewTokens(refresh_token: String!): AuthUserResponse!
+  authAdminLogin(loginInput: LoginInput!): AuthResponse!
+  authAdminNewTokens(refresh_token: String!): AuthResponse!
+  authUserLogin(loginInput: LoginInput!): AuthResponse!
+  authUserNewTokens(refresh_token: String!): AuthResponse!
   adminById(id: Int!): Admin!
-  authAdminLogin(loginInput: LoginAdminInput!): AuthAdminResponse!
-  authAdminNewTokens(refresh_token: String!): AuthAdminResponse!
   categories: [Category!]!
   category(id: Int!): Category!
   attribute(id: Int!): ProductAttribute!
@@ -334,6 +326,7 @@ type Query {
   productCategory(id: Int!): ProductCategory!
   products: [Product!]!
   product(id: Int!): Product!
+  productVariants(product_id: Float!): [ProductVariant!]!
   productVariant(id: Int!): ProductVariant!
   userWishlist: [Wishlist!]!
   wishlists: [Wishlist!]!
@@ -348,7 +341,7 @@ type Query {
   order(id: Int!): Order!
   orderItems: [OrderItem!]!
   orderItem(id: Int!): OrderItem!
-  productImages: [ProductImage!]!
+  productImages(product_id: Float!): [ProductImage!]!
   productImage(id: Int!): ProductImage!
 }
 
@@ -375,7 +368,7 @@ input UpdateAdminInput {
 
 input UpdateCategoryInput {
   name: String
-  parent_id: Int
+  parent_id: Int = 0
   slug: String
   id: Int!
 }
@@ -383,6 +376,7 @@ input UpdateCategoryInput {
 input UpdateOrderInput {
   user_id: Int
   total_price: Int
+  order_items: [CreateOrderItemInput!]
   id: Int!
 }
 
@@ -419,7 +413,7 @@ input UpdateProductInput {
   sku: String
   base_price: Int
   slug: String
-  stock: Int
+  stock: Int = 0
   rating: Int
   admin_id: Int
   id: Int!

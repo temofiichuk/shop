@@ -18,6 +18,16 @@ enum EnumUserRole {
   ROOTADMIN
 }
 
+enum EnumOrderStatus {
+  PENDING
+  CANCELED
+  AWAITING_PAYMENT
+  PAYED
+  SHIPPED
+  DELIVERED
+  FINISHED
+}
+
 model User {
   id          Int        @id @unique @default(autoincrement())
   username    String     @unique
@@ -185,16 +195,6 @@ model Review {
   status     EnumReviewStatus? @default(PENDING)
   created_at DateTime          @default(now())
   updated_at DateTime          @updatedAt
-}
-
-enum EnumOrderStatus {
-  PENDING
-  CANCELED
-  AWAITING_PAYMENT
-  PAYED
-  SHIPPED
-  DELIVERED
-  FINISHED
 }
 
 model Order {

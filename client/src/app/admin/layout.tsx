@@ -1,10 +1,19 @@
 import { PropsWithChildren } from "react";
+import { Inter } from "next/font/google";
+
+const fontSans = Inter({
+	subsets: ["latin"],
+	variable: "--font-inter",
+});
 
 const Layout = ({ children }: PropsWithChildren) => {
 	return (
-		<div className='className="max-w-screen-2xl m-auto min-h-screen overflow-hidden p-6 pb-20 2xl:overflow-visible 2xl:px-0'>
+		<main
+			aria-label="admin part"
+			className={fontSans.variable}>
+
 			{children}
-		</div>
+		</main>
 	);
 };
 

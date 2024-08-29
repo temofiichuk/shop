@@ -1,0 +1,19 @@
+.form {
+  @apply w-full max-w-sm;
+}
+
+.title {
+  @apply text-2xl text-center;
+}
+
+.content {
+  @apply grid gap-4;
+}
+
+.inputWrapper {
+  @apply grid gap-2;
+}
+
+.button {
+  @apply w-full;
+}

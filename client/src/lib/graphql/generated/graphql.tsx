@@ -32,32 +32,20 @@ export type Admin = {
   updated_at: Scalars['DateTime']['output'];
 };
 
-export type AuthAdmin = {
-  __typename?: 'AuthAdmin';
-  email: Scalars['String']['output'];
-  id: Scalars['Float']['output'];
-  role?: Maybe<Scalars['String']['output']>;
-};
-
-export type AuthAdminResponse = {
-  __typename?: 'AuthAdminResponse';
+export type AuthResponse = {
+  __typename?: 'AuthResponse';
   accessToken: Scalars['String']['output'];
   refreshToken: Scalars['String']['output'];
-  user: AuthAdmin;
+  user?: Maybe<AuthUser>;
 };
 
 export type AuthUser = {
   __typename?: 'AuthUser';
   email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
   id: Scalars['Float']['output'];
-  username?: Maybe<Scalars['String']['output']>;
-};
-
-export type AuthUserResponse = {
-  __typename?: 'AuthUserResponse';
-  accessToken: Scalars['String']['output'];
-  refreshToken: Scalars['String']['output'];
-  user: AuthUser;
+  last_name: Scalars['String']['output'];
+  role: EnumUserRole;
 };
 
 export type Category = {
@@ -87,6 +75,7 @@ export type CreateCategoryInput = {
 };
 
 export type CreateOrderInput = {
+  order_items: Array<CreateOrderItemInput>;
   total_price: Scalars['Int']['input'];
   user_id?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -110,7 +99,7 @@ export type CreateProductCategoryInput = {
 export type CreateProductImageInput = {
   is_main?: Scalars['Boolean']['input'];
   name: Scalars['String']['input'];
-  product_id?: InputMaybe<Scalars['Int']['input']>;
+  product_id: Scalars['Int']['input'];
   url: Scalars['String']['input'];
 };
 
@@ -122,7 +111,7 @@ export type CreateProductInput = {
   rating?: InputMaybe<Scalars['Int']['input']>;
   sku: Scalars['String']['input'];
   slug: Scalars['String']['input'];
-  stock: Scalars['Int']['input'];
+  stock?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type CreateProductPromotionInput = {
@@ -161,7 +150,7 @@ export type CreateWishlistInput = {
 
 export enum EnumDiscountType {
   Fixed = 'FIXED',
-  Percented = 'PERCENTED'
+  Percentage = 'PERCENTAGE'
 }
 
 export enum EnumReviewStatus {
@@ -170,12 +159,13 @@ export enum EnumReviewStatus {
   Rejected = 'REJECTED'
 }
 
-export type LoginAdminInput = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-};
+export enum EnumUserRole {
+  Admin = 'ADMIN',
+  Rootadmin = 'ROOTADMIN',
+  User = 'USER'
+}
 
-export type LoginUserInput = {
+export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
@@ -366,37 +356,31 @@ export type MutationUpdateCategoryArgs = {
 
 export type MutationUpdateOrderArgs = {
   data: UpdateOrderInput;
-  id: Scalars['Int']['input'];
 };
 
 
 export type MutationUpdateOrderItemArgs = {
   data: UpdateOrderItemInput;
-  id: Scalars['Int']['input'];
 };
 
 
 export type MutationUpdateProductArgs = {
   data: UpdateProductInput;
-  id: Scalars['Int']['input'];
 };
 
 
 export type MutationUpdateProductCategoryArgs = {
   data: UpdateProductCategoryInput;
-  id: Scalars['Int']['input'];
 };
 
 
 export type MutationUpdateProductImageArgs = {
   data: UpdateProductImageInput;
-  id: Scalars['Int']['input'];
 };
 
 
 export type MutationUpdateProductPromotionArgs = {
   data: UpdateProductPromotionInput;
-  id: Scalars['Int']['input'];
 };
 
 
@@ -544,10 +528,10 @@ export type Query = {
   __typename?: 'Query';
   adminById: Admin;
   attribute: ProductAttribute;
-  authAdminLogin: AuthAdminResponse;
-  authAdminNewTokens: AuthAdminResponse;
-  authUserLogin: AuthUserResponse;
-  authUserNewTokens: AuthUserResponse;
+  authAdminLogin: AuthResponse;
+  authAdminNewTokens: AuthResponse;
+  authUserLogin: AuthResponse;
+  authUserNewTokens: AuthResponse;
   categories: Array<Category>;
   category: Category;
   order: Order;
@@ -562,6 +546,7 @@ export type Query = {
   productPromotion: ProductPromotion;
   productPromotions: Array<ProductPromotion>;
   productVariant: ProductVariant;
+  productVariants: Array<ProductVariant>;
   products: Array<Product>;
   promotion: Promotion;
   promotions: Array<Promotion>;
@@ -584,7 +569,7 @@ export type QueryAttributeArgs = {
 
 
 export type QueryAuthAdminLoginArgs = {
-  loginInput: LoginAdminInput;
+  loginInput: LoginInput;
 };
 
 
@@ -594,7 +579,7 @@ export type QueryAuthAdminNewTokensArgs = {
 
 
 export type QueryAuthUserLoginArgs = {
-  loginInput: LoginUserInput;
+  loginInput: LoginInput;
 };
 
 
@@ -633,6 +618,11 @@ export type QueryProductImageArgs = {
 };
 
 
+export type QueryProductImagesArgs = {
+  product_id: Scalars['Float']['input'];
+};
+
+
 export type QueryProductPromotionArgs = {
   id: Scalars['Int']['input'];
 };
@@ -640,6 +630,11 @@ export type QueryProductPromotionArgs = {
 
 export type QueryProductVariantArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryProductVariantsArgs = {
+  product_id: Scalars['Float']['input'];
 };
 
 
@@ -688,6 +683,7 @@ export type UpdateCategoryInput = {
 
 export type UpdateOrderInput = {
   id: Scalars['Int']['input'];
+  order_items?: InputMaybe<Array<CreateOrderItemInput>>;
   total_price?: InputMaybe<Scalars['Int']['input']>;
   user_id?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -800,48 +796,323 @@ export type Wishlist = {
   user_id: Scalars['Int']['output'];
 };
 
-export type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
+export type AuthUserFragmentFragment = { __typename?: 'AuthUser', id: number, first_name: string, last_name: string, email: string };
+
+export type AuthAdminLoginQueryVariables = Exact<{
+  loginInput: LoginInput;
+}>;
 
 
-export type Unnamed_1_Query = { __typename?: 'Query', products: Array<{ __typename?: 'Product', name: string }> };
+export type AuthAdminLoginQuery = { __typename?: 'Query', authAdminLogin: { __typename?: 'AuthResponse', refreshToken: string, accessToken: string, user?: { __typename?: 'AuthUser', role: EnumUserRole, id: number, first_name: string, last_name: string, email: string } | null } };
+
+export type AuthUserLoginQueryVariables = Exact<{
+  loginInput: LoginInput;
+}>;
 
 
-export const Document = gql`
-    {
-  products {
-    name
-  }
+export type AuthUserLoginQuery = { __typename?: 'Query', authUserLogin: { __typename?: 'AuthResponse', refreshToken: string, accessToken: string, user?: { __typename?: 'AuthUser', id: number, first_name: string, last_name: string, email: string } | null } };
+
+export type AuthUserNewTokensQueryVariables = Exact<{
+  refresh_token: Scalars['String']['input'];
+}>;
+
+
+export type AuthUserNewTokensQuery = { __typename?: 'Query', authUserNewTokens: { __typename?: 'AuthResponse', refreshToken: string, accessToken: string, user?: { __typename?: 'AuthUser', id: number, first_name: string, last_name: string, email: string } | null } };
+
+export type AuthAdminNewTokensQueryVariables = Exact<{
+  refresh_token: Scalars['String']['input'];
+}>;
+
+
+export type AuthAdminNewTokensQuery = { __typename?: 'Query', authAdminNewTokens: { __typename?: 'AuthResponse', refreshToken: string, accessToken: string, user?: { __typename?: 'AuthUser', role: EnumUserRole, id: number, first_name: string, last_name: string, email: string } | null } };
+
+export type OrdersQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OrdersQueryQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: number, status: string, total_price: number, order_items: Array<{ __typename?: 'OrderItem', id: number, total_price: number, product_variant_id: number }> }> };
+
+export type OrderQueryQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type OrderQueryQuery = { __typename?: 'Query', order: { __typename?: 'Order', id: number, status: string, total_price: number, order_items: Array<{ __typename?: 'OrderItem', total_price: number, product_variant_id: number }> } };
+
+export const AuthUserFragmentFragmentDoc = gql`
+    fragment AuthUserFragment on AuthUser {
+  id
+  first_name
+  last_name
+  email
 }
     `;
+export const AuthAdminLoginDocument = gql`
+    query authAdminLogin($loginInput: LoginInput!) {
+  authAdminLogin(loginInput: $loginInput) {
+    user {
+      ...AuthUserFragment
+      role
+    }
+    refreshToken
+    accessToken
+  }
+}
+    ${AuthUserFragmentFragmentDoc}`;
 
 /**
- * __useQuery__
+ * __useAuthAdminLoginQuery__
  *
- * To run a query within a React component, call `useQuery` and pass it any options that fit your needs.
- * When your component renders, `useQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAuthAdminLoginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthAdminLoginQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useQuery({
+ * const { data, loading, error } = useAuthAdminLoginQuery({
+ *   variables: {
+ *      loginInput: // value for 'loginInput'
+ *   },
+ * });
+ */
+export function useAuthAdminLoginQuery(baseOptions: Apollo.QueryHookOptions<AuthAdminLoginQuery, AuthAdminLoginQueryVariables> & ({ variables: AuthAdminLoginQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AuthAdminLoginQuery, AuthAdminLoginQueryVariables>(AuthAdminLoginDocument, options);
+      }
+export function useAuthAdminLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AuthAdminLoginQuery, AuthAdminLoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AuthAdminLoginQuery, AuthAdminLoginQueryVariables>(AuthAdminLoginDocument, options);
+        }
+export function useAuthAdminLoginSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AuthAdminLoginQuery, AuthAdminLoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AuthAdminLoginQuery, AuthAdminLoginQueryVariables>(AuthAdminLoginDocument, options);
+        }
+export type AuthAdminLoginQueryHookResult = ReturnType<typeof useAuthAdminLoginQuery>;
+export type AuthAdminLoginLazyQueryHookResult = ReturnType<typeof useAuthAdminLoginLazyQuery>;
+export type AuthAdminLoginSuspenseQueryHookResult = ReturnType<typeof useAuthAdminLoginSuspenseQuery>;
+export type AuthAdminLoginQueryResult = Apollo.QueryResult<AuthAdminLoginQuery, AuthAdminLoginQueryVariables>;
+export const AuthUserLoginDocument = gql`
+    query authUserLogin($loginInput: LoginInput!) {
+  authUserLogin(loginInput: $loginInput) {
+    user {
+      ...AuthUserFragment
+    }
+    refreshToken
+    accessToken
+  }
+}
+    ${AuthUserFragmentFragmentDoc}`;
+
+/**
+ * __useAuthUserLoginQuery__
+ *
+ * To run a query within a React component, call `useAuthUserLoginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthUserLoginQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthUserLoginQuery({
+ *   variables: {
+ *      loginInput: // value for 'loginInput'
+ *   },
+ * });
+ */
+export function useAuthUserLoginQuery(baseOptions: Apollo.QueryHookOptions<AuthUserLoginQuery, AuthUserLoginQueryVariables> & ({ variables: AuthUserLoginQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AuthUserLoginQuery, AuthUserLoginQueryVariables>(AuthUserLoginDocument, options);
+      }
+export function useAuthUserLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AuthUserLoginQuery, AuthUserLoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AuthUserLoginQuery, AuthUserLoginQueryVariables>(AuthUserLoginDocument, options);
+        }
+export function useAuthUserLoginSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AuthUserLoginQuery, AuthUserLoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AuthUserLoginQuery, AuthUserLoginQueryVariables>(AuthUserLoginDocument, options);
+        }
+export type AuthUserLoginQueryHookResult = ReturnType<typeof useAuthUserLoginQuery>;
+export type AuthUserLoginLazyQueryHookResult = ReturnType<typeof useAuthUserLoginLazyQuery>;
+export type AuthUserLoginSuspenseQueryHookResult = ReturnType<typeof useAuthUserLoginSuspenseQuery>;
+export type AuthUserLoginQueryResult = Apollo.QueryResult<AuthUserLoginQuery, AuthUserLoginQueryVariables>;
+export const AuthUserNewTokensDocument = gql`
+    query authUserNewTokens($refresh_token: String!) {
+  authUserNewTokens(refresh_token: $refresh_token) {
+    user {
+      ...AuthUserFragment
+    }
+    refreshToken
+    accessToken
+  }
+}
+    ${AuthUserFragmentFragmentDoc}`;
+
+/**
+ * __useAuthUserNewTokensQuery__
+ *
+ * To run a query within a React component, call `useAuthUserNewTokensQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthUserNewTokensQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthUserNewTokensQuery({
+ *   variables: {
+ *      refresh_token: // value for 'refresh_token'
+ *   },
+ * });
+ */
+export function useAuthUserNewTokensQuery(baseOptions: Apollo.QueryHookOptions<AuthUserNewTokensQuery, AuthUserNewTokensQueryVariables> & ({ variables: AuthUserNewTokensQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AuthUserNewTokensQuery, AuthUserNewTokensQueryVariables>(AuthUserNewTokensDocument, options);
+      }
+export function useAuthUserNewTokensLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AuthUserNewTokensQuery, AuthUserNewTokensQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AuthUserNewTokensQuery, AuthUserNewTokensQueryVariables>(AuthUserNewTokensDocument, options);
+        }
+export function useAuthUserNewTokensSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AuthUserNewTokensQuery, AuthUserNewTokensQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AuthUserNewTokensQuery, AuthUserNewTokensQueryVariables>(AuthUserNewTokensDocument, options);
+        }
+export type AuthUserNewTokensQueryHookResult = ReturnType<typeof useAuthUserNewTokensQuery>;
+export type AuthUserNewTokensLazyQueryHookResult = ReturnType<typeof useAuthUserNewTokensLazyQuery>;
+export type AuthUserNewTokensSuspenseQueryHookResult = ReturnType<typeof useAuthUserNewTokensSuspenseQuery>;
+export type AuthUserNewTokensQueryResult = Apollo.QueryResult<AuthUserNewTokensQuery, AuthUserNewTokensQueryVariables>;
+export const AuthAdminNewTokensDocument = gql`
+    query authAdminNewTokens($refresh_token: String!) {
+  authAdminNewTokens(refresh_token: $refresh_token) {
+    user {
+      ...AuthUserFragment
+      role
+    }
+    refreshToken
+    accessToken
+  }
+}
+    ${AuthUserFragmentFragmentDoc}`;
+
+/**
+ * __useAuthAdminNewTokensQuery__
+ *
+ * To run a query within a React component, call `useAuthAdminNewTokensQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthAdminNewTokensQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthAdminNewTokensQuery({
+ *   variables: {
+ *      refresh_token: // value for 'refresh_token'
+ *   },
+ * });
+ */
+export function useAuthAdminNewTokensQuery(baseOptions: Apollo.QueryHookOptions<AuthAdminNewTokensQuery, AuthAdminNewTokensQueryVariables> & ({ variables: AuthAdminNewTokensQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AuthAdminNewTokensQuery, AuthAdminNewTokensQueryVariables>(AuthAdminNewTokensDocument, options);
+      }
+export function useAuthAdminNewTokensLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AuthAdminNewTokensQuery, AuthAdminNewTokensQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AuthAdminNewTokensQuery, AuthAdminNewTokensQueryVariables>(AuthAdminNewTokensDocument, options);
+        }
+export function useAuthAdminNewTokensSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AuthAdminNewTokensQuery, AuthAdminNewTokensQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AuthAdminNewTokensQuery, AuthAdminNewTokensQueryVariables>(AuthAdminNewTokensDocument, options);
+        }
+export type AuthAdminNewTokensQueryHookResult = ReturnType<typeof useAuthAdminNewTokensQuery>;
+export type AuthAdminNewTokensLazyQueryHookResult = ReturnType<typeof useAuthAdminNewTokensLazyQuery>;
+export type AuthAdminNewTokensSuspenseQueryHookResult = ReturnType<typeof useAuthAdminNewTokensSuspenseQuery>;
+export type AuthAdminNewTokensQueryResult = Apollo.QueryResult<AuthAdminNewTokensQuery, AuthAdminNewTokensQueryVariables>;
+export const OrdersQueryDocument = gql`
+    query OrdersQuery {
+  orders {
+    id
+    status
+    total_price
+    order_items {
+      id
+      total_price
+      product_variant_id
+    }
+  }
+}
+    `;
+
+/**
+ * __useOrdersQueryQuery__
+ *
+ * To run a query within a React component, call `useOrdersQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrdersQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrdersQueryQuery({
  *   variables: {
  *   },
  * });
  */
-export function useQuery(baseOptions?: Apollo.QueryHookOptions<Query, QueryVariables>) {
+export function useOrdersQueryQuery(baseOptions?: Apollo.QueryHookOptions<OrdersQueryQuery, OrdersQueryQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Query, QueryVariables>(Document, options);
+        return Apollo.useQuery<OrdersQueryQuery, OrdersQueryQueryVariables>(OrdersQueryDocument, options);
       }
-export function useLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Query, QueryVariables>) {
+export function useOrdersQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrdersQueryQuery, OrdersQueryQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Query, QueryVariables>(Document, options);
+          return Apollo.useLazyQuery<OrdersQueryQuery, OrdersQueryQueryVariables>(OrdersQueryDocument, options);
         }
-export function useSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<Query, QueryVariables>) {
+export function useOrdersQuerySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<OrdersQueryQuery, OrdersQueryQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<Query, QueryVariables>(Document, options);
+          return Apollo.useSuspenseQuery<OrdersQueryQuery, OrdersQueryQueryVariables>(OrdersQueryDocument, options);
         }
-export type QueryHookResult = ReturnType<typeof useQuery>;
-export type LazyQueryHookResult = ReturnType<typeof useLazyQuery>;
-export type SuspenseQueryHookResult = ReturnType<typeof useSuspenseQuery>;
-export type QueryResult = Apollo.QueryResult<Query, QueryVariables>;
+export type OrdersQueryQueryHookResult = ReturnType<typeof useOrdersQueryQuery>;
+export type OrdersQueryLazyQueryHookResult = ReturnType<typeof useOrdersQueryLazyQuery>;
+export type OrdersQuerySuspenseQueryHookResult = ReturnType<typeof useOrdersQuerySuspenseQuery>;
+export type OrdersQueryQueryResult = Apollo.QueryResult<OrdersQueryQuery, OrdersQueryQueryVariables>;
+export const OrderQueryDocument = gql`
+    query OrderQuery($id: Int!) {
+  order(id: $id) {
+    id
+    status
+    total_price
+    order_items {
+      total_price
+      product_variant_id
+    }
+  }
+}
+    `;
+
+/**
+ * __useOrderQueryQuery__
+ *
+ * To run a query within a React component, call `useOrderQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrderQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrderQueryQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOrderQueryQuery(baseOptions: Apollo.QueryHookOptions<OrderQueryQuery, OrderQueryQueryVariables> & ({ variables: OrderQueryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrderQueryQuery, OrderQueryQueryVariables>(OrderQueryDocument, options);
+      }
+export function useOrderQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrderQueryQuery, OrderQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrderQueryQuery, OrderQueryQueryVariables>(OrderQueryDocument, options);
+        }
+export function useOrderQuerySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<OrderQueryQuery, OrderQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OrderQueryQuery, OrderQueryQueryVariables>(OrderQueryDocument, options);
+        }
+export type OrderQueryQueryHookResult = ReturnType<typeof useOrderQueryQuery>;
+export type OrderQueryLazyQueryHookResult = ReturnType<typeof useOrderQueryLazyQuery>;
+export type OrderQuerySuspenseQueryHookResult = ReturnType<typeof useOrderQuerySuspenseQuery>;
+export type OrderQueryQueryResult = Apollo.QueryResult<OrderQueryQuery, OrderQueryQueryVariables>;

@@ -1,20 +1,17 @@
-/** @type {import('next').NextConfig} */
+/** @type {import("next").NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
 	env: {
-		SERVER_URL: process.env.SERVER_URL,
+		NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+		NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+		NEXT_SERVER_URL: process.env.NEXT_SERVER_URL,
 	},
 	images: {
-		domains: ["www.google.com", "loremflickr.com", "picsum.photos"],
+		domains: ["t4.ftcdn.net"],
 	},
 	async redirects() {
 		return [
-			{ source: "/", destination: "/shop/woman", permanent: true },
-			{
-				source: "/shop",
-				destination: `/shop/${process.env.NEXT_PUBLIC_MAIN_PAGE}`,
-				permanent: true,
-			},
+			{ source: "/", destination: "/shop", permanent: true },
 		];
 	},
 };
