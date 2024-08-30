@@ -3,13 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/store/store";
 
 // Define a type for the slice state
-type IsOpenState = Record<string, boolean>
+export type IsOpenState = Record<string, boolean>
 
 
 // Define the initial state using that type
-const initialState: IsOpenState = {
-	"mobile-sidebar": false,
-};
+const initialState: IsOpenState = {};
 
 export const isOpenSlice = createSlice<IsOpenState>({
 	name: "IsOpenState",
@@ -17,6 +15,9 @@ export const isOpenSlice = createSlice<IsOpenState>({
 	reducers: {
 		toggle: (state: IsOpenState, { payload: key }: PayloadAction<string>) => {
 			state[key] = !state[key];
+		},
+		set: (state: IsOpenState, { payload }: PayloadAction<{ key: string, value: boolean }>) => {
+			state[payload.key] = payload.value;
 		},
 		show: (state: IsOpenState, { payload }: PayloadAction<string>) => {
 			state[payload] = true;
@@ -27,7 +28,7 @@ export const isOpenSlice = createSlice<IsOpenState>({
 	},
 });
 
-export const { toggle, show, hide } = isOpenSlice.actions;
+export const { toggle, show, hide, set } = isOpenSlice.actions;
 
 export const selectIsOpen = (key: string) => (state: RootState) => state.isOpen[key];
 
