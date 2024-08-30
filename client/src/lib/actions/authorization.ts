@@ -11,7 +11,6 @@ const authorization = async (payload, id) => {
 		});
 		return undefined;
 	} catch (error) {
-		// console.log(error);
 		if (isRedirectError(error)) {
 			throw error;
 		}

@@ -10,7 +10,7 @@ const useAuth = (role: EnumUserRole) => {
 	const { pending } = false;
 
 	if (error) {
-		console.log(error);
+		// console.log(error);
 		toast(error, {
 			description: "Something went wrong, please tru again",
 		});

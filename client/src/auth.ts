@@ -1,8 +1,11 @@
 import Credentials from "next-auth/providers/credentials";
-import NextAuth, { AuthError, User } from "next-auth";
+import NextAuth, { AuthError, Session, User } from "next-auth";
 import { AuthResponse, AuthUser, EnumUserRole, LoginInput } from "@/lib/graphql/generated/graphql";
 import { apolloClient } from "@/lib/apollo/apollo.client";
 import { AUTH_ADMIN_LOGIN, AUTH_USER_LOGIN } from "@/lib/graphql/queries/auth";
+import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
+import { NextAuthRequest } from "next-auth/lib";
+import { AppRouteHandlerFn, AppRouteHandlerFnContext } from "next-auth/lib/types";
 
 declare module "next-auth" {
 	export interface Session {
@@ -151,4 +154,6 @@ export const config = {
 	} : undefined,
 };
 
-export const { handlers, signIn, signOut, auth, unstable_update: update } = NextAuth(config);
+
+export const { handlers, signIn, signOut, auth: isAuth, unstable_update: update } = NextAuth(config);
+export const auth: ((...args: [NextApiRequest, NextApiResponse]) => Promise<Session | null>) & ((...args: []) => Promise<Session | null>) & ((...args: [GetServerSidePropsContext]) => Promise<Session | null>) & ((...args: [(req: NextAuthRequest, ctx: AppRouteHandlerFnContext) => ReturnType<AppRouteHandlerFn>]) => AppRouteHandlerFn) = isAuth;
