@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ListFilter } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { EnumUserRole } from "@/lib/graphql/generated/graphql";
+import { EnumUserRole, Order } from "@/lib/graphql/generated/graphql";
 import { EnumOrderStatus } from "@/lib/graphql/generated/types/order.types";
 
 
@@ -33,14 +33,19 @@ const periods = [
 	{ title: "Year", value: "year" },
 ];
 
+interface IOrdersListProps {
+	orders: Order[];
+}
 
-const OrdersList = () => {
+const OrdersList = ({ orders }: IOrdersListProps) => {
 	const [filterBy, setFilterBy] = useState<EnumOrderStatus | "">(EnumOrderStatus.Pending);
 	const [period, setPeriod] = useState(periods[0]);
 
 	return (
 		<div className={styles.table}>
-
+			<pre>
+				{JSON.stringify(orders, null, 2)}
+			</pre>
 			<div className="flex items-center py-5">
 				{/*Date filter*/}
 				<Select>

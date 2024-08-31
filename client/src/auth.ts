@@ -2,7 +2,8 @@ import Credentials from "next-auth/providers/credentials";
 import NextAuth, { AuthError, Session, User } from "next-auth";
 import { AuthResponse, AuthUser, EnumUserRole, LoginInput } from "@/lib/graphql/generated/graphql";
 import { apolloClient } from "@/lib/apollo/apollo.client";
-import { AUTH_ADMIN_LOGIN, AUTH_USER_LOGIN } from "@/lib/graphql/queries/auth";
+import { AUTH_ADMIN_LOGIN, AUTH_ADMIN_TOKENS, AUTH_USER_LOGIN, AUTH_USER_TOKENS } from "@/lib/graphql/queries/auth";
+import { decodeJwt } from "jose";
 import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
 import { NextAuthRequest } from "next-auth/lib";
 import { AppRouteHandlerFn, AppRouteHandlerFnContext } from "next-auth/lib/types";
@@ -25,6 +26,31 @@ declare module "next-auth" {
 		user: AuthUser;
 		accessToken: string;
 		refreshToken: string;
+	}
+}
+
+async function refreshAccessToken(refreshToken: string, role: EnumUserRole) {
+	try {
+		if (!refreshToken) {
+			return null;
+		}
+		const isUser = role === EnumUserRole.User;
+		const { data } = await apolloClient().query({
+			query: isUser ? AUTH_USER_TOKENS : AUTH_ADMIN_TOKENS,
+			variables: {
+				refresh_token: refreshToken,
+			},
+		});
+
+		const authData = isUser ? data.authUserNewTokens : data.authAdminNewTokens;
+
+		if (authData) {
+			return authData;
+		}
+
+		return null;
+	} catch (error) {
+		return null;
 	}
 }
 
@@ -51,7 +77,7 @@ const userCredentialsProvider = Credentials({
 			});
 
 			if (!data || !data.authUserLogin) {
-				throw new AuthError("Authentication failed: No user data returned.");
+				return new AuthError("Authentication failed: No user data returned.");
 			}
 			return { ...data.authUserLogin } as User;
 		} catch (error) {
@@ -109,9 +135,21 @@ export const config = {
 	providers,
 	callbacks: {
 		async jwt({ token, user, trigger, session }) {
+			if (token && trigger !== "update") {
+				const accessToken = token?.accessToken;
+				if (accessToken) {
+					const { exp } = decodeJwt(accessToken);
+					if (exp && exp <= Math.ceil(Date.now() / 1000)) {
+						const authData = await refreshAccessToken(token.refreshToken, token.user.role);
+						return { ...token, ...authData };
+					}
+				}
+			}
+
 			if (trigger === "update") {
 				return { ...token, ...session };
 			}
+
 			return user ? { ...token, ...user } : token;
 		},
 		async session({ session, token }) {

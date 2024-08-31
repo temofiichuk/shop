@@ -1,13 +1,16 @@
-import { auth } from "@/auth";
 import { EnumUserRole } from "@/lib/graphql/generated/graphql";
+import { auth } from "@/auth";
 
 const privateRoutes = {
 	user: { path: "/profile", redirectTo: "/login" },
 	admin: { path: "/admin/dashboard", redirectTo: "/admin" },
 };
 
-export default auth((req) => {
-	if (!req.auth) {
+export default async (req, res) => {
+	const isPrivateRoute = Object.values(privateRoutes).some(privateRoute => req.nextUrl.pathname.startsWith(privateRoute.path));
+	if (!isPrivateRoute) return req;
+	const session = await auth();
+	if (!session) {
 
 		if (req.nextUrl.pathname.startsWith(privateRoutes.user.path)) {
 			const newUrl = new URL(privateRoutes.user.redirectTo, req.nextUrl.origin);
@@ -19,7 +22,7 @@ export default auth((req) => {
 			return Response.redirect(newUrl);
 		}
 	} else {
-		const { user: { role } } = req.auth;
+		const { user: { role } } = session;
 
 		if ((role === EnumUserRole.Admin || role === EnumUserRole.Rootadmin) && req.nextUrl.pathname.startsWith(privateRoutes.user.path)) {
 			const newUrl = new URL(privateRoutes.user.redirectTo, req.nextUrl.origin);
@@ -31,9 +34,6 @@ export default auth((req) => {
 			return Response.redirect(newUrl);
 		}
 	}
-
-});
-
-export const config = {
-	matcher: ["/profile/:path*", "/admin/dashboard/:path*"],
 };
+
+export const config = { matcher: ["/profile/:path*", "/admin/dashboard/:path*"] };

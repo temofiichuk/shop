@@ -5,9 +5,10 @@ import {
 	SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support/ssr";
 import { registerApolloClient } from "@apollo/experimental-nextjs-app-support/rsc";
-import httpLink from "@/lib/apollo/apollo.http-link.server";
+import httpLink from "@/lib/apollo/apollo.auth-http-link";
 
-export const { getClient } = registerApolloClient(() => {
+
+const { getClient } = registerApolloClient(() => {
 	return new NextSSRApolloClient({
 		cache: new NextSSRInMemoryCache(),
 		link:
@@ -21,3 +22,5 @@ export const { getClient } = registerApolloClient(() => {
 				: httpLink,
 	});
 });
+
+export default getClient;
