@@ -1,8 +1,10 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { IsNotEmpty, IsString, Min } from "class-validator";
+import { Prisma } from "@prisma/client";
+
 
 @InputType()
-export class CreateProductAttributeInput {
+export class CreateProductAttributeInput implements Prisma.ProductAttributeCreateInput {
 	@Field(() => String)
 	@IsNotEmpty()
 	@IsString()

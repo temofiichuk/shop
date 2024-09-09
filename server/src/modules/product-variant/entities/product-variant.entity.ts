@@ -2,33 +2,44 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { OrderItem } from "../../order-item/entities/order-item.entity";
 import { Product } from "../../product/entities/product.entity";
 import { Wishlist } from "../../wishlist/entities/wishlist.entity";
-import { ProductAttribute } from "../../product-attribute/entities/product-attribute.entity";
+import { ProductImage } from "../../product-image/entities/product-image.entity";
+
+
+@ObjectType()
+export class ProductVariantAttribute {
+	@Field(() => Int)
+	id: number;
+
+	@Field(() => String)
+	name: string;
+
+	@Field(() => String)
+	value: string;
+
+	@Field()
+	created_at: Date;
+
+	@Field()
+	updated_at: Date;
+}
+
 
 @ObjectType()
 export class ProductVariant {
 	@Field(() => Int)
 	id: number;
 
+	@Field(() => Int)
+	product_id: number;
+
 	@Field(() => Product)
 	product: Product;
 
 	@Field(() => Int)
-	product_id: number;
-
-	@Field(() => ProductAttribute)
-	attribute: ProductAttribute;
+	price: number;
 
 	@Field(() => Int)
-	attribute_id: number;
-
-	@Field()
-	value: string;
-
-	@Field(() => Int)
-	price_modifier: number;
-
-	@Field(() => Int)
-	stock_quantity: number;
+	stock: number;
 
 	@Field()
 	created_at: Date;
@@ -37,8 +48,17 @@ export class ProductVariant {
 	updated_at: Date;
 
 	@Field(() => [OrderItem])
-	order_item?: OrderItem[];
+	order_items?: OrderItem[];
 
 	@Field(() => [Wishlist])
-	Wishlist?: Wishlist[];
+	wishlist?: Wishlist[];
+
+	@Field(() => [ProductImage])
+	product_image?: ProductImage[];
+
+	@Field(() => Int, { nullable: true })
+	product_image_id?: number;
+
+	@Field(() => [ProductVariantAttribute])
+	variant_attribute_values: ProductVariantAttribute[];
 }

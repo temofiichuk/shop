@@ -1,8 +1,9 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
-import { IsInt, IsLowercase, IsNotEmpty, IsOptional, IsString, Matches, Min } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString, Matches, Min } from "class-validator";
+import { Prisma } from "@prisma/client";
 
 @InputType()
-export class CreateProductInput {
+export class CreateProductInput implements Prisma.ProductCreateInput {
 	@Field()
 	@IsNotEmpty()
 	@IsString()
@@ -25,26 +26,9 @@ export class CreateProductInput {
 	@IsNotEmpty()
 	base_price: number;
 
-	@Field()
-	@IsNotEmpty()
-	@IsString()
-	@IsLowercase()
-	slug: string;
-
 	@Field(() => Int, { defaultValue: 0, nullable: true })
 	@IsInt()
 	@IsOptional()
 	@IsNotEmpty()
 	stock?: number;
-
-	@Field(() => Int, { nullable: true })
-	@IsInt()
-	@IsOptional()
-	@IsNotEmpty()
-	rating?: number;
-
-	@Field(() => Int, { nullable: true })
-	@IsInt()
-	@IsOptional()
-	admin_id?: number;
 }

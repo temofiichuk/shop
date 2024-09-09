@@ -4,6 +4,8 @@ import { Order } from "./entities/order.entity";
 import { CreateOrderInput } from "./dto/create-order.input";
 import { UpdateOrderInput } from "./dto/update-order.input";
 import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
+import { OrderFilterInput } from "./dto/filter-order.input";
+
 
 @Resolver(() => Order)
 export class OrderResolver {
@@ -17,8 +19,8 @@ export class OrderResolver {
 
 	@Query(() => [Order])
 	@IsAdminAuth()
-	async orders() {
-		return this.orderService.findAll();
+	async orders(@Args("filter", { nullable: true }) filter?: OrderFilterInput) {
+		return this.orderService.findAll(filter);
 	}
 
 	@Query(() => Order)

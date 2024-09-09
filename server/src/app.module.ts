@@ -9,15 +9,18 @@ import { AdminModule } from "./modules/admin/admin.module";
 import { ReviewModule } from "./modules/review/review.module";
 import { OrderItemModule } from "./modules/order-item/order-item.module";
 import { CategoryModule } from "./modules/category/category.module";
-import { ProductAttributeModule } from "./modules/product-attribute/product-attribute.module";
 import { ProductCategoryModule } from "./modules/product-category/product-category.module";
 import { ProductModule } from "./modules/product/product.module";
-import { ProductVariantModule } from "./modules/product-variant/product-variant.module";
 import { WishlistModule } from "./modules/wishlist/wishlist.module";
 import { PromotionModule } from "./modules/promotion/promotion.module";
 import { ProductPromotionModule } from "./modules/product-promotion/product-promotion.module";
 import { OrderModule } from "./modules/order/order.module";
 import { ProductImageModule } from "./modules/product-image/product-image.module";
+import { AnalyticsModule } from "./modules/analytics/analytics.module";
+import { PaginationService } from "./services/pagination/pagination.service";
+import { ProductVariantModule } from "./modules/product-variant/product-variant.module";
+import { ProductAttributeModule } from "./modules/product-attribute/product-attribute.module";
+import { ProductAttributeValueModule } from './modules/product-attribute-value/product-attribute-value.module';
 
 @Module({
 	imports: [
@@ -38,9 +41,11 @@ import { ProductImageModule } from "./modules/product-image/product-image.module
 		OrderItemModule,
 		ProductImageModule,
 		AuthModule,
+		AnalyticsModule,
+		ProductAttributeValueModule,
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [AppService, PaginationService],
 })
 export class AppModule {
 }

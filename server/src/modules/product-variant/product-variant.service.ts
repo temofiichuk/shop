@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { CreateProductVariantInput } from "./dto/create-product-variant.input";
 import { UpdateProductVariantInput } from "./dto/update-product-variant.input";
 import { PrismaService } from "../../prisma.service";
+import { CreateProductVariantInput } from "./dto/create-product-variant.input";
 
 @Injectable()
 export class ProductVariantService {
 	constructor(private readonly prisma: PrismaService) {
 	}
+
 
 	async create(data: CreateProductVariantInput) {
 		return this.prisma.productVariant.create({ data });
@@ -17,9 +18,8 @@ export class ProductVariantService {
 			where: { product_id },
 			include: {
 				product: true,
-				attribute: true,
-				order_item: true,
-				wishlist: true,
+				variant_attribute_values: true,
+				product_image: true,
 			},
 		});
 	}
@@ -29,9 +29,8 @@ export class ProductVariantService {
 			where: { id },
 			include: {
 				product: true,
-				attribute: true,
-				order_item: true,
-				wishlist: true,
+				variant_attribute_values: true,
+				product_image: true,
 			},
 		});
 	}

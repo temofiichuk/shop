@@ -9,26 +9,27 @@ export class ProductAttributeService {
 	constructor(private readonly prisma: PrismaService) {
 	}
 
-	async create(createAttributeInput: CreateProductAttributeInput) {
+	create(createProductAttributeInput: CreateProductAttributeInput) {
 		return this.prisma.productAttribute.create({
-			data: createAttributeInput,
+			data: createProductAttributeInput,
 		});
 	}
 
 	async findAll() {
-		return this.prisma.productAttribute.findMany();
+		return this.prisma.productAttribute.findMany({ include: { values: true } });
 	}
 
 	async findOne(id: number) {
 		return this.prisma.productAttribute.findUnique({
 			where: { id },
+			include: { values: true },
 		});
 	}
 
-	async update(id: number, updateAttributeInput: UpdateProductAttributeInput) {
+	update(id: number, updateProductAttributeInput: UpdateProductAttributeInput) {
 		return this.prisma.productAttribute.update({
 			where: { id },
-			data: updateAttributeInput,
+			data: updateProductAttributeInput,
 		});
 	}
 
