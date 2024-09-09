@@ -3,6 +3,8 @@ import { removeTypenameFromVariables } from "@apollo/client/link/remove-typename
 import { setContext } from "@apollo/client/link/context";
 import { auth } from "@/auth";
 import { Session } from "next-auth";
+import { onError as ErrorLink } from "@apollo/client/link/error";
+import { toast } from "sonner";
 
 
 const httpLink = new HttpLink({
@@ -27,5 +29,18 @@ const authLink = setContext(async (operation, { prevHeaders }) => {
 	};
 });
 
+const errorLink = ErrorLink(({ graphQLErrors }) => {
+	graphQLErrors && console.error(graphQLErrors);
+	if (!graphQLErrors) return;
+	const isServer = typeof window === "undefined";
+	isServer
+		? console.error(graphQLErrors)
+		: toast.error("Something went wrong , please reload the page and try again", {
+			duration: 6000,
+			description: graphQLErrors?.[0] ? `Cause: ${graphQLErrors?.[0]?.message}` : undefined,
+		});
+	return;
+});
 
-export default from([removeTypenameFromVariables(), authLink, httpLink]);
+
+export default from([removeTypenameFromVariables(), authLink, errorLink, httpLink]);

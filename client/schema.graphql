@@ -67,14 +67,15 @@ input CreateOrderInput {
 }
 
 input CreateOrderItemInput {
+  order_id: Int!
   product_variant_id: Int!
   quantity: Int!
   price: Int!
-  total_price: Int!
 }
 
-input CreateProductAttributeInput {
-  name: String!
+input CreateProductAttributeValueInput {
+  value: String!
+  product_attribute_id: Int!
 }
 
 input CreateProductCategoryInput {
@@ -94,10 +95,7 @@ input CreateProductInput {
   description: String!
   sku: String!
   base_price: Int!
-  slug: String!
   stock: Int = 0
-  rating: Int
-  admin_id: Int
 }
 
 input CreateProductPromotionInput {
@@ -105,12 +103,17 @@ input CreateProductPromotionInput {
   promotion_id: Int!
 }
 
+input CreateProductVariantAttributeInput {
+  name: String!
+  value: String!
+}
+
 input CreateProductVariantInput {
   product_id: Int!
-  attribute_id: Int!
-  value: String!
-  price_modifier: Int!
-  stock_quantity: Int!
+  price: Int!
+  stock: Int!
+  variant_attributes: [CreateProductVariantAttributeInput!]!
+  product_image_id: Int
 }
 
 input CreatePromotionInput {
@@ -118,7 +121,7 @@ input CreatePromotionInput {
   description: String
   discount_type: EnumDiscountType!
   start_date: DateTime!
-  end_data: DateTime!
+  end_date: DateTime!
 }
 
 input CreateReviewInput {
@@ -132,6 +135,12 @@ input CreateWishlistInput {
   user_id: Int!
   product_id: Int
   product_variant_id: Int
+}
+
+input DateFilter {
+  equals: DateTime
+  gt: DateTime
+  lt: DateTime
 }
 
 """
@@ -156,6 +165,18 @@ enum EnumUserRole {
   ROOTADMIN
 }
 
+input FilterProductInput {
+  name: StringFilter!
+  date: DateFilter!
+  price: IntFilter!
+}
+
+input IntFilter {
+  equals: Float
+  lt: Float
+  gt: Float
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -168,17 +189,17 @@ type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
   removeCategory(id: Int!): Category!
-  createAttribute(createAttributeInput: CreateProductAttributeInput!): ProductAttribute!
-  updateAttribute(updateAttributeInput: UpdateProductAttributeInput!): ProductAttribute!
-  removeAttribute(id: Int!): ProductAttribute!
+  createProductAttributeValue(createData: CreateProductAttributeValueInput!): ProductAttributeValue!
+  updateProductAttributeValue(updateData: UpdateProductAttributeValueInput!): ProductAttributeValue!
+  removeProductAttributeValue(id: Int!): ProductAttributeValue!
   createProductCategory(data: CreateProductCategoryInput!): ProductCategory!
   updateProductCategory(data: UpdateProductCategoryInput!): ProductCategory!
   deleteProductCategory(id: Int!): ProductCategory!
   createProduct(data: CreateProductInput!): Product!
   updateProduct(data: UpdateProductInput!): Product!
   deleteProduct(id: Int!): Product!
-  createProductVariant(createProductVariantInput: CreateProductVariantInput!): ProductVariant!
-  updateProductVariant(updateProductVariantInput: UpdateProductVariantInput!): ProductVariant!
+  createProductVariant(createData: CreateProductVariantInput!): ProductVariant!
+  updateProductVariant(updateData: UpdateProductVariantInput!): ProductVariant!
   removeProductVariant(id: Int!): ProductVariant!
   addToWishlist(data: CreateWishlistInput!): Wishlist!
   updateWishlist(id: Int!, data: UpdateWishlistInput!): Wishlist!
@@ -214,6 +235,10 @@ type Order {
   updated_at: DateTime!
 }
 
+input OrderFilterInput {
+  created_at: DateFilter!
+}
+
 type OrderItem {
   id: Int!
   order: Order!
@@ -222,9 +247,13 @@ type OrderItem {
   product_variant_id: Int!
   quantity: Int!
   price: Int!
-  total_price: Int!
   created_at: DateTime!
   updated_at: DateTime!
+}
+
+input PaginationInput {
+  page: Float!
+  take: Float!
 }
 
 type Product {
@@ -246,11 +275,24 @@ type Product {
   images: [ProductImage!]!
   promotions: [ProductPromotion!]!
   wishlist: [Wishlist!]!
+  attributes: [ProductAttribute!]!
 }
 
 type ProductAttribute {
   id: Int!
   name: String!
+  values: [ProductAttributeValue!]!
+  product: Product!
+  product_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type ProductAttributeValue {
+  id: Int!
+  value: String!
+  product_attribute: ProductAttribute!
+  product_attribute_id: Int!
   created_at: DateTime!
   updated_at: DateTime!
 }
@@ -263,6 +305,10 @@ type ProductCategory {
   category_id: Int!
   created_at: DateTime!
   updated_at: DateTime!
+}
+
+type ProductCount {
+  count: Float!
 }
 
 type ProductImage {
@@ -288,17 +334,25 @@ type ProductPromotion {
 
 type ProductVariant {
   id: Int!
-  product: Product!
   product_id: Int!
-  attribute: ProductAttribute!
-  attribute_id: Int!
-  value: String!
-  price_modifier: Int!
-  stock_quantity: Int!
+  product: Product!
+  price: Int!
+  stock: Int!
   created_at: DateTime!
   updated_at: DateTime!
-  order_item: [OrderItem!]!
-  Wishlist: [Wishlist!]!
+  order_items: [OrderItem!]!
+  wishlist: [Wishlist!]!
+  product_image: [ProductImage!]!
+  product_image_id: Int
+  variant_attribute_values: [ProductVariantAttribute!]!
+}
+
+type ProductVariantAttribute {
+  id: Int!
+  name: String!
+  value: String!
+  created_at: DateTime!
+  updated_at: DateTime!
 }
 
 type Promotion {
@@ -321,10 +375,12 @@ type Query {
   adminById(id: Int!): Admin!
   categories: [Category!]!
   category(id: Int!): Category!
-  attribute(id: Int!): ProductAttribute!
+  productAttributes: [ProductAttribute!]!
+  productAttribute(id: Int!): ProductAttribute!
   productCategories: [ProductCategory!]!
   productCategory(id: Int!): ProductCategory!
-  products: [Product!]!
+  products(pagination: PaginationInput, filter: FilterProductInput): [Product!]!
+  productsCount: ProductCount!
   product(id: Int!): Product!
   productVariants(product_id: Float!): [ProductVariant!]!
   productVariant(id: Int!): ProductVariant!
@@ -337,12 +393,24 @@ type Query {
   productPromotion(id: Int!): ProductPromotion!
   reviews: [Review!]!
   review(id: Int!): Review!
-  orders: [Order!]!
+  orders(filter: OrderFilterInput): [Order!]!
   order(id: Int!): Order!
   orderItems: [OrderItem!]!
   orderItem(id: Int!): OrderItem!
   productImages(product_id: Float!): [ProductImage!]!
   productImage(id: Int!): ProductImage!
+  revenue(revenueInput: RevenueInput!): Revenue!
+  productAttributeValues(id: Int): [ProductAttributeValue!]!
+  productAttributeValue(id: Int!): ProductAttributeValue!
+}
+
+type Revenue {
+  current: Int!
+  previous: Int!
+}
+
+input RevenueInput {
+  period: String!
 }
 
 type Review {
@@ -355,6 +423,13 @@ type Review {
   status: EnumReviewStatus!
   created_at: DateTime!
   updated_at: DateTime!
+}
+
+input StringFilter {
+  equals: String
+  contains: String
+  startsWith: String
+  endsWith: String
 }
 
 input UpdateAdminInput {
@@ -381,15 +456,16 @@ input UpdateOrderInput {
 }
 
 input UpdateOrderItemInput {
+  order_id: Int
   product_variant_id: Int
   quantity: Int
   price: Int
-  total_price: Int
   id: Int!
 }
 
-input UpdateProductAttributeInput {
-  name: String
+input UpdateProductAttributeValueInput {
+  value: String
+  product_attribute_id: Int
   id: Int!
 }
 
@@ -412,10 +488,7 @@ input UpdateProductInput {
   description: String
   sku: String
   base_price: Int
-  slug: String
   stock: Int = 0
-  rating: Int
-  admin_id: Int
   id: Int!
 }
 
@@ -427,10 +500,10 @@ input UpdateProductPromotionInput {
 
 input UpdateProductVariantInput {
   product_id: Int
-  attribute_id: Int
-  value: String
-  price_modifier: Int
-  stock_quantity: Int
+  price: Int
+  stock: Int
+  variant_attributes: [CreateProductVariantAttributeInput!]
+  product_image_id: Int
   id: Int!
 }
 
@@ -439,7 +512,7 @@ input UpdatePromotionInput {
   description: String
   discount_type: EnumDiscountType
   start_date: DateTime
-  end_data: DateTime
+  end_date: DateTime
   id: Int!
 }
 

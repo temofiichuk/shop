@@ -11,8 +11,8 @@ const useAuth = (role: EnumUserRole) => {
 
 	if (error) {
 		// console.log(error);
-		toast(error, {
-			description: "Something went wrong, please tru again",
+		toast("Something went wrong, please try again", {
+			description: error,
 		});
 	}
 

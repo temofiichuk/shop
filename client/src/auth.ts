@@ -40,6 +40,7 @@ async function refreshAccessToken(refreshToken: string, role: EnumUserRole) {
 			variables: {
 				refresh_token: refreshToken,
 			},
+			errorPolicy: "none",
 		});
 
 		const authData = isUser ? data.authUserNewTokens : data.authAdminNewTokens;
@@ -141,7 +142,7 @@ export const config = {
 					const { exp } = decodeJwt(accessToken);
 					if (exp && exp <= Math.ceil(Date.now() / 1000)) {
 						const authData = await refreshAccessToken(token.refreshToken, token.user.role);
-						return { ...token, ...authData };
+						return authData ? { ...token, ...authData } : null;
 					}
 				}
 			}

@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Inter } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 
 const fontSans = Inter({
 	subsets: ["latin"],
@@ -13,6 +14,7 @@ const Layout = ({ children }: PropsWithChildren) => {
 			className={fontSans.variable}>
 
 			{children}
+			<Toaster />
 		</main>
 	);
 };

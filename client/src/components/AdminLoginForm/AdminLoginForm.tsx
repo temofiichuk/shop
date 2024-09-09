@@ -14,8 +14,8 @@ const AdminLoginForm = () => {
 
 	const methods = useForm<LoginInput>({
 		defaultValues: {
-			email: "Laisha.Streich@gmail.com",
-			password: "zljmmu9fJ4ZMeYr",
+			email: "Ona91@yahoo.com",
+			password: "nNh8HQeaRF6D1Io",
 		},
 	});
 

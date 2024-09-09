@@ -36,7 +36,7 @@ const Breadcrumbs = ({ className }: IBreadcrumbs) => {
 
 					if (index + 1 === pathNames.length) {
 						return <BreadcrumbItem key={link}>
-							<BreadcrumbPage>{itemLink}</BreadcrumbPage>
+							<BreadcrumbPage className="select-none">{itemLink}</BreadcrumbPage>
 						</BreadcrumbItem>;
 					}
 

@@ -11,6 +11,9 @@
 }
 
 @layer base {
+  html {
+    @apply scroll-smooth;
+  }
 
   .light, .light [data-chart] {
     --background: 0 0% 100%;

@@ -1,7 +1,6 @@
-import styles from "./AdminHeader.module.scss";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Home, LineChart, Package, Package2, PanelLeft, Search, ShoppingCart, User, Users2 } from "lucide-react";
+import { Package2, PanelLeft, Search, User } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,19 +12,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 
-import Breadcrumbs from "@/components/Breadcrumbs/Breadcrumbs";
+import Breadcrumbs from "@/components/admin/Breadcrumbs/Breadcrumbs";
 import { signOut as authSignOut } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher/ThemeSwitcher";
-
-// export const structure = [
-// 	{ title: "", link: "/", icon: <Home /> },
-// ];
+import { adminNavigation } from "@/components/admin/AdminSidebar/AdminSidebar";
 
 const AdminHeader = () => {
+	const navItems = [...adminNavigation];
+	const lastNavItem = navItems.splice(adminNavigation.length - 1)[0];
 	return (
 		<header
-			className={styles.header}>
+			className="p-3 backdrop-blur-2xl flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0 sm:px-6">
 			<Sheet>
 				<SheetTrigger asChild>
 					<Button size="icon" variant="outline" className="sm:hidden">
@@ -33,49 +31,32 @@ const AdminHeader = () => {
 						<span className="sr-only">Toggle Menu</span>
 					</Button>
 				</SheetTrigger>
-				<SheetContent side="left" className="sm:max-w-xs" aria-describedby={"admin dashboard navigation"}>
-					<nav className="grid gap-6 text-lg font-medium">
+				<SheetContent side="left" className="h-full flex flex-col sm:max-w-xs text-lg font-medium"
+											aria-describedby={"admin dashboard navigation"}>
+					<nav className="grid gap-6  ">
 
 						<SheetTitle>
-
 							<Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-							<span className="sr-only">Acme Inc</span>
-
+							<span className="sr-only">My Shop Inc.</span>
 						</SheetTitle>
+
+						{navItems.map(({ href, title, Icon }) => (
+							<Link
+								href={href}
+								className="flex items-center gap-4 px-2.5 hover:text-foreground"
+							>
+								<Icon className="h-5 w-5" />
+								{title}
+							</Link>
+						))}
+					</nav>
+					<nav className="mt-auto">
 						<Link
-							href={"/admin/dashboard"}
+							href={lastNavItem.href}
 							className="flex items-center gap-4 px-2.5 hover:text-foreground"
 						>
-							<Home className="h-5 w-5" />
-							Dashboard
-						</Link>
-						<Link
-							href={"/admin/orders"}
-							className="flex items-center gap-4 px-2.5 text-foreground"
-						>
-							<ShoppingCart className="h-5 w-5" />
-							Orders
-						</Link>
-						<Link
-							href={"/admin/products"}
-							className="flex items-center gap-4 px-2.5 hover:text-foreground"
-						>
-							<Package className="h-5 w-5" />
-							Products
-						</Link>
-						<Link
-							href={"/admin/customers"}
-							className="flex items-center gap-4 px-2.5 hover:text-foreground"
-						>
-							<Users2 className="h-5 w-5" />
-							Customers
-						</Link>
-						<Link
-							href={"/admin/settings"}
-							className="flex items-center gap-4 px-2.5 hover:text-foreground"
-						>
-							<LineChart className="h-5 w-5" />
-							Analytics
+							<lastNavItem.Icon className="h-5 w-5" />
+							{lastNavItem.title}
 						</Link>
 					</nav>
 				</SheetContent>

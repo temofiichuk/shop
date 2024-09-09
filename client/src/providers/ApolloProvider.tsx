@@ -1,14 +1,35 @@
 "use client";
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren, useLayoutEffect, useMemo, useState } from "react";
 import { ApolloClient, ApolloProvider as AppApolloProvider, InMemoryCache } from "@apollo/client";
 import httpLink from "@/lib/apollo/apollo.auth-http-link";
 
-
+const cache = new InMemoryCache();
 export const ApolloProvider = ({ children }: PropsWithChildren) => {
-	const client = useMemo(() => new ApolloClient({
-		link: httpLink,
-		cache: new InMemoryCache(),
-	}), []);
+	const [client, setClient] = useState<any>();
+
+	const apollo = useMemo(() => {
+
+
+		return new ApolloClient({
+			link: httpLink,
+			cache: cache,
+			defaultOptions: { query: { fetchPolicy: "network-only", nextFetchPolicy: "cache-and-network" } },
+		});
+	}, [cache, httpLink]);
+
+	useLayoutEffect(() => {
+		async function initCache() {
+			// await persistCache({
+			// 	cache,
+			// 	storage: new LocalStorageWrapper(window.localStorage),
+			// });
+			setClient(apollo);
+		}
+
+		initCache();
+	}, [apollo]);
+
+	if (!client) return null;
 
 	return <AppApolloProvider client={client}>{children}</AppApolloProvider>;
 };

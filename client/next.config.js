@@ -7,7 +7,7 @@ const nextConfig = {
 		NEXT_SERVER_URL: process.env.NEXT_SERVER_URL,
 	},
 	images: {
-		domains: ["t4.ftcdn.net"],
+		domains: ["t4.ftcdn.net", "loremflickr.com"],
 	},
 	async redirects() {
 		return [
