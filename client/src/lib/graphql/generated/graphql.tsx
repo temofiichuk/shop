@@ -993,6 +993,11 @@ export type ProductsCountQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProductsCountQuery = { __typename?: 'Query', productsCount: { __typename?: 'ProductCount', count: number } };
 
+export type PromotionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PromotionsQuery = { __typename?: 'Query', promotions: Array<{ __typename?: 'Promotion', name: string, discount_type: EnumDiscountType, start_date: any, end_data: any, created_at: any }> };
+
 export type RevenueQueryVariables = Exact<{
   revenueInput: RevenueInput;
 }>;
@@ -1626,6 +1631,49 @@ export type ProductsCountQueryHookResult = ReturnType<typeof useProductsCountQue
 export type ProductsCountLazyQueryHookResult = ReturnType<typeof useProductsCountLazyQuery>;
 export type ProductsCountSuspenseQueryHookResult = ReturnType<typeof useProductsCountSuspenseQuery>;
 export type ProductsCountQueryResult = Apollo.QueryResult<ProductsCountQuery, ProductsCountQueryVariables>;
+export const PromotionsDocument = gql`
+    query Promotions {
+  promotions {
+    name
+    discount_type
+    start_date
+    end_data
+    created_at
+  }
+}
+    `;
+
+/**
+ * __usePromotionsQuery__
+ *
+ * To run a query within a React component, call `usePromotionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePromotionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePromotionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePromotionsQuery(baseOptions?: Apollo.QueryHookOptions<PromotionsQuery, PromotionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PromotionsQuery, PromotionsQueryVariables>(PromotionsDocument, options);
+      }
+export function usePromotionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PromotionsQuery, PromotionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PromotionsQuery, PromotionsQueryVariables>(PromotionsDocument, options);
+        }
+export function usePromotionsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<PromotionsQuery, PromotionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<PromotionsQuery, PromotionsQueryVariables>(PromotionsDocument, options);
+        }
+export type PromotionsQueryHookResult = ReturnType<typeof usePromotionsQuery>;
+export type PromotionsLazyQueryHookResult = ReturnType<typeof usePromotionsLazyQuery>;
+export type PromotionsSuspenseQueryHookResult = ReturnType<typeof usePromotionsSuspenseQuery>;
+export type PromotionsQueryResult = Apollo.QueryResult<PromotionsQuery, PromotionsQueryVariables>;
 export const RevenueDocument = gql`
     query Revenue($revenueInput: RevenueInput!) {
   revenue(revenueInput: $revenueInput) {

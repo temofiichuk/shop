@@ -150,8 +150,8 @@ type Promotion {
   name: String!
   description: String!
   discount_type: EnumDiscountType!
-  start_date: DateTime!
-  end_data: DateTime!
+  start_date: DateTime
+  end_data: DateTime
   created_at: DateTime!
   updated_at: DateTime!
   promotions: [ProductPromotion!]!
