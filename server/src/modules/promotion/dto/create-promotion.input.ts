@@ -1,5 +1,5 @@
 import { Field, InputType, registerEnumType } from "@nestjs/graphql";
-import { EnumDiscountType } from "@prisma/client";
+import { EnumDiscountType, Prisma } from "@prisma/client";
 import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, Min } from "class-validator";
 
 registerEnumType(EnumDiscountType, {
@@ -7,7 +7,7 @@ registerEnumType(EnumDiscountType, {
 });
 
 @InputType()
-export class CreatePromotionInput {
+export class CreatePromotionInput implements Prisma.PromotionCreateInput {
 	@Field()
 	@IsNotEmpty()
 	@IsString()
@@ -33,5 +33,5 @@ export class CreatePromotionInput {
 	@Field(() => Date)
 	@IsDate()
 	@IsNotEmpty()
-	end_data: Date;
+	end_date: Date;
 }

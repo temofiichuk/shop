@@ -20,7 +20,6 @@ export class JwtAuthAdminStrategy extends PassportStrategy(Strategy, "jwt-admin"
 	}
 
 	async validate(payload: AuthResponse): Promise<AuthUser> {
-		console.log("jwt-admin");
 		const { user: { id, email } } = payload;
 		const admin = await this.prisma.admin.findFirst({ where: { id, email } }) as AuthUser;
 		if (!admin) throw new UnauthorizedException();
