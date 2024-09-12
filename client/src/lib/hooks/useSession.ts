@@ -1,8 +1,8 @@
 import { Session } from "next-auth";
-import { useSession as useAuthSession } from "next-auth/react";
+import { SessionContextValue, useSession as useAuthSession } from "next-auth/react";
 
-const useSession = () => {
-	const { data: session, ...rest }: { session: Session | null } = useAuthSession();
+const useSession = (): { session: Session | null } & Omit<SessionContextValue, "data"> => {
+	const { data: session, ...rest } = useAuthSession();
 	return { ...rest, session };
 };
 

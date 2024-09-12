@@ -13,7 +13,9 @@ const AdminLogin = async () => {
 	}
 
 	return (
-		<AdminLoginForm />
+		<section className="w-full h-full grid place-items-center">
+			<AdminLoginForm />
+		</section>
 	);
 };
 

@@ -5,13 +5,16 @@ import { AuthError } from "@auth/core/errors";
 
 const authorization = async (payload, id) => {
 	try {
-		await signIn(id, {
+		const data = await signIn(id, {
 			email: payload.get("email"),
 			password: payload.get("password"),
 		});
+
+		console.log("data");
+		console.log(data);
+
 		return undefined;
 	} catch (error) {
-		return;
 		if (isRedirectError(error)) {
 			throw error;
 		}

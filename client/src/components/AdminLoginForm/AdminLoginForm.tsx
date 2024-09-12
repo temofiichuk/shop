@@ -6,11 +6,14 @@ import { InputPassword } from "@/components/ui/input-password";
 import useAuth from "@/lib/hooks/useAuth";
 import { FormProvider, useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { EnumUserRole, LoginInput } from "@/lib/graphql/generated/graphql";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 const AdminLoginForm = () => {
 	const { error, dispatch } = useAuth(EnumUserRole.Admin);
+	const router = useRouter();
 
 	const methods = useForm<LoginInput>({
 		defaultValues: {
@@ -23,7 +26,11 @@ const AdminLoginForm = () => {
 		<Card className={styles.form}>
 			<FormProvider {...methods}>
 
-				<form action={dispatch}>
+				<form action={async (formData) => {
+					await dispatch(formData);
+					router.refresh();
+				}
+				}>
 					<CardHeader>
 						<CardTitle className={styles.title}>Admin</CardTitle>
 					</CardHeader>
@@ -39,7 +46,7 @@ const AdminLoginForm = () => {
 
 					</CardContent>
 					<CardFooter className={styles.content}>
-						<Button type="submit" className={styles.button}>Sign in</Button>
+						<Button asChild children={<SubmitButton children="Sign In" />} />
 					</CardFooter>
 				</form>
 			</FormProvider>
