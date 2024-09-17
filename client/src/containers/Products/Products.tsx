@@ -31,6 +31,7 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import Link from "next/link";
 
 const Products = () => {
 	const [page, setPage] = useState(1);
@@ -60,12 +61,15 @@ const Products = () => {
 			className="grid flex-1 items-start p-4 sm:px-6 sm:py-0 md:gap-8 opacity-100 animate-in fade-in-0 duration-1000">
 			<div className="flex items-center ">
 				<div>
-					<Button size="sm" className="h-7 gap-1">
-						<PlusCircle className="h-3.5 w-3.5" />
-						<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+					<Link href={"products/manage-product"}>
+
+						<Button asChild size="sm" className="h-7 gap-1">
+							<PlusCircle className="h-3.5 w-3.5" />
+							<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
 							Add Product
 						</span>
-					</Button>
+						</Button>
+					</Link>
 				</div>
 				<div className="ml-auto flex items-center gap-2">
 					<DropdownMenu>
@@ -190,7 +194,9 @@ const Products = () => {
 													</Button>
 												</DropdownMenuTrigger>
 												<DropdownMenuContent align="end">
-													<DropdownMenuItem>Edit</DropdownMenuItem>
+													<Link href={`products/manage-product?product_id=${id}`}>
+														<DropdownMenuItem>Edit</DropdownMenuItem>
+													</Link>
 													<DropdownMenuItem>Delete</DropdownMenuItem>
 												</DropdownMenuContent>
 											</DropdownMenu>

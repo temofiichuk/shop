@@ -7,3 +7,10 @@ export const REVENUE = gql`
             previous
         }
     }`;
+export const REVENUE_ANALYTICS = gql`
+    query RevenueAnalytics($revenueInput: RevenueInput!) {
+        revenueAnalytics(revenueInput: $revenueInput) {
+            period
+            revenue
+        }
+    }`;

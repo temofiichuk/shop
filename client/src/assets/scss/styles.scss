@@ -5,9 +5,18 @@
 @tailwind utilities;
 
 @layer components {
-  //.bg-background {
-  //  @apply bg-pink-500;
-  //}
+  .bg-background {
+    @apply bg-pink-500;
+  }
+
+  .slide-up {
+    @apply animate-in fade-in-0 slide-in-from-bottom;
+  }
+
+  .transition-height {
+    max-height: 1000px;
+    transition: max-height 0.25s ease-in;
+  }
 }
 
 @layer base {

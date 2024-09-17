@@ -9,7 +9,7 @@ export type PayloadState = Record<string, unknown>
 // Define the initial state using that type
 const initialState: State = {};
 
-export const stateSlice = createSlice<State>({
+export const stateSlice = createSlice({
 	name: "StateSlice",
 	initialState,
 	reducers: {

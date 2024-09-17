@@ -14,6 +14,7 @@ import {
 	UserCog,
 	Users,
 } from "lucide-react";
+import { Fragment } from "react";
 
 export const adminNavigation = [
 	{ title: "Dashboard", href: "/admin/dashboard", Icon: Home },
@@ -36,18 +37,20 @@ const AdminSidebar = () => {
 			<aside className="fixed inset-y-0 left-0 z-50 hidden w-14 flex-col border-r bg-zinc-950 sm:flex">
 				<nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
 					{navItems.map(({ title, href, Icon }) => (
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Link
-									href={href}
-									className={styles.link}
-								>
-									<Icon className="h-5 w-5" />
-									<span className="sr-only">{title}</span>
-								</Link>
-							</TooltipTrigger>
-							<TooltipContent side="right">{title}</TooltipContent>
-						</Tooltip>
+						<Fragment key={title}>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Link
+										href={href}
+										className={styles.link}
+									>
+										<Icon className="h-5 w-5" />
+										<span className="sr-only">{title}</span>
+									</Link>
+								</TooltipTrigger>
+								<TooltipContent side="right">{title}</TooltipContent>
+							</Tooltip>
+						</Fragment>
 					))}
 					<RootAdminField>
 						<Tooltip>

@@ -13,10 +13,9 @@ import {
 
 
 import Breadcrumbs from "@/components/admin/Breadcrumbs/Breadcrumbs";
-import { signOut as authSignOut } from "@/auth";
-import { isRedirectError } from "next/dist/client/components/redirect";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher/ThemeSwitcher";
 import { adminNavigation } from "@/components/admin/AdminSidebar/AdminSidebar";
+import SignOutButton from "@/components/SignOutButton/SignOutButton";
 
 const AdminHeader = () => {
 	const navItems = [...adminNavigation];
@@ -44,6 +43,7 @@ const AdminHeader = () => {
 							<Link
 								href={href}
 								className="flex items-center gap-4 px-2.5 hover:text-foreground"
+								key={title}
 							>
 								<Icon className="h-5 w-5" />
 								{title}
@@ -74,7 +74,7 @@ const AdminHeader = () => {
 
 			<ThemeSwitcher />
 
-			<DropdownMenu>
+			<DropdownMenu modal={false}>
 				<DropdownMenuTrigger asChild>
 					<Button
 						variant="outline"
@@ -89,20 +89,7 @@ const AdminHeader = () => {
 					<DropdownMenuSeparator />
 
 					<DropdownMenuItem>
-						<form action={async () => {
-							"use server";
-							try {
-								await authSignOut();
-							} catch (e) {
-								if (isRedirectError(e)) {
-									throw e;
-								}
-							}
-						}}>
-							<button type="submit">
-								Logout
-							</button>
-						</form>
+						<SignOutButton />
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

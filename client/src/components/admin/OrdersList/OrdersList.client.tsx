@@ -14,7 +14,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ListFilter } from "lucide-react";
+import { ListFilter, PlusCircle } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { OrdersQuery, useOrdersQuery } from "@/lib/graphql/generated/graphql";
 import { clsx } from "clsx";
@@ -78,21 +78,30 @@ const OrdersListClient = () => {
 		<div className="bg-transparent">
 			<div className="flex items-center py-5">
 				{/*Date filter*/}
-				<Select onValueChange={(value => setPeriod(value))} defaultValue={periods[0].date}>
-					<SelectTrigger className="max-w-[180px]">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectGroup>
-							{periods.map((period) =>
-								(<SelectItem
-									key={period.title}
-									value={period.date}>
-									{period.title}
-								</SelectItem>))}
-						</SelectGroup>
-					</SelectContent>
-				</Select>
+				<div className="flex gap-4 items-center">
+
+					<Button size="sm" className="h-7 gap-1">
+						<PlusCircle className="h-3.5 w-3.5" />
+						<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    Add Order
+                  </span>
+					</Button>
+					<Select onValueChange={(value => setPeriod(value))} defaultValue={periods[0].date}>
+						<SelectTrigger className="max-w-[180px]">
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								{periods.map((period) =>
+									(<SelectItem
+										key={period.title}
+										value={period.date}>
+										{period.title}
+									</SelectItem>))}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
+				</div>
 				<div className="ml-auto flex items-center gap-2">
 					{/*Filter By*/}
 					<DropdownMenu>

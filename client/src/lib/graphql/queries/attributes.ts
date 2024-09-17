@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const ATTRIBUTES = gql`
     query attributes {
-        productAttributes {
+        attributes {
             id
             name
             created_at

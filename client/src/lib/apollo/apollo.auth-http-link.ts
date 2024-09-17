@@ -6,7 +6,7 @@ import { Session } from "next-auth";
 import { onError as ErrorLink } from "@apollo/client/link/error";
 import { toast } from "sonner";
 
-
+const removeTypenameLink = removeTypenameFromVariables();
 const httpLink = new HttpLink({
 	uri: process.env.NEXT_SERVER_URL,
 });
@@ -43,4 +43,4 @@ const errorLink = ErrorLink(({ graphQLErrors }) => {
 });
 
 
-export default from([removeTypenameFromVariables(), authLink, errorLink, httpLink]);
+export default from([removeTypenameLink, authLink, errorLink, httpLink]);

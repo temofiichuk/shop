@@ -14,11 +14,12 @@ import getClient from "@/lib/apollo/apollo.client.rsc";
 import { ATTRIBUTES } from "@/lib/graphql/queries/attributes";
 import moment from "moment/moment";
 import { Fragment } from "react";
+import { AttributesQuery } from "@/lib/graphql/generated/graphql";
 
 const Attributes = async () => {
 
-	const { data: { productAttributes } } = await getClient().query({ query: ATTRIBUTES });
-
+	const { data: { attributes } } = await getClient().query<AttributesQuery>({ query: ATTRIBUTES });
+	console.log(attributes);
 	return (
 		<div>
 			<Card className="xl:col-span-2">
@@ -29,11 +30,9 @@ const Attributes = async () => {
 							Recent attributes from your store.
 						</CardDescription>
 					</div>
-					<Button asChild size="sm" className="ml-auto gap-1">
-						<Button>
-							<span className="hidden md:inline">Add Attribute</span>
-							<PlusIcon className="h-4 w-4" />
-						</Button>
+					<Button size="sm" className="ml-auto">
+						<span className="hidden md:inline">Add Attribute</span>
+						<PlusIcon className="h-4 w-4" />
 					</Button>
 				</CardHeader>
 				<CardContent>
@@ -49,7 +48,7 @@ const Attributes = async () => {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{productAttributes?.map(({ name, created_at, values, id }) => (
+							{attributes?.map(({ name, created_at, values, id }) => (
 								<TableRow key={name}>
 									<TableCell>
 										<p className="font-medium text-nowrap">{name}</p>

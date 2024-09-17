@@ -38,7 +38,7 @@ export const ORDER = gql`
                     product {
                         name
                     }
-                    variant_attribute_values {
+                    variant_attributes {
                         name
                         value
                     }

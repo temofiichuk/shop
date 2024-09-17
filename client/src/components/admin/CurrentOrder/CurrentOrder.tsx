@@ -123,7 +123,7 @@ const CurrentOrder = () => {
 
 						{order.order_items.map((item) => (<li key={item.id} className="flex items-start gap-8 justify-between">
 							<span className="text-muted-foreground">
-								{item.product_variant.product.name}, {item.product_variant.variant_attribute_values.map(attr => (
+								{item.product_variant.product.name}, {item.product_variant.variant_attributes.map(attr => (
 								<span> {attr.name}: {attr.value} </span>))} x <span>{item.quantity}</span>
 							</span>
 							<span>{USD.format(item.price * item.quantity)}</span>

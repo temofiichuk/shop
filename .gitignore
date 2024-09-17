@@ -29,7 +29,7 @@ next-env.d.ts
 
 # Other
 .prettierrc
-todos.txt
+btodo/b.**
 **/*.example
 **/*.example.*
 **/db_seeder/seeder.**

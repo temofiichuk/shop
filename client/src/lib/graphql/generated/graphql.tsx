@@ -32,6 +32,17 @@ export type Admin = {
   updated_at: Scalars['DateTime']['output'];
 };
 
+export type Attribute = {
+  __typename?: 'Attribute';
+  created_at: Scalars['DateTime']['output'];
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  product: Product;
+  product_id: Scalars['Int']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  values: Array<ProductAttributeValue>;
+};
+
 export type AuthResponse = {
   __typename?: 'AuthResponse';
   accessToken: Scalars['String']['output'];
@@ -68,6 +79,11 @@ export type CreateAdminInput = {
   role: Scalars['String']['input'];
 };
 
+export type CreateAttributeInput = {
+  name: Scalars['String']['input'];
+  values: Array<CreateProductAttributeValueInput>;
+};
+
 export type CreateCategoryInput = {
   name: Scalars['String']['input'];
   parent_id?: InputMaybe<Scalars['Int']['input']>;
@@ -87,8 +103,12 @@ export type CreateOrderItemInput = {
   quantity: Scalars['Int']['input'];
 };
 
+export type CreateProductAttributeInput = {
+  name: Scalars['String']['input'];
+  values: Array<CreateProductAttributeValueInput>;
+};
+
 export type CreateProductAttributeValueInput = {
-  product_attribute_id: Scalars['Int']['input'];
   value: Scalars['String']['input'];
 };
 
@@ -105,11 +125,13 @@ export type CreateProductImageInput = {
 };
 
 export type CreateProductInput = {
+  attributes: Array<CreateProductAttributeInput>;
   base_price: Scalars['Int']['input'];
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
   sku: Scalars['String']['input'];
   stock?: InputMaybe<Scalars['Int']['input']>;
+  variants: Array<CreateProductVariantInput>;
 };
 
 export type CreateProductPromotionInput = {
@@ -124,8 +146,8 @@ export type CreateProductVariantAttributeInput = {
 
 export type CreateProductVariantInput = {
   price: Scalars['Int']['input'];
-  product_id: Scalars['Int']['input'];
   product_image_id?: InputMaybe<Scalars['Int']['input']>;
+  sku?: InputMaybe<Scalars['String']['input']>;
   stock: Scalars['Int']['input'];
   variant_attributes: Array<CreateProductVariantAttributeInput>;
 };
@@ -143,6 +165,16 @@ export type CreateReviewInput = {
   product_id?: InputMaybe<Scalars['Int']['input']>;
   status: EnumReviewStatus;
   user_id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type CreateUserInput = {
+  email: Scalars['String']['input'];
+  first_name: Scalars['String']['input'];
+  image: Scalars['String']['input'];
+  last_name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phone: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 export type CreateWishlistInput = {
@@ -180,6 +212,10 @@ export type FilterProductInput = {
   price: IntFilter;
 };
 
+export type FilterUserInput = {
+  pagination: PaginationInput;
+};
+
 export type IntFilter = {
   equals?: InputMaybe<Scalars['Float']['input']>;
   gt?: InputMaybe<Scalars['Float']['input']>;
@@ -197,6 +233,7 @@ export type Mutation = {
   adminCreate: Admin;
   adminRemove: Admin;
   adminUpdate: Admin;
+  createAttributeValue: Attribute;
   createCategory: Category;
   createOrder: Order;
   createOrderItem: OrderItem;
@@ -217,9 +254,11 @@ export type Mutation = {
   deleteProductPromotion: ProductPromotion;
   deletePromotion: Promotion;
   deleteReview: Review;
+  removeAttributeValue: Attribute;
   removeCategory: Category;
   removeProductAttributeValue: ProductAttributeValue;
   removeProductVariant: ProductVariant;
+  updateAttributeValue: Attribute;
   updateCategory: Category;
   updateOrder: Order;
   updateOrderItem: OrderItem;
@@ -232,6 +271,9 @@ export type Mutation = {
   updatePromotion: Promotion;
   updateReview: Review;
   updateWishlist: Wishlist;
+  userCreate: User;
+  userRemove: User;
+  userUpdate: User;
 };
 
 
@@ -247,6 +289,11 @@ export type MutationAdminCreateArgs = {
 
 export type MutationAdminUpdateArgs = {
   updateAdminInput: UpdateAdminInput;
+};
+
+
+export type MutationCreateAttributeValueArgs = {
+  data: CreateAttributeInput;
 };
 
 
@@ -350,6 +397,11 @@ export type MutationDeleteReviewArgs = {
 };
 
 
+export type MutationRemoveAttributeValueArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationRemoveCategoryArgs = {
   id: Scalars['Int']['input'];
 };
@@ -362,6 +414,11 @@ export type MutationRemoveProductAttributeValueArgs = {
 
 export type MutationRemoveProductVariantArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateAttributeValueArgs = {
+  data: UpdateAttributeInput;
 };
 
 
@@ -424,6 +481,16 @@ export type MutationUpdateReviewArgs = {
 export type MutationUpdateWishlistArgs = {
   data: UpdateWishlistInput;
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationUserCreateArgs = {
+  createUserInput: CreateUserInput;
+};
+
+
+export type MutationUserUpdateArgs = {
+  updateUserInput: UpdateUserInput;
 };
 
 export type Order = {
@@ -555,7 +622,7 @@ export type ProductVariant = {
   product_image_id?: Maybe<Scalars['Int']['output']>;
   stock: Scalars['Int']['output'];
   updated_at: Scalars['DateTime']['output'];
-  variant_attribute_values: Array<ProductVariantAttribute>;
+  variant_attributes: Array<ProductVariantAttribute>;
   wishlist: Array<Wishlist>;
 };
 
@@ -573,17 +640,19 @@ export type Promotion = {
   created_at: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
   discount_type: EnumDiscountType;
-  end_data: Scalars['DateTime']['output'];
+  end_data?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   promotions: Array<ProductPromotion>;
-  start_date: Scalars['DateTime']['output'];
+  start_date?: Maybe<Scalars['DateTime']['output']>;
   updated_at: Scalars['DateTime']['output'];
 };
 
 export type Query = {
   __typename?: 'Query';
   adminById: Admin;
+  attribute: Attribute;
+  attributes: Array<Attribute>;
   authAdminLogin: AuthResponse;
   authAdminNewTokens: AuthResponse;
   authUserLogin: AuthResponse;
@@ -596,8 +665,6 @@ export type Query = {
   orders: Array<Order>;
   product: Product;
   productAttribute: ProductAttribute;
-  productAttributeValue: ProductAttributeValue;
-  productAttributeValues: Array<ProductAttributeValue>;
   productAttributes: Array<ProductAttribute>;
   productCategories: Array<ProductCategory>;
   productCategory: ProductCategory;
@@ -612,15 +679,23 @@ export type Query = {
   promotion: Promotion;
   promotions: Array<Promotion>;
   revenue: Revenue;
+  revenueAnalytics: Array<RevenueAnalytics>;
   review: Review;
   reviews: Array<Review>;
+  userById: User;
   userWishlist: Array<Wishlist>;
+  users: Array<User>;
   wishlistItem: Wishlist;
   wishlists: Array<Wishlist>;
 };
 
 
 export type QueryAdminByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryAttributeArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -675,16 +750,6 @@ export type QueryProductAttributeArgs = {
 };
 
 
-export type QueryProductAttributeValueArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QueryProductAttributeValuesArgs = {
-  id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
 export type QueryProductCategoryArgs = {
   id: Scalars['Int']['input'];
 };
@@ -731,8 +796,23 @@ export type QueryRevenueArgs = {
 };
 
 
+export type QueryRevenueAnalyticsArgs = {
+  revenueInput: RevenueInput;
+};
+
+
 export type QueryReviewArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryUserByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryUsersArgs = {
+  filter?: InputMaybe<FilterUserInput>;
 };
 
 
@@ -744,6 +824,12 @@ export type Revenue = {
   __typename?: 'Revenue';
   current: Scalars['Int']['output'];
   previous: Scalars['Int']['output'];
+};
+
+export type RevenueAnalytics = {
+  __typename?: 'RevenueAnalytics';
+  period: Scalars['String']['output'];
+  revenue: Scalars['Int']['output'];
 };
 
 export type RevenueInput = {
@@ -779,6 +865,12 @@ export type UpdateAdminInput = {
   role?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateAttributeInput = {
+  id: Scalars['Int']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  values?: InputMaybe<Array<CreateProductAttributeValueInput>>;
+};
+
 export type UpdateCategoryInput = {
   id: Scalars['Int']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
@@ -801,9 +893,14 @@ export type UpdateOrderItemInput = {
   quantity?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type UpdateProductAttributeInput = {
+  id: Scalars['Int']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  values?: InputMaybe<Array<CreateProductAttributeValueInput>>;
+};
+
 export type UpdateProductAttributeValueInput = {
   id: Scalars['Int']['input'];
-  product_attribute_id?: InputMaybe<Scalars['Int']['input']>;
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -822,12 +919,14 @@ export type UpdateProductImageInput = {
 };
 
 export type UpdateProductInput = {
+  attributes: Array<UpdateProductAttributeInput>;
   base_price?: InputMaybe<Scalars['Int']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   sku?: InputMaybe<Scalars['String']['input']>;
   stock?: InputMaybe<Scalars['Int']['input']>;
+  variants: Array<UpdateProductVariantInput>;
 };
 
 export type UpdateProductPromotionInput = {
@@ -836,13 +935,19 @@ export type UpdateProductPromotionInput = {
   promotion_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type UpdateProductVariantAttributeInput = {
+  id: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
 export type UpdateProductVariantInput = {
   id: Scalars['Int']['input'];
-  price?: InputMaybe<Scalars['Int']['input']>;
-  product_id?: InputMaybe<Scalars['Int']['input']>;
+  price: Scalars['Int']['input'];
   product_image_id?: InputMaybe<Scalars['Int']['input']>;
-  stock?: InputMaybe<Scalars['Int']['input']>;
-  variant_attributes?: InputMaybe<Array<CreateProductVariantAttributeInput>>;
+  sku?: InputMaybe<Scalars['String']['input']>;
+  stock: Scalars['Int']['input'];
+  variant_attributes: Array<UpdateProductVariantAttributeInput>;
 };
 
 export type UpdatePromotionInput = {
@@ -860,6 +965,17 @@ export type UpdateReviewInput = {
   product_id?: InputMaybe<Scalars['Int']['input']>;
   status?: InputMaybe<EnumReviewStatus>;
   user_id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateUserInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  first_name?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  last_name?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateWishlistInput = {
@@ -881,7 +997,8 @@ export type User = {
   last_name: Scalars['String']['output'];
   password: Scalars['String']['output'];
   phone?: Maybe<Scalars['String']['output']>;
-  rating: Scalars['Float']['output'];
+  rating?: Maybe<Scalars['Float']['output']>;
+  reviews: Array<Review>;
   updated_at: Scalars['DateTime']['output'];
   username: Scalars['String']['output'];
 };
@@ -902,7 +1019,7 @@ export type Wishlist = {
 export type AttributesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AttributesQuery = { __typename?: 'Query', productAttributes: Array<{ __typename?: 'ProductAttribute', id: number, name: string, created_at: any, values: Array<{ __typename?: 'ProductAttributeValue', id: number, value: string }> }> };
+export type AttributesQuery = { __typename?: 'Query', attributes: Array<{ __typename?: 'Attribute', id: number, name: string, created_at: any, values: Array<{ __typename?: 'ProductAttributeValue', id: number, value: string }> }> };
 
 export type AuthUserFragmentFragment = { __typename?: 'AuthUser', id: number, first_name: string, last_name: string, email: string };
 
@@ -960,6 +1077,18 @@ export type DeleteCategoryMutationVariables = Exact<{
 
 export type DeleteCategoryMutation = { __typename?: 'Mutation', removeCategory: { __typename?: 'Category', id: number } };
 
+export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', first_name: string, last_name: string, is_verified: boolean, email: string, image?: string | null, rating?: number | null, created_at: any }> };
+
+export type UserQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type UserQuery = { __typename?: 'Query', userById: { __typename?: 'User', first_name: string, last_name: string, is_verified: boolean, email: string, image?: string | null, rating?: number | null, created_at: any } };
+
 export type OrdersQueryVariables = Exact<{
   filter?: InputMaybe<OrderFilterInput>;
 }>;
@@ -972,7 +1101,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', id: number, status: string, total_price: number, created_at: any, updated_at: any, user: { __typename?: 'User', first_name: string, last_name: string, email: string, phone?: string | null, address?: string | null }, order_items: Array<{ __typename?: 'OrderItem', id: number, quantity: number, price: number, product_variant: { __typename?: 'ProductVariant', id: number, price: number, product: { __typename?: 'Product', name: string }, variant_attribute_values: Array<{ __typename?: 'ProductVariantAttribute', name: string, value: string }> } }> } };
+export type OrderQuery = { __typename?: 'Query', order: { __typename?: 'Order', id: number, status: string, total_price: number, created_at: any, updated_at: any, user: { __typename?: 'User', first_name: string, last_name: string, email: string, phone?: string | null, address?: string | null }, order_items: Array<{ __typename?: 'OrderItem', id: number, quantity: number, price: number, product_variant: { __typename?: 'ProductVariant', id: number, price: number, product: { __typename?: 'Product', name: string }, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', name: string, value: string }> } }> } };
 
 export type DeleteOrderMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -988,6 +1117,27 @@ export type ProductsQueryVariables = Exact<{
 
 export type ProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: number, name: string, base_price: number, created_at: any, stock: number, images: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }> }> };
 
+export type ProductQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type ProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: number, name: string, base_price: number, created_at: any, stock: number, images: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }>, variants: Array<{ __typename?: 'ProductVariant', id: number, stock: number, price: number, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', id: number, name: string, value: string }> }>, attributes: Array<{ __typename?: 'ProductAttribute', id: number, name: string, values: Array<{ __typename?: 'ProductAttributeValue', id: number, value: string }> }> } };
+
+export type UpdateProductMutationVariables = Exact<{
+  data: UpdateProductInput;
+}>;
+
+
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', id: number } };
+
+export type CreateProductMutationVariables = Exact<{
+  data: CreateProductInput;
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', id: number } };
+
 export type ProductsCountQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -996,7 +1146,7 @@ export type ProductsCountQuery = { __typename?: 'Query', productsCount: { __type
 export type PromotionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PromotionsQuery = { __typename?: 'Query', promotions: Array<{ __typename?: 'Promotion', name: string, discount_type: EnumDiscountType, start_date: any, end_data: any, created_at: any }> };
+export type PromotionsQuery = { __typename?: 'Query', promotions: Array<{ __typename?: 'Promotion', name: string, discount_type: EnumDiscountType, start_date?: any | null, end_data?: any | null, created_at: any }> };
 
 export type RevenueQueryVariables = Exact<{
   revenueInput: RevenueInput;
@@ -1004,6 +1154,18 @@ export type RevenueQueryVariables = Exact<{
 
 
 export type RevenueQuery = { __typename?: 'Query', revenue: { __typename?: 'Revenue', current: number, previous: number } };
+
+export type RevenueAnalyticsQueryVariables = Exact<{
+  revenueInput: RevenueInput;
+}>;
+
+
+export type RevenueAnalyticsQuery = { __typename?: 'Query', revenueAnalytics: Array<{ __typename?: 'RevenueAnalytics', period: string, revenue: number }> };
+
+export type ReviewsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReviewsQuery = { __typename?: 'Query', reviews: Array<{ __typename?: 'Review', id: number, created_at: any, status: EnumReviewStatus, comment: string, user: { __typename?: 'User', email: string }, product: { __typename?: 'Product', name: string } }> };
 
 export const AuthUserFragmentFragmentDoc = gql`
     fragment AuthUserFragment on AuthUser {
@@ -1015,7 +1177,7 @@ export const AuthUserFragmentFragmentDoc = gql`
     `;
 export const AttributesDocument = gql`
     query attributes {
-  productAttributes {
+  attributes {
     id
     name
     created_at
@@ -1395,6 +1557,97 @@ export function useDeleteCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteCategoryMutationHookResult = ReturnType<typeof useDeleteCategoryMutation>;
 export type DeleteCategoryMutationResult = Apollo.MutationResult<DeleteCategoryMutation>;
 export type DeleteCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
+export const UsersDocument = gql`
+    query users {
+  users {
+    first_name
+    last_name
+    is_verified
+    email
+    image
+    rating
+    created_at
+  }
+}
+    `;
+
+/**
+ * __useUsersQuery__
+ *
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+      }
+export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+        }
+export function useUsersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+        }
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersSuspenseQueryHookResult = ReturnType<typeof useUsersSuspenseQuery>;
+export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const UserDocument = gql`
+    query user($id: Int!) {
+  userById(id: $id) {
+    first_name
+    last_name
+    is_verified
+    email
+    image
+    rating
+    created_at
+  }
+}
+    `;
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables> & ({ variables: UserQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+      }
+export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        }
+export function useUserSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UserQuery, UserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        }
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserSuspenseQueryHookResult = ReturnType<typeof useUserSuspenseQuery>;
+export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const OrdersDocument = gql`
     query Orders($filter: OrderFilterInput) {
   orders(filter: $filter) {
@@ -1466,7 +1719,7 @@ export const OrderDocument = gql`
         product {
           name
         }
-        variant_attribute_values {
+        variant_attributes {
           name
           value
         }
@@ -1592,6 +1845,139 @@ export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
 export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
 export type ProductsSuspenseQueryHookResult = ReturnType<typeof useProductsSuspenseQuery>;
 export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
+export const ProductDocument = gql`
+    query product($id: Int!) {
+  product(id: $id) {
+    id
+    name
+    base_price
+    created_at
+    stock
+    images {
+      url
+      is_main
+      name
+    }
+    variants {
+      id
+      stock
+      price
+      variant_attributes {
+        id
+        name
+        value
+      }
+    }
+    attributes {
+      id
+      name
+      values {
+        id
+        value
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductQuery__
+ *
+ * To run a query within a React component, call `useProductQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProductQuery(baseOptions: Apollo.QueryHookOptions<ProductQuery, ProductQueryVariables> & ({ variables: ProductQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
+      }
+export function useProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductQuery, ProductQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
+        }
+export function useProductSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ProductQuery, ProductQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProductQuery, ProductQueryVariables>(ProductDocument, options);
+        }
+export type ProductQueryHookResult = ReturnType<typeof useProductQuery>;
+export type ProductLazyQueryHookResult = ReturnType<typeof useProductLazyQuery>;
+export type ProductSuspenseQueryHookResult = ReturnType<typeof useProductSuspenseQuery>;
+export type ProductQueryResult = Apollo.QueryResult<ProductQuery, ProductQueryVariables>;
+export const UpdateProductDocument = gql`
+    mutation updateProduct($data: UpdateProductInput!) {
+  updateProduct(data: $data) {
+    id
+  }
+}
+    `;
+export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductMutation, UpdateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, options);
+      }
+export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
+export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
+export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
+export const CreateProductDocument = gql`
+    mutation createProduct($data: CreateProductInput!) {
+  createProduct(data: $data) {
+    id
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
 export const ProductsCountDocument = gql`
     query productsCount {
   productsCount {
@@ -1715,3 +2101,92 @@ export type RevenueQueryHookResult = ReturnType<typeof useRevenueQuery>;
 export type RevenueLazyQueryHookResult = ReturnType<typeof useRevenueLazyQuery>;
 export type RevenueSuspenseQueryHookResult = ReturnType<typeof useRevenueSuspenseQuery>;
 export type RevenueQueryResult = Apollo.QueryResult<RevenueQuery, RevenueQueryVariables>;
+export const RevenueAnalyticsDocument = gql`
+    query RevenueAnalytics($revenueInput: RevenueInput!) {
+  revenueAnalytics(revenueInput: $revenueInput) {
+    period
+    revenue
+  }
+}
+    `;
+
+/**
+ * __useRevenueAnalyticsQuery__
+ *
+ * To run a query within a React component, call `useRevenueAnalyticsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRevenueAnalyticsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRevenueAnalyticsQuery({
+ *   variables: {
+ *      revenueInput: // value for 'revenueInput'
+ *   },
+ * });
+ */
+export function useRevenueAnalyticsQuery(baseOptions: Apollo.QueryHookOptions<RevenueAnalyticsQuery, RevenueAnalyticsQueryVariables> & ({ variables: RevenueAnalyticsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RevenueAnalyticsQuery, RevenueAnalyticsQueryVariables>(RevenueAnalyticsDocument, options);
+      }
+export function useRevenueAnalyticsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RevenueAnalyticsQuery, RevenueAnalyticsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RevenueAnalyticsQuery, RevenueAnalyticsQueryVariables>(RevenueAnalyticsDocument, options);
+        }
+export function useRevenueAnalyticsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<RevenueAnalyticsQuery, RevenueAnalyticsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RevenueAnalyticsQuery, RevenueAnalyticsQueryVariables>(RevenueAnalyticsDocument, options);
+        }
+export type RevenueAnalyticsQueryHookResult = ReturnType<typeof useRevenueAnalyticsQuery>;
+export type RevenueAnalyticsLazyQueryHookResult = ReturnType<typeof useRevenueAnalyticsLazyQuery>;
+export type RevenueAnalyticsSuspenseQueryHookResult = ReturnType<typeof useRevenueAnalyticsSuspenseQuery>;
+export type RevenueAnalyticsQueryResult = Apollo.QueryResult<RevenueAnalyticsQuery, RevenueAnalyticsQueryVariables>;
+export const ReviewsDocument = gql`
+    query reviews {
+  reviews {
+    user {
+      email
+    }
+    product {
+      name
+    }
+    id
+    created_at
+    status
+    comment
+  }
+}
+    `;
+
+/**
+ * __useReviewsQuery__
+ *
+ * To run a query within a React component, call `useReviewsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReviewsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReviewsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useReviewsQuery(baseOptions?: Apollo.QueryHookOptions<ReviewsQuery, ReviewsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, options);
+      }
+export function useReviewsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReviewsQuery, ReviewsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, options);
+        }
+export function useReviewsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ReviewsQuery, ReviewsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, options);
+        }
+export type ReviewsQueryHookResult = ReturnType<typeof useReviewsQuery>;
+export type ReviewsLazyQueryHookResult = ReturnType<typeof useReviewsLazyQuery>;
+export type ReviewsSuspenseQueryHookResult = ReturnType<typeof useReviewsSuspenseQuery>;
+export type ReviewsQueryResult = Apollo.QueryResult<ReviewsQuery, ReviewsQueryVariables>;
