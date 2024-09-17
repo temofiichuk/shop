@@ -1,9 +1,10 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
 import { IsInt, IsNotEmpty, IsOptional, IsString, Matches, Min } from "class-validator";
-import { Prisma } from "@prisma/client";
+import { CreateProductVariantInput } from "../../product-variant/dto/create-product-variant.input";
+import { CreateProductAttributeInput } from "../../product-attribute/dto/create-product-attribute.input";
 
 @InputType()
-export class CreateProductInput implements Prisma.ProductCreateInput {
+export class CreateProductInput {
 	@Field()
 	@IsNotEmpty()
 	@IsString()
@@ -31,4 +32,11 @@ export class CreateProductInput implements Prisma.ProductCreateInput {
 	@IsOptional()
 	@IsNotEmpty()
 	stock?: number;
+
+	@Field(() => [CreateProductAttributeInput])
+	attributes: CreateProductAttributeInput[];
+
+	@Field(() => [CreateProductVariantInput])
+	variants: CreateProductVariantInput[];
+
 }

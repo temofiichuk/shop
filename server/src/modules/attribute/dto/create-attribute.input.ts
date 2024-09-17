@@ -6,7 +6,7 @@ import {
 
 
 @InputType()
-export class CreateProductAttributeInput {
+export class CreateAttributeInput {
 	@Field(() => String)
 	@IsNotEmpty()
 	@IsString()

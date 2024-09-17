@@ -14,24 +14,6 @@ export class ProductAttributeValueService {
 		});
 	}
 
-	findAll(id?: number) {
-		return this.prisma.productAttributeValue.findMany({
-			where: { product_attribute_id: id },
-			include: {
-				product_attribute: true,
-			},
-		});
-	}
-
-	findOne(id: number) {
-		return this.prisma.productAttributeValue.findUnique({
-			where: { id },
-			include: {
-				product_attribute: true,
-			},
-		});
-	}
-
 	update(id: number, updateProductAttributeValueInput: UpdateProductAttributeValueInput) {
 		return this.prisma.productAttributeValue.update({
 			where: { id },

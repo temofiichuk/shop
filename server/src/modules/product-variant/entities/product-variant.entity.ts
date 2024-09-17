@@ -60,5 +60,5 @@ export class ProductVariant {
 	product_image_id?: number;
 
 	@Field(() => [ProductVariantAttribute])
-	variant_attribute_values: ProductVariantAttribute[];
+	variant_attributes: ProductVariantAttribute[];
 }

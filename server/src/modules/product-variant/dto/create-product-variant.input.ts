@@ -12,12 +12,7 @@ export class CreateProductVariantAttributeInput implements Prisma.ProductVariant
 }
 
 @InputType()
-export class CreateProductVariantInput implements Prisma.ProductVariantCreateInput {
-	@Field(() => Int)
-	@IsNotEmpty()
-	@IsInt()
-	product_id: number;
-
+export class CreateProductVariantInput {
 	@Field(() => Int)
 	@IsNotEmpty()
 	@IsInt()
@@ -28,8 +23,11 @@ export class CreateProductVariantInput implements Prisma.ProductVariantCreateInp
 	@IsInt()
 	stock: number;
 
+	@Field(() => String, { nullable: true })
+	sku?: string;
+
 	@Field(() => [CreateProductVariantAttributeInput])
-	variant_attributes?: CreateProductVariantAttributeInput[];
+	variant_attributes: CreateProductVariantAttributeInput[];
 
 	@Field(() => Int, { nullable: true })
 	@IsOptional()

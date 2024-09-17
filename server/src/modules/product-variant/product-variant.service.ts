@@ -9,7 +9,8 @@ export class ProductVariantService {
 	}
 
 
-	async create(data: CreateProductVariantInput) {
+	async create(createData: CreateProductVariantInput) {
+		const { variant_attributes, ...data } = createData;
 		return this.prisma.productVariant.create({ data });
 	}
 
@@ -18,7 +19,7 @@ export class ProductVariantService {
 			where: { product_id },
 			include: {
 				product: true,
-				variant_attribute_values: true,
+				variant_attributes: true,
 				product_image: true,
 			},
 		});
@@ -29,13 +30,15 @@ export class ProductVariantService {
 			where: { id },
 			include: {
 				product: true,
-				variant_attribute_values: true,
+				variant_attributes: true,
 				product_image: true,
 			},
 		});
 	}
 
-	async update(id: number, data: UpdateProductVariantInput) {
+	async update(id: number, createData: UpdateProductVariantInput) {
+		const { variant_attributes, ...data } = createData;
+
 		return this.prisma.productVariant.update({
 			where: { id },
 			data,

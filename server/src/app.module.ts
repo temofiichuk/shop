@@ -19,8 +19,10 @@ import { ProductImageModule } from "./modules/product-image/product-image.module
 import { AnalyticsModule } from "./modules/analytics/analytics.module";
 import { PaginationService } from "./services/pagination/pagination.service";
 import { ProductVariantModule } from "./modules/product-variant/product-variant.module";
+import { AttributeModule } from "./modules/attribute/attribute.module";
+import { ProductAttributeValueModule } from "./modules/product-attribute-value/product-attribute-value.module";
+import { UserModule } from "./modules/user/user.module";
 import { ProductAttributeModule } from "./modules/product-attribute/product-attribute.module";
-import { ProductAttributeValueModule } from './modules/product-attribute-value/product-attribute-value.module';
 
 @Module({
 	imports: [
@@ -29,6 +31,7 @@ import { ProductAttributeValueModule } from './modules/product-attribute-value/p
 		AuthModule,
 		AdminModule,
 		CategoryModule,
+		AttributeModule,
 		ProductAttributeModule,
 		ProductCategoryModule,
 		ProductModule,
@@ -43,6 +46,7 @@ import { ProductAttributeValueModule } from './modules/product-attribute-value/p
 		AuthModule,
 		AnalyticsModule,
 		ProductAttributeValueModule,
+		UserModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, PaginationService],

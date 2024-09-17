@@ -1,5 +1,5 @@
-import { Field, InputType, Int } from "@nestjs/graphql";
-import { IsInt, IsNotEmpty, IsString, Min } from "class-validator";
+import { Field, InputType } from "@nestjs/graphql";
+import { IsNotEmpty, IsString, Min } from "class-validator";
 import { Prisma } from "@prisma/client";
 
 
@@ -10,9 +10,4 @@ export class CreateProductAttributeValueInput implements Prisma.ProductAttribute
 	@IsString()
 	@Min(3, { message: "There must be at least 3 characters" })
 	value: string;
-
-	@Field(() => Int)
-	@IsNotEmpty()
-	@IsInt()
-	product_attribute_id: number;
 }

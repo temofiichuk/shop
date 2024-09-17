@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import { CreateProductAttributeInput } from "./dto/create-product-attribute.input";
-import { UpdateProductAttributeInput } from "./dto/update-product-attribute.input";
+import { CreateAttributeInput } from "./dto/create-attribute.input";
+import { UpdateAttributeInput } from "./dto/update-attribute.input";
 import { PrismaService } from "../../prisma.service";
 
 
 @Injectable()
-export class ProductAttributeService {
+export class AttributeService {
 	constructor(private readonly prisma: PrismaService) {
 	}
 
-	create({ values, ...data }: CreateProductAttributeInput) {
-		return this.prisma.productAttribute.create({
+	create({ values, ...data }: CreateAttributeInput) {
+		return this.prisma.attribute.create({
 			data: {
 				...data,
 				values: {
@@ -21,22 +21,22 @@ export class ProductAttributeService {
 	}
 
 	async findAll() {
-		return this.prisma.productAttribute.findMany({
+		return this.prisma.attribute.findMany({
 			include: { values: true },
 		});
 	}
 
 	async findOne(id: number) {
-		return this.prisma.productAttribute.findUnique({
+		return this.prisma.attribute.findUnique({
 			where: { id },
 			include: { values: true },
 		});
 	}
 
-	async update(id: number, { values, ...data }: UpdateProductAttributeInput) {
+	async update(id: number, { values, ...data }: UpdateAttributeInput) {
 		return this.prisma.$transaction(async (prisma) => {
 
-			const availableValuesIds = await prisma.productAttribute.findUnique({
+			const availableValuesIds = await prisma.attribute.findUnique({
 				where: { id },
 				select: {
 					values: {
@@ -45,7 +45,7 @@ export class ProductAttributeService {
 				},
 			}).then(attr => attr.values.map(({ value }) => value));
 
-			return prisma.productAttribute.update({
+			return prisma.attribute.update({
 				where: { id },
 				data: {
 					...data,
@@ -59,7 +59,7 @@ export class ProductAttributeService {
 	}
 
 	async remove(id: number) {
-		return this.prisma.productAttribute.delete({
+		return this.prisma.attribute.delete({
 			where: { id },
 		});
 	}

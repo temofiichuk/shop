@@ -41,7 +41,8 @@ export class OrderService {
 					include: {
 						product_variant: {
 							include: {
-								variant_attribute_values: true,
+								product: true,
+								variant_attributes: true,
 							},
 						},
 					},

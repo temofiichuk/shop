@@ -1,8 +1,8 @@
 import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { ProductAttribute } from "./entities/product-attribute.entity";
 import { CreateProductAttributeInput } from "./dto/create-product-attribute.input";
 import { ProductAttributeService } from "./product-attribute.service";
 import { UpdateProductAttributeInput } from "./dto/update-product-attribute.input";
+import { ProductAttribute } from "./entities/product-attribute.entity";
 
 @Resolver(() => ProductAttribute)
 export class ProductAttributeResolver {
@@ -11,9 +11,9 @@ export class ProductAttributeResolver {
 
 	@Mutation(() => ProductAttribute)
 	createProductAttributeValue(
-		@Args("createData") createData: CreateProductAttributeInput,
+		@Args("data") data: CreateProductAttributeInput,
 	) {
-		return this.attributeService.create(createData);
+		return this.attributeService.create(data);
 	}
 
 	@Query(() => [ProductAttribute])
@@ -28,9 +28,9 @@ export class ProductAttributeResolver {
 
 	@Mutation(() => ProductAttribute)
 	updateProductAttributeValue(
-		@Args("updateData") updateData: UpdateProductAttributeInput,
+		@Args("data") data: UpdateProductAttributeInput,
 	) {
-		return this.attributeService.update(updateData.id, updateData);
+		return this.attributeService.update(data.id, data);
 	}
 
 	@Mutation(() => ProductAttribute)
