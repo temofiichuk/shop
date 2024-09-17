@@ -25,9 +25,6 @@ export class OrderItem {
 	@Field(() => Int)
 	price: number;
 
-	@Field(() => Int)
-	total_price: number;
-
 	@Field()
 	created_at: Date;
 

@@ -6,6 +6,7 @@ import { ProductCategory } from "../../product-category/entities/product-categor
 import { ProductPromotion } from "../../product-promotion/entities/product-promotion.entity";
 import { Wishlist } from "../../wishlist/entities/wishlist.entity";
 import { ProductImage } from "../../product-image/entities/product-image.entity";
+import { ProductAttribute } from "../../product-attribute/entities/product-attribute.entity";
 
 @ObjectType()
 export class Product {
@@ -62,4 +63,7 @@ export class Product {
 
 	@Field(() => [Wishlist])
 	wishlist?: Wishlist[];
+
+	@Field(() => [ProductAttribute])
+	attributes?: ProductAttribute[];
 }

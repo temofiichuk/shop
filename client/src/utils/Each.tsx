@@ -5,7 +5,7 @@ interface EachProps<T> {
 	of: T[];
 }
 
-const Each = <T,>({ of, children: render }: EachProps<T>): ReactNode[] =>
+const Each = <T, >({ of, children: render }: EachProps<T>): ReactNode[] =>
 	of.map((item, index) => render(item, index));
 
 export default Each;

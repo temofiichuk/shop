@@ -1,5 +1,7 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
-import { IsInt, IsLowercase, IsNotEmpty, IsOptional, IsString, Matches, Min } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString, Matches, Min } from "class-validator";
+import { CreateProductVariantInput } from "../../product-variant/dto/create-product-variant.input";
+import { CreateProductAttributeInput } from "../../product-attribute/dto/create-product-attribute.input";
 
 @InputType()
 export class CreateProductInput {
@@ -25,26 +27,16 @@ export class CreateProductInput {
 	@IsNotEmpty()
 	base_price: number;
 
-	@Field()
-	@IsNotEmpty()
-	@IsString()
-	@IsLowercase()
-	slug: string;
-
 	@Field(() => Int, { defaultValue: 0, nullable: true })
 	@IsInt()
 	@IsOptional()
 	@IsNotEmpty()
 	stock?: number;
 
-	@Field(() => Int, { nullable: true })
-	@IsInt()
-	@IsOptional()
-	@IsNotEmpty()
-	rating?: number;
+	@Field(() => [CreateProductAttributeInput])
+	attributes: CreateProductAttributeInput[];
 
-	@Field(() => Int, { nullable: true })
-	@IsInt()
-	@IsOptional()
-	admin_id?: number;
+	@Field(() => [CreateProductVariantInput])
+	variants: CreateProductVariantInput[];
+
 }

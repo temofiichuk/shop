@@ -7,6 +7,27 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum EnumAdminRole {
+  ROOTADMIN
+  ADMIN
+}
+
+enum EnumUserRole {
+  USER
+  ADMIN
+  ROOTADMIN
+}
+
+enum EnumOrderStatus {
+  PENDING
+  CANCELED
+  AWAITING_PAYMENT
+  PAYED
+  SHIPPED
+  DELIVERED
+  FINISHED
+}
+
 model User {
   id          Int        @id @unique @default(autoincrement())
   username    String     @unique
@@ -26,11 +47,6 @@ model User {
   wishlist    Wishlist[]
 }
 
-enum EnumAdminRole {
-  ROOTADMIN
-  ADMIN
-}
-
 model Admin {
   id               Int           @id @unique @default(autoincrement())
   first_name       String
@@ -44,31 +60,10 @@ model Admin {
   updated_at       DateTime      @updatedAt
 }
 
-model Product {
-  id          Int                @id @unique @default(autoincrement())
-  name        String             @unique
-  description String
-  sku         String             @unique
-  base_price  Int
-  slug        String             @unique
-  stock       Int?               @default(0)
-  rating      Int                @default(0)
-  reviews     Review[]
-  admin       Admin?             @relation(fields: [admin_id], references: [id])
-  admin_id    Int?
-  created_at  DateTime           @default(now())
-  updated_at  DateTime           @updatedAt
-  variants    ProductVariant[]
-  categories  ProductCategory[]
-  images      ProductImage[]
-  promotions  ProductPromotion[]
-  wishlist    Wishlist[]
-}
-
 model Category {
   id         Int               @id @unique @default(autoincrement())
   name       String            @unique
-  parent_id  Int?              @default(0)
+  parent_id  Int?
   parent     Category?         @relation("CategoryToChildren", fields: [parent_id], references: [id])
   slug       String?
   created_at DateTime          @default(now())
@@ -87,28 +82,77 @@ model ProductCategory {
   updated_at  DateTime @updatedAt
 }
 
+model Product {
+  id          Int                @id @unique @default(autoincrement())
+  name        String             @unique
+  description String
+  sku         String             @unique
+  base_price  Int
+  slug        String?            @unique
+  stock       Int?               @default(0)
+  rating      Int?               @default(0)
+  reviews     Review[]
+  admin       Admin?             @relation(fields: [admin_id], references: [id])
+  admin_id    Int?
+  created_at  DateTime           @default(now())
+  updated_at  DateTime           @updatedAt
+  variants    ProductVariant[]
+  categories  ProductCategory[]
+  images      ProductImage[]
+  promotions  ProductPromotion[]
+  wishlist    Wishlist[]
+  attributes  ProductAttribute[]
+}
+
+model Attribute {
+  id         Int                     @id @default(autoincrement())
+  name       String                  @unique
+  values     ProductAttributeValue[]
+  created_at DateTime                @default(now())
+  updated_at DateTime                @updatedAt
+}
+
 model ProductAttribute {
-  id         Int              @id @unique @default(autoincrement())
-  name       String           @unique
-  created_at DateTime         @default(now())
-  updated_at DateTime         @updatedAt
-  variants   ProductVariant[]
+  id         Int                     @id @default(autoincrement())
+  name       String                  @unique
+  values     ProductAttributeValue[]
+  products   Product[]
+  created_at DateTime                @default(now())
+  updated_at DateTime                @updatedAt
+}
+
+model ProductAttributeValue {
+  id                 Int                @id @default(autoincrement())
+  value              String             @unique
+  created_at         DateTime           @default(now())
+  updated_at         DateTime           @updatedAt
+  product_attributes ProductAttribute[]
+  attributes         Attribute[]
 }
 
 model ProductVariant {
-  id             Int               @id @unique @default(autoincrement())
-  product_id     Int
-  product        Product?          @relation(fields: [product_id], references: [id])
-  attribute_id   Int
-  attribute      ProductAttribute? @relation(fields: [attribute_id], references: [id])
-  value          String
-  price_modifier Int
-  stock_quantity Int
-  created_at     DateTime          @default(now())
-  updated_at     DateTime          @updatedAt
-  order_item     OrderItem[]
-  wishlist       Wishlist[]
-  ProductImage   ProductImage[]
+  id                 Int                       @id @unique @default(autoincrement())
+  product_id         Int?
+  product            Product?                  @relation(fields: [product_id], references: [id])
+  price              Int
+  stock              Int
+  product_image      ProductImage?
+  product_image_id   Int?
+  variant_attributes ProductVariantAttribute[]
+  created_at         DateTime                  @default(now())
+  updated_at         DateTime                  @updatedAt
+  order_items        OrderItem[]
+  wishlist           Wishlist[]
+}
+
+model ProductVariantAttribute {
+  id                 Int             @id @unique @default(autoincrement())
+  name               String
+  value              String
+  product_variant    ProductVariant? @relation(fields: [product_variant_id], references: [id])
+  product_variant_id Int?
+
+  // @@unique([name, value, ])
 }
 
 model Wishlist {
@@ -128,7 +172,7 @@ model ProductImage {
   product            Product?        @relation(fields: [product_id], references: [id])
   product_id         Int?
   product_variant    ProductVariant? @relation(fields: [product_variant_id], references: [id])
-  product_variant_id Int?
+  product_variant_id Int?            @unique
   name               String
   url                String          @unique
   created_at         DateTime        @default(now())
@@ -147,7 +191,7 @@ model Promotion {
   description   String?
   start_date    DateTime
   discount_type EnumDiscountType
-  end_data      DateTime
+  end_date      DateTime
   created_at    DateTime           @default(now())
   updated_at    DateTime           @updatedAt
   promotions    ProductPromotion[]
@@ -181,16 +225,6 @@ model Review {
   updated_at DateTime          @updatedAt
 }
 
-enum EnumOrderStatus {
-  PENDING
-  CANCELED
-  AWAITING_PAYMENT
-  PAYED
-  SHIPPED
-  DELIVERED
-  FINISHED
-}
-
 model Order {
   id          Int             @id @unique @default(autoincrement())
   user        User?           @relation(fields: [user_id], references: [id])
@@ -203,14 +237,13 @@ model Order {
 }
 
 model OrderItem {
-  id                 Int            @id @unique @default(autoincrement())
-  order              Order?         @relation(fields: [order_id], references: [id])
-  order_id           Int?
-  product_variant    ProductVariant @relation(fields: [product_variant_id], references: [id])
+  id                 Int             @id @unique @default(autoincrement())
+  order              Order?          @relation(fields: [order_id], references: [id])
+  order_id           Int
+  product_variant    ProductVariant? @relation(fields: [product_variant_id], references: [id])
   product_variant_id Int
-  quantity           Int            @default(1)
+  quantity           Int             @default(1)
   price              Int
-  total_price        Int
-  created_at         DateTime       @default(now())
-  updated_at         DateTime       @updatedAt
+  created_at         DateTime        @default(now())
+  updated_at         DateTime        @updatedAt
 }

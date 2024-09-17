@@ -3,7 +3,10 @@ import { ProductService } from "./product.service";
 import { Product } from "./entities/product.entity";
 import { CreateProductInput } from "./dto/create-product.input";
 import { UpdateProductInput } from "./dto/update-product.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
+import { ProductCount } from "./entities/products-count.entity";
+import { PaginationInput } from "../../services/pagination/dto/pagination.input";
+import { FilterProductInput } from "./dto/filter-product.input";
 
 @Resolver(() => Product)
 export class ProductResolver {
@@ -17,8 +20,15 @@ export class ProductResolver {
 	}
 
 	@Query(() => [Product])
-	async products() {
-		return this.productService.findAll();
+	async products(
+		@Args("pagination", { nullable: true }) pagination?: PaginationInput,
+		@Args("filter", { nullable: true }) filter?: FilterProductInput) {
+		return this.productService.findAll({ pagination, filter });
+	}
+
+	@Query(() => ProductCount)
+	async productsCount() {
+		return this.productService.count();
 	}
 
 	@Query(() => Product)

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: ReactNode }) => {
 	return (
 		<main className={NOTO_SANS.className}>
-			<section>{children}</section>
+			{children}
 		</main>
 	);
 };

@@ -13,7 +13,7 @@ export class CategoryService {
 	}
 
 	async findAll() {
-		return this.prisma.category.findMany();
+		return this.prisma.category.findMany({ include: { children: true } });
 	}
 
 	async findOne(id: number) {

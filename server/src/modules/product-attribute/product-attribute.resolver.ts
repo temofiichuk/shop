@@ -1,9 +1,8 @@
 import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { ProductAttributeService } from "./product-attribute.service";
-import { ProductAttribute } from "./entities/product-attribute.entity";
 import { CreateProductAttributeInput } from "./dto/create-product-attribute.input";
+import { ProductAttributeService } from "./product-attribute.service";
 import { UpdateProductAttributeInput } from "./dto/update-product-attribute.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { ProductAttribute } from "./entities/product-attribute.entity";
 
 @Resolver(() => ProductAttribute)
 export class ProductAttributeResolver {
@@ -11,30 +10,31 @@ export class ProductAttributeResolver {
 	}
 
 	@Mutation(() => ProductAttribute)
-	@IsAdminAuth()
-	createAttribute(@Args("createAttributeInput") data: CreateProductAttributeInput) {
+	createProductAttributeValue(
+		@Args("data") data: CreateProductAttributeInput,
+	) {
 		return this.attributeService.create(data);
 	}
 
-	@Query(() => [ProductAttribute], { name: "attribute" })
-	findAll() {
+	@Query(() => [ProductAttribute])
+	productAttributes() {
 		return this.attributeService.findAll();
 	}
 
-	@Query(() => ProductAttribute, { name: "attribute" })
-	findOne(@Args("id", { type: () => Int }) id: number) {
+	@Query(() => ProductAttribute)
+	productAttribute(@Args("id", { type: () => Int }) id: number) {
 		return this.attributeService.findOne(id);
 	}
 
 	@Mutation(() => ProductAttribute)
-	@IsAdminAuth()
-	updateAttribute(@Args("updateAttributeInput") data: UpdateProductAttributeInput) {
+	updateProductAttributeValue(
+		@Args("data") data: UpdateProductAttributeInput,
+	) {
 		return this.attributeService.update(data.id, data);
 	}
 
 	@Mutation(() => ProductAttribute)
-	@IsAdminAuth()
-	removeAttribute(@Args("id", { type: () => Int }) id: number) {
+	removeProductAttributeValue(@Args("id", { type: () => Int }) id: number) {
 		return this.attributeService.remove(id);
 	}
 }

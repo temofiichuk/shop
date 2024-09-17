@@ -3,7 +3,7 @@ import { ProductCategoryService } from "./product-category.service";
 import { ProductCategory } from "./entities/product-category.entity";
 import { CreateProductCategoryInput } from "./dto/create-product-category.input";
 import { UpdateProductCategoryInput } from "./dto/update-product-category.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => ProductCategory)
 export class ProductCategoryResolver {

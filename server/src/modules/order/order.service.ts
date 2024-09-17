@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateOrderInput } from "./dto/create-order.input";
 import { UpdateOrderInput } from "./dto/update-order.input";
 import { PrismaService } from "../../prisma.service";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class OrderService {
@@ -16,17 +17,19 @@ export class OrderService {
 					create: order_items,
 				},
 			},
-			include: {
-				order_items: true,
-			},
 		});
 	}
 
-	async findAll() {
+	async findAll(where?: Prisma.OrderWhereInput) {
 		return this.prisma.order.findMany({
+			orderBy: {
+				created_at: "desc" as Prisma.SortOrder,
+			},
 			include: {
 				order_items: true,
+				user: true,
 			},
+			where,
 		});
 	}
 
@@ -34,7 +37,17 @@ export class OrderService {
 		return this.prisma.order.findUnique({
 			where: { id },
 			include: {
-				order_items: true,
+				order_items: {
+					include: {
+						product_variant: {
+							include: {
+								product: true,
+								variant_attributes: true,
+							},
+						},
+					},
+				},
+				user: true,
 			},
 		});
 	}

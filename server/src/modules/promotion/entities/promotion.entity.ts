@@ -16,11 +16,11 @@ export class Promotion {
 	@Field(() => EnumDiscountType)
 	discount_type: EnumDiscountType;
 
-	@Field()
-	start_date: Date;
+	@Field({ nullable: true })
+	start_date?: Date;
 
-	@Field()
-	end_data: Date;
+	@Field({ nullable: true })
+	end_data?: Date;
 
 	@Field()
 	created_at: Date;

@@ -3,9 +3,9 @@ import { ReviewService } from "./review.service";
 import { Review } from "./entities/review.entity";
 import { CreateReviewInput } from "./dto/create-review.input";
 import { UpdateReviewInput } from "./dto/update-review.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
-import { IsUserAuth } from "../auth-user/decorators/auth.decorators";
-import { CurrentUser } from "../auth-user/decorators/current-user.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
+import { IsUserAuth } from "../auth/decorators/auth-user.decorators";
+import { CurrentUser } from "../auth/decorators/current-user.decorators";
 
 @Resolver(() => Review)
 export class ReviewResolver {

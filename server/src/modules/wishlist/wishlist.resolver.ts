@@ -3,9 +3,9 @@ import { WishlistService } from "./wishlist.service";
 import { Wishlist } from "./entities/wishlist.entity";
 import { CreateWishlistInput } from "./dto/create-wishlist.input";
 import { UpdateWishlistInput } from "./dto/update-wishlist.input";
-import { CurrentUser } from "../auth-user/decorators/current-user.decorators";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
-import { IsUserAuth } from "../auth-user/decorators/auth.decorators";
+import { CurrentUser } from "../auth/decorators/current-user.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
+import { IsUserAuth } from "../auth/decorators/auth-user.decorators";
 
 @Resolver(() => Wishlist)
 export class WishlistResolver {

@@ -3,7 +3,7 @@ import { ProductVariantService } from "./product-variant.service";
 import { ProductVariant } from "./entities/product-variant.entity";
 import { CreateProductVariantInput } from "./dto/create-product-variant.input";
 import { UpdateProductVariantInput } from "./dto/update-product-variant.input";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => ProductVariant)
 export class ProductVariantResolver {
@@ -12,8 +12,8 @@ export class ProductVariantResolver {
 
 	@Mutation(() => ProductVariant)
 	@IsAdminAuth()
-	createProductVariant(@Args("createProductVariantInput") createProductVariantInput: CreateProductVariantInput) {
-		return this.productVariantService.create(createProductVariantInput);
+	createProductVariant(@Args("createData") createData: CreateProductVariantInput) {
+		return this.productVariantService.create(createData);
 	}
 
 	@Query(() => [ProductVariant])
@@ -28,8 +28,8 @@ export class ProductVariantResolver {
 
 	@Mutation(() => ProductVariant)
 	@IsAdminAuth()
-	updateProductVariant(@Args("updateProductVariantInput") updateProductVariantInput: UpdateProductVariantInput) {
-		return this.productVariantService.update(updateProductVariantInput.id, updateProductVariantInput);
+	updateProductVariant(@Args("updateData") updateData: UpdateProductVariantInput) {
+		return this.productVariantService.update(updateData.id, updateData);
 	}
 
 	@Mutation(() => ProductVariant)

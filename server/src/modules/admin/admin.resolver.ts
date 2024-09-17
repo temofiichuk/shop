@@ -5,8 +5,8 @@ import { CreateAdminInput } from "./dto/create-admin.input";
 import { UpdateAdminInput } from "./dto/update-admin.input";
 import { UsePipes } from "@nestjs/common";
 import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
-import { CurrentAdmin } from "../auth-admin/decorators/current-admin.decorators";
-import { IsAdminAuth } from "../auth-admin/decorators/auth.decorators";
+import { CurrentAdmin } from "../auth/decorators/current-admin.decorators";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => Admin)
 export class AdminResolver {

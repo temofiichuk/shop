@@ -1,8 +1,15 @@
-const Home = () => {
+import { auth } from "@/auth";
+
+const Home = async () => {
+	const session = await auth();
+
 	return (
-		<main className="flex flex-col gap-2 justify-center items-center">
-			<h1>Hello, Next.js 13 App Directory!</h1>
-		</main>
+		<div>
+			Home
+			<pre>
+				{`Is auth: ${JSON.stringify(session)}`}
+			</pre>
+		</div>
 	);
 };
 

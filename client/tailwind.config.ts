@@ -1,114 +1,97 @@
-import type { Config } from "tailwindcss";
-import forms from "@tailwindcss/forms";
-import withMT from "@material-tailwind/react/utils/withMT";
+const { fontFamily } = require("tailwindcss/defaultTheme");
+const plugin = require("tailwindcss/plugin");
 
-const colors = {
-	transparent: "transparent",
-
-	bg_dark: "#373854",
-	txt_dark: "#F3F3F3",
-	txt_passive_dark: "#E1E1E1",
-
-	bg_light: "#FAFAFA",
-	txt_light: "#292929",
-	txt_passive_light: "#808191",
-
-	white: "#FFFFFF",
-	black: "#000000",
-
-	primary: "#475BE8",
-
-	profit: "#475BE8",
-	loss: "#E3E7FC",
-};
-
-const config: Config = {
+const config = {
+	darkMode: ["class"],
 	content: [
-		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/containers/**/*.{ts,tsx}",
+		"./src/components/**/*.{ts,tsx}",
+		"./src/app/**/*.{ts,tsx}",
 	],
+	prefix: "",
 	theme: {
-		// colors: {},
-		extend: {
-			boxShadow: {
-				"inner-xl": "inset 0px 1px 10px 1px rgba(0,0,0,.1)",
-				"card": " 54px 54px 300px #666666,-54px -54px 300px #ffffff",
-			},
-			fontSize: {
-				"xs": "0.82rem",
-				"sm": "0.98rem",
-				"base": "1.15rem",
-				"lg": "1.22rem",
-				"xl": "1.36rem",
-				"1.5xl": "1.5rem",
-				"2xl": "1.725rem",
-				"3xl": "2.155rem",
-				"4xl": "2.58rem",
-				"5xl": "3.45 rem",
-				"6xl": "4.3rem",
-				"7xl": "5.17 rem",
-				"8xl": "6.9rem",
-				"9xl": "9.2rem",
-			},
-			keyframes: {
-				spinner: {
-					"0%": { transform: "rotate(0)" },
-					"100%": { transform: "rotate(360deg)" },
-				},
-				fadeIn: {
-					"0%": { opacity: "0" },
-					"100%": { opacity: "1" },
-				},
-				fadeLeftIn: {
-					"0%": { opacity: "0", transform: "translate(100%, 100px)" },
-					"100%": { opacity: "1", transform: "translate(0,0)" },
-				},
-				fadeRightIn: {
-					"0%": { opacity: "0", transform: "translate(-100%, -100%)" },
-					"100%": { opacity: "1", transform: "translate(0,0)" },
-				},
-				scaleIn: {
-					"0%": { transform: "scale(0)", opacity: "0" },
-					"100%": { transform: "scale(1)", opacity: "1" },
-				},
-				changeAndShow: {
-					"0%": { transform: "translate(0, 0)", opacity: "0", zIndex: "0" },
-					"50%": { transform: "translate(50px, 50px)" },
-					"100%": { transform: "translate(0, 0)", opacity: "1", zIndex: "10" },
-				},
-				changeAndHide: {
-					"0%": { transform: "translate(0, 0)", opacity: "1", zIndex: "10" },
-					"50%": { transform: "translate(-50px, -50px)" },
-					"100%": {
-						transform: "translate(0, 0)",
-						opacity: "0",
-						zIndex: "0",
-						pointerEvents: "none",
-					},
-				},
-				shake: {
-					"0%": { transform: "translateX(-5px)" },
-					"20%": { transform: "translateX(5px)" },
-					"40%": { transform: "translateX(-5px)" },
-					"60%": { transform: "translateX(5px)" },
-					"80%": { transform: "translateX(-5px)" },
-					"100%": { transform: "translateX(0)" },
-				},
-			},
-			animation: {
-				fadeIn: "fadeIn 0.5s ease-in-out",
-				fadeLeftIn: "fadeLeftIn 0.5s ease-in-out",
-				fadeRightIn: "fadeRightIn 0.5s ease-in-out",
-				changeAndShow: "changeAndShow 0.5s ease-in-out forwards",
-				changeAndHide: "changeAndHide 0.5s ease-in-out forwards",
-				shake: "shake 0.5s ease-in-out forwards",
-				scaleIn: "scaleIn 0.35s ease-in-out",
-				spinner: "spinner 0.5s infinite ease-in-out ",
-			},
-		},
-	},
-	plugins: [forms],
+    	container: {
+    		center: 'true',
+    		padding: '2rem',
+    		screens: {
+    			'2xl': '1400px'
+    		}
+    	},
+    	extend: {
+    		colors: {
+    			background: 'hsl(var(--background))',
+    			foreground: 'hsl(var(--foreground))',
+    			card: 'hsl(var(--card))',
+    			cardForeground: 'hsl(var(--card-foreground))',
+    			popover: 'hsl(var(--popover))',
+    			popoverForeground: 'hsl(var(--popover-foreground))',
+    			primary: 'hsl(var(--primary))',
+    			primaryForeground: 'hsl(var(--primary-foreground))',
+    			secondary: 'hsl(var(--secondary))',
+    			secondaryForeground: 'hsl(var(--secondary-foreground))',
+    			muted: 'hsl(var(--muted))',
+    			'muted/5': 'hsl(var(--muted).5)',
+    			'muted/4': 'hsl(var(--muted).4)',
+    			mutedForeground: 'hsl(var(--muted-foreground))',
+    			accent: 'hsl(var(--accent))',
+    			accentForeground: 'hsl(var(--accent-foreground))',
+    			destructive: 'hsl(var(--destructive))',
+    			destructiveForeground: 'hsl(var(--destructive-foreground))',
+    			border: 'hsl(var(--border))',
+    			input: 'hsl(var(--input))',
+    			ring: 'hsl(var(--ring))',
+    			chart1: 'hsl(var(--chart-1))',
+    			chart2: 'hsl(var(--chart-2))',
+    			chart3: 'hsl(var(--chart-3))',
+    			chart4: 'hsl(var(--chart-4))',
+    			chart5: 'hsl(var(--chart-5))'
+    		},
+    		fontFamily: {
+    			inter: ["var(--font-inter)", ...fontFamily.sans]
+    		},
+    		keyframes: {
+    			'accordion-down': {
+    				from: {
+    					height: '0'
+    				},
+    				to: {
+    					height: 'var(--radix-accordion-content-height)'
+    				}
+    			},
+    			'accordion-up': {
+    				from: {
+    					height: 'var(--radix-accordion-content-height)'
+    				},
+    				to: {
+    					height: '0'
+    				}
+    			},
+    			'accordion-down': {
+    				from: {
+    					height: '0'
+    				},
+    				to: {
+    					height: 'var(--radix-accordion-content-height)'
+    				}
+    			},
+    			'accordion-up': {
+    				from: {
+    					height: 'var(--radix-accordion-content-height)'
+    				},
+    				to: {
+    					height: '0'
+    				}
+    			}
+    		},
+    		animation: {
+    			'accordion-down': 'accordion-down 0.2s ease-out',
+    			'accordion-up': 'accordion-up 0.2s ease-out',
+    			'accordion-down': 'accordion-down 0.2s ease-out',
+    			'accordion-up': 'accordion-up 0.2s ease-out'
+    		}
+    	}
+    },
+	plugins: [require("tailwindcss-animate")],
 };
 
-export default withMT(config);
+export default config;

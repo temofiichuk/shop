@@ -9,26 +9,52 @@ export class ProductAttributeService {
 	constructor(private readonly prisma: PrismaService) {
 	}
 
-	async create(createAttributeInput: CreateProductAttributeInput) {
+	create({ values, ...data }: CreateProductAttributeInput) {
 		return this.prisma.productAttribute.create({
-			data: createAttributeInput,
+			data: {
+				...data,
+				values: {
+					connect: values.map(({ value }) => ({ value })),
+				},
+			},
 		});
 	}
 
 	async findAll() {
-		return this.prisma.productAttribute.findMany();
+		return this.prisma.productAttribute.findMany({
+			include: { values: true },
+		});
 	}
 
 	async findOne(id: number) {
 		return this.prisma.productAttribute.findUnique({
 			where: { id },
+			include: { values: true },
 		});
 	}
 
-	async update(id: number, updateAttributeInput: UpdateProductAttributeInput) {
-		return this.prisma.productAttribute.update({
-			where: { id },
-			data: updateAttributeInput,
+	async update(id: number, { values, ...data }: UpdateProductAttributeInput) {
+		return this.prisma.$transaction(async (prisma) => {
+
+			const availableValuesIds = await prisma.productAttribute.findUnique({
+				where: { id },
+				select: {
+					values: {
+						select: { value: true },
+					},
+				},
+			}).then(attr => attr.values.map(({ value }) => value));
+
+			return prisma.productAttribute.update({
+				where: { id },
+				data: {
+					...data,
+					values: {
+						disconnect: values.filter(({ value }) => !availableValuesIds.includes(value)),
+						connect: values.map(({ value }) => ({ value })),
+					},
+				},
+			});
 		});
 	}
 

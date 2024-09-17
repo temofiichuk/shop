@@ -1,25 +1,25 @@
 import { configureStore } from "@reduxjs/toolkit";
-import storage from "redux-persist/lib/storage";
-import { persistStore } from "redux-persist";
+import IsOpenSlice from "@/store/features/isOpen.slice";
+import orderSlice from "@/store/features/order.slice";
+import stateSlice from "@/store/features/state.slice";
 
-export const persistConfig = {
-	key: "root",
-	storage,
-};
+// export const persistConfig = {
+// 	key: "root",
+// 	storage,
+// };
 
 const store = configureStore({
-	reducer: {},
+	reducer: {
+		isOpen: IsOpenSlice,
+		order: orderSlice,
+		state: stateSlice,
+	},
 	devTools: true,
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware({
-			thunk: true,
-			serializableCheck: {
-				ignoreActions: true,
-			},
-		}),
 });
 
-export const persistor = persistStore(store);
+// export const persistor = store;
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
 export default store;
