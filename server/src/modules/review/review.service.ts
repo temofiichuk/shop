@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateReviewInput } from "./dto/create-review.input";
 import { UpdateReviewInput } from "./dto/update-review.input";
 import { PrismaService } from "../../prisma.service";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class ReviewService {
@@ -24,6 +25,13 @@ export class ReviewService {
 				product: true,
 				user: true,
 			},
+			orderBy: [
+				{
+					created_at: "desc" as Prisma.SortOrder,
+				},
+				{
+					status: "desc" as Prisma.SortOrder,
+				}],
 		});
 	}
 

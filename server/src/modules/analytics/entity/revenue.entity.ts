@@ -8,3 +8,12 @@ export class Revenue {
 	@Field(() => Int)
 	previous?: number;
 }
+
+@ObjectType()
+export class RevenueAnalytics {
+	@Field(() => String)
+	period: string;
+
+	@Field(() => Int)
+	revenue?: number;
+}

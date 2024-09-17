@@ -4,10 +4,12 @@ import { UpdateUserInput } from "./dto/update-user.input";
 import { hash } from "argon2";
 import { PrismaService } from "../../prisma.service";
 import { Prisma } from "@prisma/client";
+import { PaginationService } from "../../services/pagination/pagination.service";
+import { FilterUserInput } from "./dto/filter-user.input";
 
 @Injectable()
 export class UserService {
-	constructor(private prisma: PrismaService) {
+	constructor(private prisma: PrismaService, private pagination: PaginationService) {
 	}
 
 	async create(createUserInput: CreateUserInput) {
@@ -26,7 +28,6 @@ export class UserService {
 	}
 
 	async getById(id: number, select: Prisma.UserSelect = undefined) {
-		console.log(id, "getById");
 		const user = await this.prisma.user.findUnique({
 			where: { id },
 			select,
@@ -34,6 +35,15 @@ export class UserService {
 		if (!user) throw new BadGatewayException("User not found");
 		return user;
 	}
+
+	async findAll({ pagination }: FilterUserInput) {
+		const page = this.pagination.getPagination(pagination?.take, pagination?.page) as Prisma.UserWhereInput;
+		return this.prisma.user.findMany({
+			where: { ...page },
+			include: { _count: true },
+		});
+	}
+
 
 	async update(id: number, updateUserInput: UpdateUserInput) {
 		const availableUsers = await this.prisma.user.findMany({

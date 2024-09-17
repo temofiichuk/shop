@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Review } from "../../review/entities/review.entity";
 
 
 @ObjectType()
@@ -8,8 +9,10 @@ export class User {
 
 	@Field()
 	username: string;
+
 	@Field()
 	first_name: string;
+
 	@Field()
 	last_name: string;
 
@@ -31,16 +34,17 @@ export class User {
 	@Field()
 	is_verified: boolean;
 
-	// @Field()
-	// reviews:     Review[]
+	@Field(() => [Review])
+	reviews: Review[];
 
-	@Field()
-	rating: number;
+	@Field({ nullable: true })
+	rating?: number;
 
 	// @Field()
 	// orders :     Order[]
 	@Field()
 	created_at: Date;
+
 	@Field()
 	updated_at: Date;
 }

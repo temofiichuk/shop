@@ -7,6 +7,8 @@ import { UsePipes } from "@nestjs/common";
 import { CustomValidationPipe } from "../../pipes/custom-validation.pipe";
 import { IsUserAuth } from "../auth/decorators/auth-user.decorators";
 import { CurrentUser } from "../auth/decorators/current-user.decorators";
+import { FilterUserInput } from "./dto/filter-user.input";
+import { IsAdminAuth } from "../auth/decorators/auth-admin.decorators";
 
 @Resolver(() => User)
 export class UserResolver {
@@ -17,6 +19,12 @@ export class UserResolver {
 	@UsePipes(CustomValidationPipe)
 	userCreate(@Args("createUserInput") createUserInput: CreateUserInput) {
 		return this.userService.create(createUserInput);
+	}
+
+	@Query(() => [User])
+	@IsAdminAuth()
+	users(@Args("filter", { nullable: true }) filter?: FilterUserInput) {
+		return this.userService.findAll(filter);
 	}
 
 	@Mutation(() => User)

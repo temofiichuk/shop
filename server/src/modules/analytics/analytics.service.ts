@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma.service";
 import * as moment from "moment/moment";
 import { EnumOrderStatus } from "@prisma/client";
+import { RevenueAnalytics } from "./entity/revenue.entity";
 
 @Injectable()
 export class AnalyticsService {
@@ -40,5 +41,29 @@ export class AnalyticsService {
 			current: await this.calculateRevenue(this.formatDate(startOfCurrentPeriod), this.formatDate(endOfCurrentPeriod)),
 			previous: await this.calculateRevenue(this.formatDate(startOfPreviousPeriod), this.formatDate(endOfPreviousPeriod)),
 		};
+	}
+
+	async getRevenueAnalytics(period: "week" | "month" | "year") {
+		const now = moment();
+
+		const startDate = now.clone().startOf(period);
+		const endDate = now.clone().endOf(period);
+		const frequency = period === "year" ? "month" : period === "month" ? "week" : "day";
+
+		const chartData: RevenueAnalytics[] = [];
+
+		for (let date = startDate.clone(); date.isBefore(endDate); date.add(1, frequency)) {
+			const start = date.clone().startOf(frequency);
+			const end = date.clone().endOf(frequency);
+
+			const revenue = await this.calculateRevenue(this.formatDate(start), this.formatDate(end));
+
+			chartData.push({
+				period: date.format("MMMM"), // Назва місяця, наприклад, January, February і т.д.
+				revenue: revenue,
+			});
+		}
+
+		return chartData;
 	}
 }

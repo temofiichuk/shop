@@ -5,3 +5,4 @@ export class RevenueInput {
 	@Field(() => String)
 	period: "week" | "month" | "year";
 }
+
