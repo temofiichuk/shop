@@ -4,6 +4,12 @@ import { CreateProductVariantInput } from "../../product-variant/dto/create-prod
 import { CreateProductAttributeInput } from "../../product-attribute/dto/create-product-attribute.input";
 
 @InputType()
+export class ConnectCategoryInput {
+	@Field(() => Int)
+	id: number;
+}
+
+@InputType()
 export class CreateProductInput {
 	@Field()
 	@IsNotEmpty()
@@ -39,4 +45,6 @@ export class CreateProductInput {
 	@Field(() => [CreateProductVariantInput])
 	variants: CreateProductVariantInput[];
 
+	@Field(() => [ConnectCategoryInput])
+	categories: ConnectCategoryInput[];
 }

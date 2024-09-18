@@ -47,6 +47,9 @@ export const PRODUCT = gql`
                     value
                 }
             }
+            categories {
+                id
+            }
         }
     }`;
 

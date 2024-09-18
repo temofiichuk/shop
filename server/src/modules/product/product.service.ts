@@ -16,7 +16,7 @@ export class ProductService {
 	}
 
 	async create(createData: CreateProductInput) {
-		const { attributes, variants, ...data } = createData;
+		const { attributes, variants, categories, ...data } = createData;
 
 		return this.prisma.product.create({
 			data: {
@@ -39,6 +39,9 @@ export class ProductService {
 					createMany: {
 						data: variants,
 					},
+				},
+				categories: {
+					connect: categories,
 				},
 			},
 		});
@@ -68,17 +71,19 @@ export class ProductService {
 
 	async update(updateData: UpdateProductInput) {
 		return this.prisma.$transaction(async (prisma) => {
-			const { id, attributes, variants, ...data } = updateData;
-			const currentAttrsIds = attributes.map(({ id }) => id);
+			const { id, attributes, variants, categories, ...data } = updateData;
 			const {
 				attributes: availableAttrs,
 				variants: availableVariants,
+				categories: availableCategories,
 			} = await prisma.product.findUnique({
 				where: { id },
-				select: { attributes: true, variants: true },
+				select: { attributes: true, variants: true, categories: true },
 			});
 
+			const currentAttrsIds = attributes.map(({ id }) => id);
 			const currentVariantsIds = variants.map(({ id }) => id);
+			const currentCategoriesIds = categories.map(({ id }) => id);
 
 			return prisma.product.update({
 				where: { id },
@@ -108,6 +113,10 @@ export class ProductService {
 								},
 							},
 						})),
+					},
+					categories: {
+						connect: categories.map(({ id }) => ({ id })),
+						disconnect: availableCategories.filter(({ id }) => !currentCategoriesIds.includes(id)),
 					},
 				},
 			});

@@ -71,6 +71,10 @@ export type Category = {
   updated_at: Scalars['DateTime']['output'];
 };
 
+export type ConnectCategoryInput = {
+  id: Scalars['Int']['input'];
+};
+
 export type CreateAdminInput = {
   email: Scalars['String']['input'];
   first_name: Scalars['String']['input'];
@@ -127,6 +131,7 @@ export type CreateProductImageInput = {
 export type CreateProductInput = {
   attributes: Array<CreateProductAttributeInput>;
   base_price: Scalars['Int']['input'];
+  categories: Array<ConnectCategoryInput>;
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
   sku: Scalars['String']['input'];
@@ -921,6 +926,7 @@ export type UpdateProductImageInput = {
 export type UpdateProductInput = {
   attributes: Array<UpdateProductAttributeInput>;
   base_price?: InputMaybe<Scalars['Int']['input']>;
+  categories?: InputMaybe<Array<ConnectCategoryInput>>;
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
@@ -1122,7 +1128,7 @@ export type ProductQueryVariables = Exact<{
 }>;
 
 
-export type ProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: number, name: string, base_price: number, created_at: any, stock: number, images: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }>, variants: Array<{ __typename?: 'ProductVariant', id: number, stock: number, price: number, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', id: number, name: string, value: string }> }>, attributes: Array<{ __typename?: 'ProductAttribute', id: number, name: string, values: Array<{ __typename?: 'ProductAttributeValue', id: number, value: string }> }> } };
+export type ProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: number, name: string, base_price: number, created_at: any, stock: number, images: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }>, variants: Array<{ __typename?: 'ProductVariant', id: number, stock: number, price: number, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', id: number, name: string, value: string }> }>, attributes: Array<{ __typename?: 'ProductAttribute', id: number, name: string, values: Array<{ __typename?: 'ProductAttributeValue', id: number, value: string }> }>, categories: Array<{ __typename?: 'ProductCategory', id: number }> } };
 
 export type UpdateProductMutationVariables = Exact<{
   data: UpdateProductInput;
@@ -1875,6 +1881,9 @@ export const ProductDocument = gql`
         id
         value
       }
+    }
+    categories {
+      id
     }
   }
 }

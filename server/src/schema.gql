@@ -125,27 +125,6 @@ type ProductVariant {
   variant_attributes: [ProductVariantAttribute!]!
 }
 
-type Category {
-  id: Int!
-  name: String!
-  parent_id: Int
-  parent: Category!
-  slug: String!
-  created_at: DateTime!
-  updated_at: DateTime!
-  children: [Category!]!
-}
-
-type ProductCategory {
-  id: Int!
-  product: Product!
-  product_id: Int!
-  category: Category!
-  category_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime!
-}
-
 type Promotion {
   id: Int!
   name: String!
@@ -192,6 +171,17 @@ type ProductAttribute {
   updated_at: DateTime!
 }
 
+type Category {
+  id: Int!
+  name: String!
+  parent_id: Int
+  parent: Category!
+  slug: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  children: [Category!]!
+}
+
 type Product {
   id: Int!
   name: String!
@@ -207,7 +197,7 @@ type Product {
   created_at: DateTime!
   updated_at: DateTime!
   variants: [ProductVariant!]!
-  categories: [ProductCategory!]!
+  categories: [Category!]!
   images: [ProductImage!]!
   promotions: [ProductPromotion!]!
   wishlist: [Wishlist!]!
@@ -268,8 +258,6 @@ type Query {
   attribute(id: Int!): Attribute!
   productAttributes: [ProductAttribute!]!
   productAttribute(id: Int!): ProductAttribute!
-  productCategories: [ProductCategory!]!
-  productCategory(id: Int!): ProductCategory!
   products(pagination: PaginationInput, filter: FilterProductInput): [Product!]!
   productsCount: ProductCount!
   product(id: Int!): Product!
@@ -356,9 +344,6 @@ type Mutation {
   createProductAttributeValue(createData: CreateProductAttributeValueInput!): ProductAttributeValue!
   updateProductAttributeValue(updateData: UpdateProductAttributeValueInput!): ProductAttributeValue!
   removeProductAttributeValue(id: Int!): ProductAttributeValue!
-  createProductCategory(data: CreateProductCategoryInput!): ProductCategory!
-  updateProductCategory(data: UpdateProductCategoryInput!): ProductCategory!
-  deleteProductCategory(id: Int!): ProductCategory!
   createProduct(data: CreateProductInput!): Product!
   updateProduct(data: UpdateProductInput!): Product!
   deleteProduct(id: Int!): Product!
@@ -441,17 +426,6 @@ input UpdateProductAttributeValueInput {
   id: Int!
 }
 
-input CreateProductCategoryInput {
-  product_id: Int!
-  category_id: Int!
-}
-
-input UpdateProductCategoryInput {
-  product_id: Int
-  category_id: Int
-  id: Int!
-}
-
 input CreateProductInput {
   name: String!
   description: String!
@@ -460,6 +434,7 @@ input CreateProductInput {
   stock: Int = 0
   attributes: [CreateProductAttributeInput!]!
   variants: [CreateProductVariantInput!]!
+  categories: [ConnectCategoryInput!]!
 }
 
 input CreateProductAttributeInput {
@@ -480,12 +455,17 @@ input CreateProductVariantAttributeInput {
   value: String!
 }
 
+input ConnectCategoryInput {
+  id: Int!
+}
+
 input UpdateProductInput {
   name: String
   description: String
   sku: String
   base_price: Int
   stock: Int = 0
+  categories: [ConnectCategoryInput!]
   id: Int!
   attributes: [UpdateProductAttributeInput!]!
   variants: [UpdateProductVariantInput!]!

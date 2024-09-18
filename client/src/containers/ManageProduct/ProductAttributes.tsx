@@ -92,7 +92,7 @@ const ProductAttributes = () => {
 										onPressedChange={(pressed) => changeAttributeHandler(pressed, checkedAttr)}
 										variant="outline"
 										style={{ animationDuration: `${(index + 1) * 100}ms` }}
-										className="slide-up data-[state='on']:bg-zinc-900 data-[state='on']:text-zinc-100"
+										className="slide-up data-[state=on]:bg-zinc-900 data-[state='on']:text-zinc-100"
 									>
 										{attribute.name}
 									</Toggle>

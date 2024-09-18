@@ -56,6 +56,10 @@ type Category {
   children: [Category!]!
 }
 
+input ConnectCategoryInput {
+  id: Int!
+}
+
 input CreateAdminInput {
   first_name: String!
   last_name: String!
@@ -117,6 +121,7 @@ input CreateProductInput {
   stock: Int = 0
   attributes: [CreateProductAttributeInput!]!
   variants: [CreateProductVariantInput!]!
+  categories: [ConnectCategoryInput!]!
 }
 
 input CreateProductPromotionInput {
@@ -549,6 +554,7 @@ input UpdateProductInput {
   sku: String
   base_price: Int
   stock: Int = 0
+  categories: [ConnectCategoryInput!]
   id: Int!
   attributes: [UpdateProductAttributeInput!]!
   variants: [UpdateProductVariantInput!]!

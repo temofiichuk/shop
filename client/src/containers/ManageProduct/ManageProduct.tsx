@@ -16,12 +16,13 @@ import {
 	useUpdateCategoryMutation,
 } from "@/lib/graphql/generated/graphql";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useLayoutEffect } from "react";
+import { Suspense, useLayoutEffect } from "react";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import ProductAttributes from "@/containers/ManageProduct/ProductAttributes";
 import ProductVariants from "@/containers/ManageProduct/ProductVariants";
-import SubmitButton from "@/components/SubmitButton/SubmitButton";
+import ProductCategory from "@/containers/ManageProduct/ProductCategory";
+import SaveProduct from "@/containers/ManageProduct/SaveProduct";
 
 
 let initialState: CreateProductInput = {
@@ -32,6 +33,7 @@ let initialState: CreateProductInput = {
 	stock: 0,
 	attributes: [],
 	variants: [],
+	categories: [],
 };
 
 // TODO: - update logic in variants/product_id
@@ -107,11 +109,12 @@ const ManageProduct = () => {
 							)}
 						</div>
 						<div className="items-center gap-2 md:ml-auto flex">
+							{/*TODO:-product status integrate */}
 							<Button variant="outline" size="sm">
 								<Trash className="w-4 h-4 md:hidden" />
 								<span className="sr-only md:not-sr-only">Discard</span>
 							</Button>
-							<SubmitButton><Button size="sm" asChild>Save Product</Button></SubmitButton>
+							<SaveProduct />
 						</div>
 					</div>
 					<div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -147,44 +150,7 @@ const ManageProduct = () => {
 							<ProductAttributes />
 							<ProductVariants />
 
-							<Card>
-								<CardHeader>
-									<CardTitle>Product Category</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<div className="grid gap-6 sm:grid-cols-3">
-										<div className="grid gap-3">
-											<Label htmlFor="category">Category</Label>
-											<Select>
-												<SelectTrigger id="category" aria-label="Select category">
-													<SelectValue placeholder="Select category" />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="clothing">Clothing</SelectItem>
-													<SelectItem value="electronics">Electronics</SelectItem>
-													<SelectItem value="accessories">Accessories</SelectItem>
-												</SelectContent>
-											</Select>
-										</div>
-										<div className="grid gap-3">
-											<Label htmlFor="subcategory">Subcategory (optional)</Label>
-											<Select>
-												<SelectTrigger
-													id="subcategory"
-													aria-label="Select subcategory"
-												>
-													<SelectValue placeholder="Select subcategory" />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="t-shirts">T-Shirts</SelectItem>
-													<SelectItem value="hoodies">Hoodies</SelectItem>
-													<SelectItem value="sweatshirts">Sweatshirts</SelectItem>
-												</SelectContent>
-											</Select>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
+							<Suspense fallback={<LoadingSpinner widths={24} />}><ProductCategory /></Suspense>
 						</div>
 						<div className="grid auto-rows-max items-start gap-4 lg:gap-8">
 							<Card>

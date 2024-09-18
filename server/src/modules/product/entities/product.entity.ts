@@ -2,11 +2,11 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Review } from "../../review/entities/review.entity";
 import { Admin } from "../../admin/entities/admin.entity";
 import { ProductVariant } from "../../product-variant/entities/product-variant.entity";
-import { ProductCategory } from "../../product-category/entities/product-category.entity";
 import { ProductPromotion } from "../../product-promotion/entities/product-promotion.entity";
 import { Wishlist } from "../../wishlist/entities/wishlist.entity";
 import { ProductImage } from "../../product-image/entities/product-image.entity";
 import { ProductAttribute } from "../../product-attribute/entities/product-attribute.entity";
+import { Category } from "../../category/entities/category.entity";
 
 @ObjectType()
 export class Product {
@@ -52,8 +52,8 @@ export class Product {
 	@Field(() => [ProductVariant])
 	variants?: ProductVariant[];
 
-	@Field(() => [ProductCategory])
-	categories?: ProductCategory[];
+	@Field(() => [Category])
+	categories?: Category[];
 
 	@Field(() => [ProductImage])
 	images?: ProductImage[];
