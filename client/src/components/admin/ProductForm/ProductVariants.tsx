@@ -4,17 +4,17 @@ import {
 	CreateProductVariantInput,
 	UpdateProductVariantInput,
 } from "@/lib/graphql/generated/graphql";
-import { FormValues } from "@/containers/ManageProduct/ProductForm";
+import { FormValues } from "@/components/admin/ProductForm/ProductForm";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { memo, useCallback, useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
-import ProductControlledSelect from "@/containers/ManageProduct/ProductControlledSelect";
+import ProductControlledSelect from "@/components/admin/ProductForm/ProductControlledSelect";
 import { SelectContent, SelectItem } from "@/components/ui/select";
-import { useFormContext } from "@/containers/ManageProduct/FormProvider";
+import { useFormContext } from "@/components/admin/ProductForm/FormProvider";
 import { clsx } from "clsx";
-import ProductTableCell from "@/containers/ManageProduct/ProductTableCell";
+import ProductTableCell from "@/components/admin/ProductForm/ProductTableCell";
 
 interface ProductVariantsProps {
 	attributes: FormValues["attributes"],
@@ -116,8 +116,8 @@ const ProductVariants = ({ attributes, variants }: ProductVariantsProps) => {
 						{fields?.map(({ id, variant_attributes }, index: number) => (
 							<TableRow key={id}>
 								<ProductTableCell name={`variants.${index}.sku`} />
-								<ProductTableCell name={`variants.${index}.stock`} />
-								<ProductTableCell name={`variants.${index}.price`} />
+								<ProductTableCell type="number" name={`variants.${index}.price`} />
+								<ProductTableCell type="number" name={`variants.${index}.stock`} />
 
 								{variant_attributes?.map((attr, i) => {
 

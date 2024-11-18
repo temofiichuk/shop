@@ -7,8 +7,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { FormValues } from "@/containers/ManageProduct/ProductForm";
-import { useFormContext } from "@/containers/ManageProduct/FormProvider";
+import { FormValues } from "@/components/admin/ProductForm/ProductForm";
+import { useFormContext } from "@/components/admin/ProductForm/FormProvider";
 
 interface ProductCategoryProps {
 	categories: FormValues["categories"];

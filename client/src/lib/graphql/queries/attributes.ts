@@ -12,3 +12,13 @@ export const ATTRIBUTES = gql`
             }
         }
     }`;
+
+export const ALL_ATTRIBUTES = gql`
+    query all_attributes {
+        attributes {
+            name
+            values {
+                value
+            }
+        }
+    }`;

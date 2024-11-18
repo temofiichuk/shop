@@ -9,8 +9,8 @@ import { memo, useCallback, useMemo } from "react";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { toast } from "sonner";
-import { type FormValues } from "@/containers/ManageProduct/ProductForm";
-import { useFormContext } from "@/containers/ManageProduct/FormProvider";
+import { type FormValues } from "@/components/admin/ProductForm/ProductForm";
+import { useFormContext } from "@/components/admin/ProductForm/FormProvider";
 
 interface ProductAttributesProps {
 	attributes: FormValues["attributes"];

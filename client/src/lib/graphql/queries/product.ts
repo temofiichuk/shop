@@ -16,57 +16,67 @@ export const PRODUCTS = gql`
         }
     }`;
 
-export const PRODUCT = gql`
-    query product($id: Int!) {
-        product(id: $id) {
-            id
+export const PRODUCT_FRAGMENT = gql`
+    fragment ProductFragment on Product {
+        id
+        name
+        description
+        base_price
+        created_at
+        stock
+        images {
+            url
+            is_main
             name
-            base_price
-            created_at
+        }
+        variants {
+            id
             stock
-            images {
-                url
-                is_main
+            price
+            sku
+            variant_attributes {
                 name
-            }
-            variants {
-                id
-                stock
-                price
-                variant_attributes {
-                    id
-                    name
-                    value
-                }
-            }
-            attributes {
-                id
-                name
-                values {
-                    id
-                    value
-                }
-            }
-            categories {
-                id
+                value
             }
         }
-    }`;
-
-export const UPDATE_PRODUCT = gql`
-    mutation updateProduct($data: UpdateProductInput!) {
-        updateProduct(data: $data) {
+        attributes {
+            id
+            name
+            values {
+                value
+            }
+        }
+        categories {
             id
         }
     }
 `;
 
+export const PRODUCT = gql`
+    query product($id: Int!) {
+        product(id: $id) {
+            ...ProductFragment
+        }
+    }
+    ${PRODUCT_FRAGMENT}
+`;
+
+export const UPDATE_PRODUCT = gql`
+    mutation updateProduct($data: UpdateProductInput!) {
+        updateProduct(data: $data) {
+            ...ProductFragment
+        }
+    }
+    ${PRODUCT_FRAGMENT}
+`;
+
 export const CREATE_PRODUCT = gql`
     mutation createProduct($data: CreateProductInput!) {
         createProduct(data: $data) {
-            id
+            ...ProductFragment
         }
     }
+    ${PRODUCT_FRAGMENT}
 `;
 
 export const PRODUCTS_COUNT = gql`
