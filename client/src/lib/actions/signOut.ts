@@ -3,9 +3,12 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { AuthError } from "@auth/core/errors";
 import { signOut } from "@/auth";
 
-const signOutAction: () => Promise<{ error?: string, success?: boolean }> = async () => {
+const signOutAction: (redirectTo?: string) => Promise<{
+	error?: string,
+	success?: boolean
+}> = async (redirectTo?: string) => {
 	try {
-		await signOut();
+		await signOut({ redirectTo });
 		return { success: true };
 	} catch (error) {
 		if (isRedirectError(error)) {

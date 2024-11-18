@@ -89,7 +89,7 @@ const AdminHeader = () => {
 					<DropdownMenuSeparator />
 
 					<DropdownMenuItem>
-						<SignOutButton />
+						<SignOutButton redirectTo="/admin" />
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

@@ -1,13 +1,14 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useFormState } from "react-dom";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import signOut from "@/lib/actions/signOut";
 import SubmitButton from "@/components/SubmitButton/SubmitButton";
+import { useRouter } from "next/navigation";
 
-const SignOutButton = () => {
-	const [state, dispatch] = useFormState(signOut, undefined);
+
+const SignOutButton = ({ redirectTo }: { redirectTo?: string }) => {
+	const [state, dispatch] = useFormState(async () => signOut(redirectTo), undefined);
 	const router = useRouter();
 
 	useEffect(() => {

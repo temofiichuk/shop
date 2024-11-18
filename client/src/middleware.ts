@@ -8,11 +8,9 @@ const privateRoutes = {
 };
 
 export default async (req: NextRequest, res: NextResponse) => {
-	const isPrivateRoute = Object.values(privateRoutes).some(privateRoute => req.nextUrl.pathname.startsWith(privateRoute.path));
-	if (!isPrivateRoute) return req;
+
 	const session = await auth();
 	if (!session) {
-
 		if (req.nextUrl.pathname.startsWith(privateRoutes.user.path)) {
 			const newUrl = new URL(privateRoutes.user.redirectTo, req.nextUrl.origin);
 			return Response.redirect(newUrl);
@@ -20,7 +18,7 @@ export default async (req: NextRequest, res: NextResponse) => {
 
 		if (req.nextUrl.pathname.startsWith(privateRoutes.admin.path)) {
 			const newUrl = new URL(privateRoutes.admin.redirectTo, req.nextUrl.origin);
-			return Response.redirect(newUrl);
+			return NextResponse.redirect(newUrl);
 		}
 	} else {
 		const { user: { role } } = session;

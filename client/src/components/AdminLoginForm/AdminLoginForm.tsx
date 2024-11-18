@@ -1,5 +1,4 @@
 "use client";
-import styles from "./AdminLoginForm.module.scss";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
@@ -7,45 +6,38 @@ import useAuth from "@/lib/hooks/useAuth";
 import { FormProvider, useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { EnumUserRole, LoginInput } from "@/lib/graphql/generated/graphql";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 const AdminLoginForm = () => {
-	const { error, dispatch } = useAuth(EnumUserRole.Admin);
-	const router = useRouter();
+	const { dispatch } = useAuth(EnumUserRole.Admin);
 
 	const methods = useForm<LoginInput>({
 		defaultValues: {
-			email: "Ona91@yahoo.com",
-			password: "nNh8HQeaRF6D1Io",
+			email: "Deonte.Hoeger@hotmail.com",
+			password: "sOFxsNfo27jbUg2",
 		},
 	});
 
 	return (
-		<Card className={styles.form}>
+		<Card className="w-full max-w-sm">
 			<FormProvider {...methods}>
-
-				<form action={async (formData) => {
-					await dispatch(formData);
-					router.refresh();
-				}
-				}>
+				<form action={dispatch}>
 					<CardHeader>
-						<CardTitle className={styles.title}>Admin</CardTitle>
+						<CardTitle className="text-2xl text-center">Admin</CardTitle>
 					</CardHeader>
-					<CardContent className={styles.content}>
-						<div className={styles.inputWrapper}>
+					<CardContent className="grid gap-4">
+						<div className="grid gap-2">
 							<Label htmlFor="email">Email</Label>
 							<Input {...methods.register("email")} type="email" placeholder="admin@example.com" />
 						</div>
-						<div className={styles.inputWrapper}>
+						<div className="grid gap-2">
 							<Label htmlFor="password">Password</Label>
 							<InputPassword {...methods.register("password")} />
 						</div>
 
 					</CardContent>
-					<CardFooter className={styles.content}>
+					<CardFooter className="grid gap-4">
 						<Button asChild children={<SubmitButton children="Sign In" />} />
 					</CardFooter>
 				</form>
