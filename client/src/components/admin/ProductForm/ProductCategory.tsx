@@ -1,31 +1,34 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFormContext } from "react-hook-form";
-import { Category, useCategoriesSuspenseQuery } from "@/lib/graphql/generated/graphql";
-import { Fragment, useCallback, useMemo, useState } from "react";
+import { useCategoriesSuspenseQuery } from "@/lib/graphql/generated/graphql";
+import { memo, useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { FormValues } from "@/containers/ManageProduct/ProductForm";
+import { useFormContext } from "@/containers/ManageProduct/FormProvider";
 
-const ProductCategory = () => {
+interface ProductCategoryProps {
+	categories: FormValues["categories"];
+}
+
+const ProductCategory = ({ categories }: ProductCategoryProps) => {
 	const [open, setOpen] = useState(false);
 	const { data: { categories: availableCategories } } = useCategoriesSuspenseQuery();
 	const categoryMap = useMemo(() => new Map(availableCategories.map((cat) => [cat.id, cat])), [availableCategories]);
 
-	const { watch, setValue, getValues } = useFormContext();
-	const categories = watch("categories")?.map(({ id }: { id: number }) => id);
-
+	const { setValue, getValues } = useFormContext<FormValues>();
 
 	const setCategoryHandler = useCallback((id: number) => {
-		const categories = getValues("categories") as Category[];
-		setValue("categories", [...categories, { id }]);
+		const categories = getValues("categories");
+		setValue("categories", [...(categories ?? []), { id }]);
 	}, [setValue, getValues]);
 
 	const removeCategoryHandler = useCallback((id: number) => {
-		const categories = getValues("categories") as Category[];
-		setValue("categories", [...categories].filter(({ id: catId }) => catId !== id));
+		const categories = getValues("categories");
+		setValue("categories", [...(categories ?? [])].filter(({ id: catId }) => catId !== id));
 	}, [setValue, getValues]);
 
 	return (
@@ -35,12 +38,8 @@ const ProductCategory = () => {
 			</CardHeader>
 			<CardContent>
 				<div className="flex flex-wrap gap-4">
-					{/*<Separator orientation="vertical" className="h-auto" />*/}
-					{categories?.map((id: number) => (
-						<Fragment key={id}>
-							<Button size="sm" onClick={() => removeCategoryHandler(id)}>{categoryMap.get(id)!.name}</Button>
-							{/*<Separator orientation="vertical" className="h-auto" />*/}
-						</Fragment>
+					{categories?.map(({ id }) => (
+						<Button key={id} size="sm" onClick={() => removeCategoryHandler(id)}>{categoryMap.get(id)!.name}</Button>
 					))}
 				</div>
 				<br />
@@ -61,18 +60,20 @@ const ProductCategory = () => {
 							<CommandList>
 								<CommandEmpty>No category found.</CommandEmpty>
 								<CommandGroup>
-									{availableCategories?.map(({ id, name }, index) => !categories.includes(id) && (
-										<CommandItem
-											key={id}
-											className={`slide-up duration-[${index * 200}ms]`}
-											onSelect={() => {
-												setCategoryHandler(id);
-												setOpen(false);
-											}}>
-											{name}
-											<CheckIcon className={cn("ml-auto h-4 w-4", "opacity-100")} />
-										</CommandItem>
-									))}
+									{availableCategories
+										?.filter(({ id }) => !categories?.some(({ id: catId }) => id === catId))
+										?.map(({ id, name }, index) => (
+											<CommandItem
+												key={id}
+												className={`slide-up duration-[${index * 200}ms]`}
+												onSelect={() => {
+													setCategoryHandler(id);
+													setOpen(false);
+												}}>
+												{name}
+												<CheckIcon className={cn("ml-auto h-4 w-4", "opacity-100")} />
+											</CommandItem>
+										))}
 								</CommandGroup>
 							</CommandList>
 						</Command>
@@ -84,4 +85,4 @@ const ProductCategory = () => {
 	);
 };
 
-export default ProductCategory;
+export default memo(ProductCategory);

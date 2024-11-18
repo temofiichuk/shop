@@ -19,8 +19,8 @@ export class Product {
 	@Field()
 	description: string;
 
-	@Field()
-	sku: string;
+	@Field(() => String, { nullable: true })
+	sku?: string;
 
 	@Field(() => Int)
 	base_price: number;
@@ -34,13 +34,13 @@ export class Product {
 	@Field(() => Int, { defaultValue: 0 })
 	rating: number;
 
-	@Field(() => [Review])
+	@Field(() => [Review], { nullable: true })
 	reviews?: Review[];
 
-	@Field(() => Admin)
+	@Field(() => Admin, { nullable: true })
 	admin?: Admin;
 
-	@Field(() => Int)
+	@Field(() => Int, { nullable: true })
 	admin_id?: number;
 
 	@Field()
@@ -49,21 +49,21 @@ export class Product {
 	@Field()
 	updated_at: Date;
 
-	@Field(() => [ProductVariant])
+	@Field(() => [ProductVariant], { nullable: true })
 	variants?: ProductVariant[];
 
-	@Field(() => [Category])
+	@Field(() => [Category], { nullable: true })
 	categories?: Category[];
 
-	@Field(() => [ProductImage])
+	@Field(() => [ProductImage], { nullable: true })
 	images?: ProductImage[];
 
-	@Field(() => [ProductPromotion])
+	@Field(() => [ProductPromotion], { nullable: true })
 	promotions?: ProductPromotion[];
 
-	@Field(() => [Wishlist])
+	@Field(() => [Wishlist], { nullable: true })
 	wishlist?: Wishlist[];
 
-	@Field(() => [ProductAttribute])
+	@Field(() => [ProductAttribute], { nullable: true })
 	attributes?: ProductAttribute[];
 }

@@ -4,6 +4,6 @@ import { Field, InputType, Int, PartialType } from "@nestjs/graphql";
 
 @InputType()
 export class UpdateProductAttributeValueInput extends PartialType(CreateProductAttributeValueInput) {
-	@Field(() => Int)
-	id: number;
+	@Field(() => Int, { nullable: true })
+	id?: number;
 }
