@@ -15,6 +15,7 @@ const RootLayout = ({ children }: PropsWithChildren) => {
 		<Providers>
 			{children}
 		</Providers>
+		<script src="http://localhost:8097"></script>
 		</body>
 		</html>
 	);

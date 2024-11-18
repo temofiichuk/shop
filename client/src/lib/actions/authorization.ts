@@ -3,7 +3,7 @@ import { signIn } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { AuthError } from "@auth/core/errors";
 
-const authorization = async (payload, id) => {
+const authorization = async (payload: FormData, id: string) => {
 	try {
 		const data = await signIn(id, {
 			email: payload.get("email"),

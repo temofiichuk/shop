@@ -7,11 +7,11 @@ import signOut from "@/lib/actions/signOut";
 import SubmitButton from "@/components/SubmitButton/SubmitButton";
 
 const SignOutButton = () => {
-	const [state, dispatch] = useFormState(signOut, {});
+	const [state, dispatch] = useFormState(signOut, undefined);
 	const router = useRouter();
 
 	useEffect(() => {
-		if (!state.error) return;
+		if (!state?.error) return;
 		toast.error(state.error);
 	}, [state]);
 

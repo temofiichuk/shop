@@ -1,12 +1,13 @@
 import { EnumUserRole } from "@/lib/graphql/generated/graphql";
 import { auth } from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
 
 const privateRoutes = {
 	user: { path: "/profile", redirectTo: "/login" },
 	admin: { path: "/admin/dashboard", redirectTo: "/admin" },
 };
 
-export default async (req, res) => {
+export default async (req: NextRequest, res: NextResponse) => {
 	const isPrivateRoute = Object.values(privateRoutes).some(privateRoute => req.nextUrl.pathname.startsWith(privateRoute.path));
 	if (!isPrivateRoute) return req;
 	const session = await auth();

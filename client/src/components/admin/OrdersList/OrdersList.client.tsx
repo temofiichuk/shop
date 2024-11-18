@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/spinner";
 
 
-const filters = [];
+const filters: { title: string, value: EnumOrderStatus }[] = [];
 for (const status in EnumOrderStatus) {
 	const name = status.split("_");
 	filters.push({
@@ -120,7 +120,7 @@ const OrdersListClient = () => {
 							<DropdownMenuSeparator />
 							<DropdownMenuRadioGroup
 								value={filterBy}
-								onValueChange={(value: EnumOrderStatus | "off") => setFilterBy(value)}>
+								onValueChange={(value) => setFilterBy(value as EnumOrderStatus | "off")}>
 								<DropdownMenuRadioItem value={"off"}>
 									Turn Off Filter
 								</DropdownMenuRadioItem>

@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import getClient from "@/lib/apollo/apollo.client.rsc";
 import { REVENUE } from "@/lib/graphql/queries/revenue";
 import { toRegularCase } from "@/lib/functions";
-import { RevenueQueryResult } from "@/lib/graphql/generated/graphql";
+import { RevenueQuery } from "@/lib/graphql/generated/graphql";
 import Price from "./Price.client";
 import Progress from "./Progress.client";
 
@@ -11,7 +11,7 @@ interface IIncome {
 }
 
 const Income = async ({ period }: IIncome) => {
-	const { data: { revenue } } = await getClient().query<RevenueQueryResult>({
+	const { data: { revenue } } = await getClient().query<RevenueQuery>({
 		query: REVENUE,
 		variables: { revenueInput: { period } },
 	});

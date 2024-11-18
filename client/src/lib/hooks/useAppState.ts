@@ -1,6 +1,6 @@
 import { remove, selectState, set } from "@/store/features/state.slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useLayoutEffect } from "react";
+import { useCallback, useLayoutEffect, useMemo } from "react";
 import { isEqual } from "apollo-utilities";
 
 
@@ -9,15 +9,16 @@ const useAppState = <T>(keyState: string, initialState?: T): [T, (val: {
 }) => void] => {
 	const dispatch = useAppDispatch();
 	const state = useAppSelector(selectState(keyState)) as T;
+	const memoState = useMemo(() => state, [state]);
 
-	const setState = ({ value }: { value: T }) => {
+	const setState = useCallback(({ value }: { value: T }) => {
 		if (value === null) {
 			dispatch(remove(keyState));
 			return;
 		}
 
 		dispatch(set({ key: keyState, value }));
-	};
+	}, [dispatch]);
 
 	useLayoutEffect(() => {
 
@@ -25,7 +26,7 @@ const useAppState = <T>(keyState: string, initialState?: T): [T, (val: {
 		dispatch(set({ key: keyState, value: initialState }));
 	}, [keyState, initialState]);
 
-	return [state, setState];
+	return [memoState, setState];
 };
 
 export default useAppState;

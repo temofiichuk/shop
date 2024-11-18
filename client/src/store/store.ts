@@ -1,6 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import IsOpenSlice from "@/store/features/isOpen.slice";
-import orderSlice from "@/store/features/order.slice";
 import stateSlice from "@/store/features/state.slice";
 
 // export const persistConfig = {
@@ -10,8 +8,6 @@ import stateSlice from "@/store/features/state.slice";
 
 const store = configureStore({
 	reducer: {
-		isOpen: IsOpenSlice,
-		order: orderSlice,
 		state: stateSlice,
 	},
 	devTools: true,
