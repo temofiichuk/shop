@@ -1,7 +1,5 @@
 import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { CreateProductAttributeInput } from "./dto/create-product-attribute.input";
 import { ProductAttributeService } from "./product-attribute.service";
-import { UpdateProductAttributeInput } from "./dto/update-product-attribute.input";
 import { ProductAttribute } from "./entities/product-attribute.entity";
 
 @Resolver(() => ProductAttribute)
@@ -9,12 +7,12 @@ export class ProductAttributeResolver {
 	constructor(private readonly attributeService: ProductAttributeService) {
 	}
 
-	@Mutation(() => ProductAttribute)
-	createProductAttributeValue(
-		@Args("data") data: CreateProductAttributeInput,
-	) {
-		return this.attributeService.create(data);
-	}
+	// @Mutation(() => ProductAttribute)
+	// createProductAttributeValue(
+	// 	@Args("data") data: CreateProductAttributeInput,
+	// ) {
+	// 	return this.attributeService.create(data);
+	// }
 
 	@Query(() => [ProductAttribute])
 	productAttributes() {
@@ -26,12 +24,13 @@ export class ProductAttributeResolver {
 		return this.attributeService.findOne(id);
 	}
 
-	@Mutation(() => ProductAttribute)
-	updateProductAttributeValue(
-		@Args("data") data: UpdateProductAttributeInput,
-	) {
-		return this.attributeService.update(data.id, data);
-	}
+	//
+	// @Mutation(() => ProductAttribute)
+	// updateProductAttributeValue(
+	// 	@Args("data") data: UpdateProductAttributeInput,
+	// ) {
+	// 	return this.attributeService.update(data.id, data);
+	// }
 
 	@Mutation(() => ProductAttribute)
 	removeProductAttributeValue(@Args("id", { type: () => Int }) id: number) {

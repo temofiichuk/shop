@@ -6,7 +6,7 @@ const RootAdminField = async ({ children }: PropsWithChildren) => {
 	const session = await auth();
 	const isRootAdmin = session?.user.role === EnumUserRole.Rootadmin;
 	if (!isRootAdmin) return null;
-	return children;
+	return (<>{children}</>);
 };
 
 RootAdminField.displayName = "RootAdminField";

@@ -1,12 +1,12 @@
 import Credentials from "next-auth/providers/credentials";
-import NextAuth, { AuthError, Session, User } from "next-auth";
-import { AuthResponse, AuthUser, EnumUserRole, LoginInput } from "@/lib/graphql/generated/graphql";
+import NextAuth, { NextAuthConfig, Session, type User } from "next-auth";
+import { AuthResponse, AuthUser, EnumUserRole } from "@/lib/graphql/generated/graphql";
 import { apolloClient } from "@/lib/apollo/apollo.client";
 import { AUTH_ADMIN_LOGIN, AUTH_ADMIN_TOKENS, AUTH_USER_LOGIN, AUTH_USER_TOKENS } from "@/lib/graphql/queries/auth";
 import { decodeJwt } from "jose";
-import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
-import { NextAuthRequest } from "next-auth/lib";
-import { AppRouteHandlerFn, AppRouteHandlerFnContext } from "next-auth/lib/types";
+
+// @ts-ignore
+import type { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
 	export interface Session {
@@ -26,6 +26,11 @@ declare module "next-auth" {
 		user: AuthUser;
 		accessToken: string;
 		refreshToken: string;
+	}
+}
+
+declare module "next-auth/jwt" {
+	export interface JWT extends User {
 	}
 }
 
@@ -62,9 +67,9 @@ const userCredentialsProvider = Credentials({
 		email: { type: "email", label: "Email", required: true },
 		password: { type: "password", label: "Password", required: true },
 	},
-	async authorize(credentials: LoginInput) {
+	async authorize(credentials) {
 		if (!credentials.password || !credentials.email) {
-			throw new AuthError("Invalid Credentials");
+			throw new Error("Invalid Credentials");
 		}
 		try {
 			const { data } = await apolloClient().query<{ authUserLogin: AuthResponse }>({
@@ -78,12 +83,11 @@ const userCredentialsProvider = Credentials({
 			});
 
 			if (!data || !data.authUserLogin) {
-				return new AuthError("Authentication failed: No user data returned.");
+				throw new Error("Authentication failed: No user data returned.");
 			}
 			return { ...data.authUserLogin } as User;
 		} catch (error) {
-			console.error("Error during authentication:", error);
-			throw new AuthError("Authentication error: Unable to log in.");
+			throw new Error("Invalid Credentials", { cause: error });
 		}
 	},
 });
@@ -95,9 +99,9 @@ const adminCredentialsProvider = Credentials({
 		email: { type: "email", label: "Email", required: true },
 		password: { type: "password", label: "Password", required: true },
 	},
-	async authorize(credentials: LoginInput) {
+	async authorize(credentials) {
 		if (!credentials.password && !credentials.email) {
-			throw new AuthError("Invalid Credentials");
+			throw new Error("Invalid Credentials");
 		}
 		try {
 			const { data } = await apolloClient().query<{ authAdminLogin: AuthResponse }>({
@@ -110,26 +114,17 @@ const adminCredentialsProvider = Credentials({
 				},
 			});
 			if (!data || !data.authAdminLogin) {
-				throw new AuthError("Authentication failed: No user data returned.");
+				throw new Error("Authentication failed: No user data returned.");
 			}
 			return { ...data.authAdminLogin } as User;
 
 		} catch (error) {
-			throw new AuthError(error.type, { cause: error });
+			throw new Error("Invalid Credentials", { cause: error });
 		}
 	},
 });
 
 const providers = [userCredentialsProvider, adminCredentialsProvider];
-
-const executedProviders = ["admin-credentials", "user-credentials"];
-
-export const providerMap = providers
-	.map((provider) => {
-		const { id, name } = typeof provider === "function" ? provider() : provider;
-		return { id, name };
-	})
-	.filter((provider) => !executedProviders.includes(provider.id));
 
 export const config = {
 	secret: process.env.NEXTAUTH_SECRET || "secret",
@@ -139,7 +134,7 @@ export const config = {
 			if (token && trigger !== "update") {
 				const accessToken = token?.accessToken;
 				if (accessToken) {
-					const { exp } = decodeJwt(accessToken);
+					const { exp } = decodeJwt(accessToken as string);
 					if (exp && exp <= Math.ceil(Date.now() / 1000)) {
 						const authData = await refreshAccessToken(token.refreshToken, token.user.role);
 						return authData ? { ...token, ...authData } : null;
@@ -153,7 +148,7 @@ export const config = {
 
 			return user ? { ...token, ...user } : token;
 		},
-		async session({ session, token }) {
+		async session({ session, token }: { session: Session, token: JWT }) {
 			session.user = {
 				...token.user,
 				role: token.user.role ?? EnumUserRole.User,
@@ -162,37 +157,27 @@ export const config = {
 			session.refreshToken = token.refreshToken;
 			return session;
 		},
-		async redirect({ url, baseUrl }) {
-			if (url.endsWith("/login")) {
-				return new URL("/profile", baseUrl);
-			}
-			if (url.startsWith(new URL("/profile", baseUrl))) {
-				return new URL("/login", baseUrl);
-			}
-			if (url.endsWith("/admin")) {
-				return new URL("/admin/dashboard", baseUrl);
-			}
-			if (url.startsWith(new URL("/admin/dashboard", baseUrl))) {
-				return new URL("/admin", baseUrl);
-			}
-
-			return url.startsWith(baseUrl) ? url : baseUrl;
-		},
+		// async redirect({ url, baseUrl }) {
+		// 	if (url.endsWith("/login")) {
+		// 		return new URL("/profile", baseUrl);
+		// 	}
+		// 	if (url.startsWith(new URL("/profile", baseUrl))) {
+		// 		return new URL("/login", baseUrl);
+		// 	}
+		// 	if (url.endsWith("/admin")) {
+		// 		return new URL("/admin/dashboard", baseUrl);
+		// 	}
+		// 	if (url.startsWith(new URL("/admin/dashboard", baseUrl))) {
+		// 		return new URL("/admin", baseUrl);
+		// 	}
+		//
+		// 	return url.startsWith(baseUrl) ? url : baseUrl;
+		// },
 	},
 
-	logger: process.env.NODE_ENV === "development" ? {
-		error(code, ...message) {
-			console.error(code, message);
-		},
-		warn(code, ...message) {
-			console.warn(code, message);
-		},
-		debug(code, ...message) {
-			console.debug(code, message);
-		},
-	} : undefined,
-};
+
+	trustHost: process.env.NEXTAUTH_URL,
+} as NextAuthConfig;
 
 
-export const { handlers, signIn, signOut, auth: isAuth, unstable_update: update } = NextAuth(config);
-export const auth: ((...args: [NextApiRequest, NextApiResponse]) => Promise<Session | null>) & ((...args: []) => Promise<Session | null>) & ((...args: [GetServerSidePropsContext]) => Promise<Session | null>) & ((...args: [(req: NextAuthRequest, ctx: AppRouteHandlerFnContext) => ReturnType<AppRouteHandlerFn>]) => AppRouteHandlerFn) = isAuth;
+export const { handlers, signIn, signOut, auth, unstable_update: update } = NextAuth(config);

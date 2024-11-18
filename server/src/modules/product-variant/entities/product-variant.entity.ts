@@ -40,6 +40,9 @@ export class ProductVariant {
 
 	@Field(() => Int)
 	stock: number;
+	
+	@Field(() => String)
+	sku: string;
 
 	@Field()
 	created_at: Date;

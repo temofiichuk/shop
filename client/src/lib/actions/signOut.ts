@@ -3,7 +3,7 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { AuthError } from "@auth/core/errors";
 import { signOut } from "@/auth";
 
-export default async () => {
+const signOutAction: () => Promise<{ error?: string, success?: boolean }> = async () => {
 	try {
 		await signOut();
 		return { success: true };
@@ -19,7 +19,7 @@ export default async () => {
 					state.error = "Invalid credentials.";
 					break;
 				case "CallbackRouteError":
-					state.error = cause?.err?.toString();
+					state.error = cause?.err?.toString() || "Callback Route Error";
 					break;
 				default:
 					state.error = "Something went wrong.";
@@ -30,4 +30,5 @@ export default async () => {
 
 		throw error;
 	}
-}
+};
+export default signOutAction;

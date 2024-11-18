@@ -9,7 +9,6 @@ import { AdminModule } from "./modules/admin/admin.module";
 import { ReviewModule } from "./modules/review/review.module";
 import { OrderItemModule } from "./modules/order-item/order-item.module";
 import { CategoryModule } from "./modules/category/category.module";
-import { ProductCategoryModule } from "./modules/product-category/product-category.module";
 import { ProductModule } from "./modules/product/product.module";
 import { WishlistModule } from "./modules/wishlist/wishlist.module";
 import { PromotionModule } from "./modules/promotion/promotion.module";
@@ -33,7 +32,6 @@ import { ProductAttributeModule } from "./modules/product-attribute/product-attr
 		CategoryModule,
 		AttributeModule,
 		ProductAttributeModule,
-		ProductCategoryModule,
 		ProductModule,
 		ProductVariantModule,
 		WishlistModule,

@@ -71,6 +71,10 @@ export type Category = {
   updated_at: Scalars['DateTime']['output'];
 };
 
+export type ConnectCategoryInput = {
+  id: Scalars['Int']['input'];
+};
+
 export type CreateAdminInput = {
   email: Scalars['String']['input'];
   first_name: Scalars['String']['input'];
@@ -112,11 +116,6 @@ export type CreateProductAttributeValueInput = {
   value: Scalars['String']['input'];
 };
 
-export type CreateProductCategoryInput = {
-  category_id: Scalars['Int']['input'];
-  product_id: Scalars['Int']['input'];
-};
-
 export type CreateProductImageInput = {
   is_main?: Scalars['Boolean']['input'];
   name: Scalars['String']['input'];
@@ -125,13 +124,14 @@ export type CreateProductImageInput = {
 };
 
 export type CreateProductInput = {
-  attributes: Array<CreateProductAttributeInput>;
+  attributes?: InputMaybe<Array<CreateProductAttributeInput>>;
   base_price: Scalars['Int']['input'];
+  categories?: InputMaybe<Array<ConnectCategoryInput>>;
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  sku: Scalars['String']['input'];
+  sku?: InputMaybe<Scalars['String']['input']>;
   stock?: InputMaybe<Scalars['Int']['input']>;
-  variants: Array<CreateProductVariantInput>;
+  variants?: InputMaybe<Array<CreateProductVariantInput>>;
 };
 
 export type CreateProductPromotionInput = {
@@ -149,7 +149,7 @@ export type CreateProductVariantInput = {
   product_image_id?: InputMaybe<Scalars['Int']['input']>;
   sku?: InputMaybe<Scalars['String']['input']>;
   stock: Scalars['Int']['input'];
-  variant_attributes: Array<CreateProductVariantAttributeInput>;
+  variant_attributes?: InputMaybe<Array<CreateProductVariantAttributeInput>>;
 };
 
 export type CreatePromotionInput = {
@@ -239,7 +239,6 @@ export type Mutation = {
   createOrderItem: OrderItem;
   createProduct: Product;
   createProductAttributeValue: ProductAttributeValue;
-  createProductCategory: ProductCategory;
   createProductImage: ProductImage;
   createProductPromotion: ProductPromotion;
   createProductVariant: ProductVariant;
@@ -249,7 +248,6 @@ export type Mutation = {
   deleteOrder: Order;
   deleteOrderItem: OrderItem;
   deleteProduct: Product;
-  deleteProductCategory: ProductCategory;
   deleteProductImage: ProductImage;
   deleteProductPromotion: ProductPromotion;
   deletePromotion: Promotion;
@@ -264,7 +262,6 @@ export type Mutation = {
   updateOrderItem: OrderItem;
   updateProduct: Product;
   updateProductAttributeValue: ProductAttributeValue;
-  updateProductCategory: ProductCategory;
   updateProductImage: ProductImage;
   updateProductPromotion: ProductPromotion;
   updateProductVariant: ProductVariant;
@@ -322,11 +319,6 @@ export type MutationCreateProductAttributeValueArgs = {
 };
 
 
-export type MutationCreateProductCategoryArgs = {
-  data: CreateProductCategoryInput;
-};
-
-
 export type MutationCreateProductImageArgs = {
   data: CreateProductImageInput;
 };
@@ -368,11 +360,6 @@ export type MutationDeleteOrderItemArgs = {
 
 
 export type MutationDeleteProductArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type MutationDeleteProductCategoryArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -444,11 +431,6 @@ export type MutationUpdateProductArgs = {
 
 export type MutationUpdateProductAttributeValueArgs = {
   updateData: UpdateProductAttributeValueInput;
-};
-
-
-export type MutationUpdateProductCategoryArgs = {
-  data: UpdateProductCategoryInput;
 };
 
 
@@ -529,25 +511,25 @@ export type PaginationInput = {
 
 export type Product = {
   __typename?: 'Product';
-  admin: Admin;
-  admin_id: Scalars['Int']['output'];
-  attributes: Array<ProductAttribute>;
+  admin?: Maybe<Admin>;
+  admin_id?: Maybe<Scalars['Int']['output']>;
+  attributes?: Maybe<Array<ProductAttribute>>;
   base_price: Scalars['Int']['output'];
-  categories: Array<ProductCategory>;
+  categories?: Maybe<Array<Category>>;
   created_at: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
   id: Scalars['Int']['output'];
-  images: Array<ProductImage>;
+  images?: Maybe<Array<ProductImage>>;
   name: Scalars['String']['output'];
-  promotions: Array<ProductPromotion>;
+  promotions?: Maybe<Array<ProductPromotion>>;
   rating: Scalars['Int']['output'];
-  reviews: Array<Review>;
-  sku: Scalars['String']['output'];
+  reviews?: Maybe<Array<Review>>;
+  sku?: Maybe<Scalars['String']['output']>;
   slug: Scalars['String']['output'];
   stock: Scalars['Int']['output'];
   updated_at: Scalars['DateTime']['output'];
-  variants: Array<ProductVariant>;
-  wishlist: Array<Wishlist>;
+  variants?: Maybe<Array<ProductVariant>>;
+  wishlist?: Maybe<Array<Wishlist>>;
 };
 
 export type ProductAttribute = {
@@ -569,17 +551,6 @@ export type ProductAttributeValue = {
   product_attribute_id: Scalars['Int']['output'];
   updated_at: Scalars['DateTime']['output'];
   value: Scalars['String']['output'];
-};
-
-export type ProductCategory = {
-  __typename?: 'ProductCategory';
-  category: Category;
-  category_id: Scalars['Int']['output'];
-  created_at: Scalars['DateTime']['output'];
-  id: Scalars['Int']['output'];
-  product: Product;
-  product_id: Scalars['Int']['output'];
-  updated_at: Scalars['DateTime']['output'];
 };
 
 export type ProductCount = {
@@ -620,6 +591,7 @@ export type ProductVariant = {
   product_id: Scalars['Int']['output'];
   product_image: Array<ProductImage>;
   product_image_id?: Maybe<Scalars['Int']['output']>;
+  sku: Scalars['String']['output'];
   stock: Scalars['Int']['output'];
   updated_at: Scalars['DateTime']['output'];
   variant_attributes: Array<ProductVariantAttribute>;
@@ -666,8 +638,6 @@ export type Query = {
   product: Product;
   productAttribute: ProductAttribute;
   productAttributes: Array<ProductAttribute>;
-  productCategories: Array<ProductCategory>;
-  productCategory: ProductCategory;
   productImage: ProductImage;
   productImages: Array<ProductImage>;
   productPromotion: ProductPromotion;
@@ -746,11 +716,6 @@ export type QueryProductArgs = {
 
 
 export type QueryProductAttributeArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QueryProductCategoryArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -894,24 +859,18 @@ export type UpdateOrderItemInput = {
 };
 
 export type UpdateProductAttributeInput = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   values?: InputMaybe<Array<CreateProductAttributeValueInput>>;
 };
 
 export type UpdateProductAttributeValueInput = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type UpdateProductCategoryInput = {
-  category_id?: InputMaybe<Scalars['Int']['input']>;
-  id: Scalars['Int']['input'];
-  product_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
 export type UpdateProductImageInput = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   is_main?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   product_id?: InputMaybe<Scalars['Int']['input']>;
@@ -919,14 +878,15 @@ export type UpdateProductImageInput = {
 };
 
 export type UpdateProductInput = {
-  attributes: Array<UpdateProductAttributeInput>;
+  attributes?: InputMaybe<Array<UpdateProductAttributeInput>>;
   base_price?: InputMaybe<Scalars['Int']['input']>;
+  categories?: InputMaybe<Array<ConnectCategoryInput>>;
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   sku?: InputMaybe<Scalars['String']['input']>;
   stock?: InputMaybe<Scalars['Int']['input']>;
-  variants: Array<UpdateProductVariantInput>;
+  variants?: InputMaybe<Array<UpdateProductVariantInput>>;
 };
 
 export type UpdateProductPromotionInput = {
@@ -936,18 +896,18 @@ export type UpdateProductPromotionInput = {
 };
 
 export type UpdateProductVariantAttributeInput = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   name: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
 
 export type UpdateProductVariantInput = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   price: Scalars['Int']['input'];
   product_image_id?: InputMaybe<Scalars['Int']['input']>;
   sku?: InputMaybe<Scalars['String']['input']>;
   stock: Scalars['Int']['input'];
-  variant_attributes: Array<UpdateProductVariantAttributeInput>;
+  variant_attributes?: InputMaybe<Array<UpdateProductVariantAttributeInput>>;
 };
 
 export type UpdatePromotionInput = {
@@ -1020,6 +980,11 @@ export type AttributesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AttributesQuery = { __typename?: 'Query', attributes: Array<{ __typename?: 'Attribute', id: number, name: string, created_at: any, values: Array<{ __typename?: 'ProductAttributeValue', id: number, value: string }> }> };
+
+export type All_AttributesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type All_AttributesQuery = { __typename?: 'Query', attributes: Array<{ __typename?: 'Attribute', name: string, values: Array<{ __typename?: 'ProductAttributeValue', value: string }> }> };
 
 export type AuthUserFragmentFragment = { __typename?: 'AuthUser', id: number, first_name: string, last_name: string, email: string };
 
@@ -1115,28 +1080,30 @@ export type ProductsQueryVariables = Exact<{
 }>;
 
 
-export type ProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: number, name: string, base_price: number, created_at: any, stock: number, images: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }> }> };
+export type ProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: number, name: string, base_price: number, created_at: any, stock: number, images?: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }> | null }> };
+
+export type ProductFragmentFragment = { __typename?: 'Product', id: number, name: string, description: string, base_price: number, created_at: any, stock: number, images?: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }> | null, variants?: Array<{ __typename?: 'ProductVariant', id: number, stock: number, price: number, sku: string, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', name: string, value: string }> }> | null, attributes?: Array<{ __typename?: 'ProductAttribute', id: number, name: string, values: Array<{ __typename?: 'ProductAttributeValue', value: string }> }> | null, categories?: Array<{ __typename?: 'Category', id: number }> | null };
 
 export type ProductQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type ProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: number, name: string, base_price: number, created_at: any, stock: number, images: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }>, variants: Array<{ __typename?: 'ProductVariant', id: number, stock: number, price: number, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', id: number, name: string, value: string }> }>, attributes: Array<{ __typename?: 'ProductAttribute', id: number, name: string, values: Array<{ __typename?: 'ProductAttributeValue', id: number, value: string }> }> } };
+export type ProductQuery = { __typename?: 'Query', product: { __typename?: 'Product', id: number, name: string, description: string, base_price: number, created_at: any, stock: number, images?: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }> | null, variants?: Array<{ __typename?: 'ProductVariant', id: number, stock: number, price: number, sku: string, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', name: string, value: string }> }> | null, attributes?: Array<{ __typename?: 'ProductAttribute', id: number, name: string, values: Array<{ __typename?: 'ProductAttributeValue', value: string }> }> | null, categories?: Array<{ __typename?: 'Category', id: number }> | null } };
 
 export type UpdateProductMutationVariables = Exact<{
   data: UpdateProductInput;
 }>;
 
 
-export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', id: number } };
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', id: number, name: string, description: string, base_price: number, created_at: any, stock: number, images?: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }> | null, variants?: Array<{ __typename?: 'ProductVariant', id: number, stock: number, price: number, sku: string, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', name: string, value: string }> }> | null, attributes?: Array<{ __typename?: 'ProductAttribute', id: number, name: string, values: Array<{ __typename?: 'ProductAttributeValue', value: string }> }> | null, categories?: Array<{ __typename?: 'Category', id: number }> | null } };
 
 export type CreateProductMutationVariables = Exact<{
   data: CreateProductInput;
 }>;
 
 
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', id: number } };
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', id: number, name: string, description: string, base_price: number, created_at: any, stock: number, images?: Array<{ __typename?: 'ProductImage', url: string, is_main: boolean, name: string }> | null, variants?: Array<{ __typename?: 'ProductVariant', id: number, stock: number, price: number, sku: string, variant_attributes: Array<{ __typename?: 'ProductVariantAttribute', name: string, value: string }> }> | null, attributes?: Array<{ __typename?: 'ProductAttribute', id: number, name: string, values: Array<{ __typename?: 'ProductAttributeValue', value: string }> }> | null, categories?: Array<{ __typename?: 'Category', id: number }> | null } };
 
 export type ProductsCountQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1173,6 +1140,41 @@ export const AuthUserFragmentFragmentDoc = gql`
   first_name
   last_name
   email
+}
+    `;
+export const ProductFragmentFragmentDoc = gql`
+    fragment ProductFragment on Product {
+  id
+  name
+  description
+  base_price
+  created_at
+  stock
+  images {
+    url
+    is_main
+    name
+  }
+  variants {
+    id
+    stock
+    price
+    sku
+    variant_attributes {
+      name
+      value
+    }
+  }
+  attributes {
+    id
+    name
+    values {
+      value
+    }
+  }
+  categories {
+    id
+  }
 }
     `;
 export const AttributesDocument = gql`
@@ -1220,6 +1222,48 @@ export type AttributesQueryHookResult = ReturnType<typeof useAttributesQuery>;
 export type AttributesLazyQueryHookResult = ReturnType<typeof useAttributesLazyQuery>;
 export type AttributesSuspenseQueryHookResult = ReturnType<typeof useAttributesSuspenseQuery>;
 export type AttributesQueryResult = Apollo.QueryResult<AttributesQuery, AttributesQueryVariables>;
+export const All_AttributesDocument = gql`
+    query all_attributes {
+  attributes {
+    name
+    values {
+      value
+    }
+  }
+}
+    `;
+
+/**
+ * __useAll_AttributesQuery__
+ *
+ * To run a query within a React component, call `useAll_AttributesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAll_AttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAll_AttributesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAll_AttributesQuery(baseOptions?: Apollo.QueryHookOptions<All_AttributesQuery, All_AttributesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<All_AttributesQuery, All_AttributesQueryVariables>(All_AttributesDocument, options);
+      }
+export function useAll_AttributesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<All_AttributesQuery, All_AttributesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<All_AttributesQuery, All_AttributesQueryVariables>(All_AttributesDocument, options);
+        }
+export function useAll_AttributesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<All_AttributesQuery, All_AttributesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<All_AttributesQuery, All_AttributesQueryVariables>(All_AttributesDocument, options);
+        }
+export type All_AttributesQueryHookResult = ReturnType<typeof useAll_AttributesQuery>;
+export type All_AttributesLazyQueryHookResult = ReturnType<typeof useAll_AttributesLazyQuery>;
+export type All_AttributesSuspenseQueryHookResult = ReturnType<typeof useAll_AttributesSuspenseQuery>;
+export type All_AttributesQueryResult = Apollo.QueryResult<All_AttributesQuery, All_AttributesQueryVariables>;
 export const AuthAdminLoginDocument = gql`
     query authAdminLogin($loginInput: LoginInput!) {
   authAdminLogin(loginInput: $loginInput) {
@@ -1848,37 +1892,10 @@ export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQuer
 export const ProductDocument = gql`
     query product($id: Int!) {
   product(id: $id) {
-    id
-    name
-    base_price
-    created_at
-    stock
-    images {
-      url
-      is_main
-      name
-    }
-    variants {
-      id
-      stock
-      price
-      variant_attributes {
-        id
-        name
-        value
-      }
-    }
-    attributes {
-      id
-      name
-      values {
-        id
-        value
-      }
-    }
+    ...ProductFragment
   }
 }
-    `;
+    ${ProductFragmentFragmentDoc}`;
 
 /**
  * __useProductQuery__
@@ -1915,10 +1932,10 @@ export type ProductQueryResult = Apollo.QueryResult<ProductQuery, ProductQueryVa
 export const UpdateProductDocument = gql`
     mutation updateProduct($data: UpdateProductInput!) {
   updateProduct(data: $data) {
-    id
+    ...ProductFragment
   }
 }
-    `;
+    ${ProductFragmentFragmentDoc}`;
 export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
 
 /**
@@ -1948,10 +1965,10 @@ export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProd
 export const CreateProductDocument = gql`
     mutation createProduct($data: CreateProductInput!) {
   createProduct(data: $data) {
-    id
+    ...ProductFragment
   }
 }
-    `;
+    ${ProductFragmentFragmentDoc}`;
 export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
 
 /**

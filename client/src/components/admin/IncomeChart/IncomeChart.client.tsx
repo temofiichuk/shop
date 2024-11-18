@@ -25,9 +25,12 @@ const IncomeChartClient = ({ revenueAnalytics }: IncomeChartProps) => {
 					tickMargin={10}
 					tickFormatter={(value) => value.slice(0, 3)}
 				/>
-				<ChartTooltip>
-					<ChartTooltipContent hideLabel />
-				</ChartTooltip>
+
+				<ChartTooltip
+					cursor={false}
+					content={<ChartTooltipContent indicator="dashed" hideLabel />}
+				/>
+
 				<Bar dataKey="revenue" fill="var(--color-desktop)" radius={8} />
 			</BarChart>
 		</ChartContainer>

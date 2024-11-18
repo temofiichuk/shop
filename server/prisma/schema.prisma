@@ -61,32 +61,22 @@ model Admin {
 }
 
 model Category {
-  id         Int               @id @unique @default(autoincrement())
-  name       String            @unique
+  id         Int        @id @unique @default(autoincrement())
+  name       String     @unique
   parent_id  Int?
-  parent     Category?         @relation("CategoryToChildren", fields: [parent_id], references: [id])
+  parent     Category?  @relation("CategoryToChildren", fields: [parent_id], references: [id])
   slug       String?
-  created_at DateTime          @default(now())
-  updated_at DateTime          @updatedAt
-  categories ProductCategory[]
-  children   Category[]        @relation("CategoryToChildren")
-}
-
-model ProductCategory {
-  id          Int      @id @unique @default(autoincrement())
-  product     Product  @relation(fields: [product_id], references: [id])
-  product_id  Int
-  category    Category @relation(fields: [category_id], references: [id])
-  category_id Int
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  products   Product[]
+  children   Category[] @relation("CategoryToChildren")
 }
 
 model Product {
   id          Int                @id @unique @default(autoincrement())
   name        String             @unique
   description String
-  sku         String             @unique
+  sku         String?
   base_price  Int
   slug        String?            @unique
   stock       Int?               @default(0)
@@ -97,7 +87,7 @@ model Product {
   created_at  DateTime           @default(now())
   updated_at  DateTime           @updatedAt
   variants    ProductVariant[]
-  categories  ProductCategory[]
+  categories  Category[]
   images      ProductImage[]
   promotions  ProductPromotion[]
   wishlist    Wishlist[]
@@ -114,11 +104,14 @@ model Attribute {
 
 model ProductAttribute {
   id         Int                     @id @default(autoincrement())
-  name       String                  @unique
+  name       String
   values     ProductAttributeValue[]
-  products   Product[]
+  product    Product                 @relation(fields: [product_id], references: [id])
+  product_id Int
   created_at DateTime                @default(now())
   updated_at DateTime                @updatedAt
+
+  @@unique([name, product_id])
 }
 
 model ProductAttributeValue {
@@ -135,6 +128,7 @@ model ProductVariant {
   product_id         Int?
   product            Product?                  @relation(fields: [product_id], references: [id])
   price              Int
+  sku                String?
   stock              Int
   product_image      ProductImage?
   product_image_id   Int?
@@ -152,7 +146,7 @@ model ProductVariantAttribute {
   product_variant    ProductVariant? @relation(fields: [product_variant_id], references: [id])
   product_variant_id Int?
 
-  // @@unique([name, value, ])
+  @@unique([name, value, product_variant_id])
 }
 
 model Wishlist {

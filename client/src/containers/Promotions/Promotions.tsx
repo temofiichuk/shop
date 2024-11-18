@@ -13,11 +13,11 @@ import { Badge } from "@/components/ui/badge";
 import getClient from "@/lib/apollo/apollo.client.rsc";
 import moment from "moment/moment";
 import { PROMOTIONS } from "@/lib/graphql/queries/promotions";
-import { PromotionsQueryResult } from "@/lib/graphql/generated/graphql";
+import { PromotionsQuery } from "@/lib/graphql/generated/graphql";
 
 const Promotions = async () => {
 
-	const { data: { promotions } } = await getClient().query<PromotionsQueryResult>({ query: PROMOTIONS });
+	const { data: { promotions } } = await getClient().query<PromotionsQuery>({ query: PROMOTIONS });
 
 	return (
 		<div>
@@ -51,7 +51,8 @@ const Promotions = async () => {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{promotions?.map(({ name, created_at, start_date, end_date, discount_type, id }) => (
+							{/*TODO: - change field "end_data" to "end_date" */}
+							{promotions?.map(({ name, created_at, start_date, end_data, discount_type }) => (
 								<TableRow key={name}>
 									<TableCell>
 										<p className="font-medium text-nowrap">{name}</p>
@@ -60,7 +61,7 @@ const Promotions = async () => {
 										<Badge className="text-xs" variant="outline"> {discount_type} </Badge>
 									</TableCell>
 									<TableCell>{moment(start_date).format("DD.MM.YY")}</TableCell>
-									<TableCell>{moment(end_date).format("DD.MM.YY")}</TableCell>
+									<TableCell>{moment(end_data).format("DD.MM.YY")}</TableCell>
 									<TableCell>
 										<span className="md:hidden">{moment(created_at).format("DD.MM.YY")}</span>
 										<span

@@ -3,6 +3,8 @@ import { HTMLAttributes } from "react";
 
 interface Props extends HTMLAttributes<HTMLOrSVGElement> {
 	widths?: number;
+	width?: number;
+	height?: number;
 }
 
 export const LoadingSpinner = ({ className, widths, width, height, ...props }: Props) => {

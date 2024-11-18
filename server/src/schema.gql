@@ -116,6 +116,7 @@ type ProductVariant {
   product: Product!
   price: Int!
   stock: Int!
+  sku: String!
   created_at: DateTime!
   updated_at: DateTime!
   order_items: [OrderItem!]!
@@ -123,27 +124,6 @@ type ProductVariant {
   product_image: [ProductImage!]!
   product_image_id: Int
   variant_attributes: [ProductVariantAttribute!]!
-}
-
-type Category {
-  id: Int!
-  name: String!
-  parent_id: Int
-  parent: Category!
-  slug: String!
-  created_at: DateTime!
-  updated_at: DateTime!
-  children: [Category!]!
-}
-
-type ProductCategory {
-  id: Int!
-  product: Product!
-  product_id: Int!
-  category: Category!
-  category_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime!
 }
 
 type Promotion {
@@ -192,26 +172,37 @@ type ProductAttribute {
   updated_at: DateTime!
 }
 
+type Category {
+  id: Int!
+  name: String!
+  parent_id: Int
+  parent: Category!
+  slug: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  children: [Category!]!
+}
+
 type Product {
   id: Int!
   name: String!
   description: String!
-  sku: String!
+  sku: String
   base_price: Int!
   slug: String!
   stock: Int!
   rating: Int!
-  reviews: [Review!]!
-  admin: Admin!
-  admin_id: Int!
+  reviews: [Review!]
+  admin: Admin
+  admin_id: Int
   created_at: DateTime!
   updated_at: DateTime!
-  variants: [ProductVariant!]!
-  categories: [ProductCategory!]!
-  images: [ProductImage!]!
-  promotions: [ProductPromotion!]!
-  wishlist: [Wishlist!]!
-  attributes: [ProductAttribute!]!
+  variants: [ProductVariant!]
+  categories: [Category!]
+  images: [ProductImage!]
+  promotions: [ProductPromotion!]
+  wishlist: [Wishlist!]
+  attributes: [ProductAttribute!]
 }
 
 type Review {
@@ -268,8 +259,6 @@ type Query {
   attribute(id: Int!): Attribute!
   productAttributes: [ProductAttribute!]!
   productAttribute(id: Int!): ProductAttribute!
-  productCategories: [ProductCategory!]!
-  productCategory(id: Int!): ProductCategory!
   products(pagination: PaginationInput, filter: FilterProductInput): [Product!]!
   productsCount: ProductCount!
   product(id: Int!): Product!
@@ -353,12 +342,7 @@ type Mutation {
   createAttributeValue(data: CreateAttributeInput!): Attribute!
   updateAttributeValue(data: UpdateAttributeInput!): Attribute!
   removeAttributeValue(id: Int!): Attribute!
-  createProductAttributeValue(createData: CreateProductAttributeValueInput!): ProductAttributeValue!
-  updateProductAttributeValue(updateData: UpdateProductAttributeValueInput!): ProductAttributeValue!
   removeProductAttributeValue(id: Int!): ProductAttributeValue!
-  createProductCategory(data: CreateProductCategoryInput!): ProductCategory!
-  updateProductCategory(data: UpdateProductCategoryInput!): ProductCategory!
-  deleteProductCategory(id: Int!): ProductCategory!
   createProduct(data: CreateProductInput!): Product!
   updateProduct(data: UpdateProductInput!): Product!
   deleteProduct(id: Int!): Product!
@@ -386,6 +370,8 @@ type Mutation {
   createProductImage(data: CreateProductImageInput!): ProductImage!
   updateProductImage(data: UpdateProductImageInput!): ProductImage!
   deleteProductImage(id: Int!): ProductImage!
+  createProductAttributeValue(createData: CreateProductAttributeValueInput!): ProductAttributeValue!
+  updateProductAttributeValue(updateData: UpdateProductAttributeValueInput!): ProductAttributeValue!
   userCreate(createUserInput: CreateUserInput!): User!
   userUpdate(updateUserInput: UpdateUserInput!): User!
   userRemove: User!
@@ -436,30 +422,15 @@ input UpdateAttributeInput {
   id: Int!
 }
 
-input UpdateProductAttributeValueInput {
-  value: String
-  id: Int!
-}
-
-input CreateProductCategoryInput {
-  product_id: Int!
-  category_id: Int!
-}
-
-input UpdateProductCategoryInput {
-  product_id: Int
-  category_id: Int
-  id: Int!
-}
-
 input CreateProductInput {
   name: String!
   description: String!
-  sku: String!
+  sku: String
   base_price: Int!
-  stock: Int = 0
-  attributes: [CreateProductAttributeInput!]!
-  variants: [CreateProductVariantInput!]!
+  stock: Int
+  attributes: [CreateProductAttributeInput!]
+  variants: [CreateProductVariantInput!]
+  categories: [ConnectCategoryInput!]
 }
 
 input CreateProductAttributeInput {
@@ -471,7 +442,7 @@ input CreateProductVariantInput {
   price: Int!
   stock: Int!
   sku: String
-  variant_attributes: [CreateProductVariantAttributeInput!]!
+  variant_attributes: [CreateProductVariantAttributeInput!]
   product_image_id: Int
 }
 
@@ -480,21 +451,26 @@ input CreateProductVariantAttributeInput {
   value: String!
 }
 
+input ConnectCategoryInput {
+  id: Int!
+}
+
 input UpdateProductInput {
   name: String
   description: String
   sku: String
   base_price: Int
-  stock: Int = 0
+  stock: Int
+  categories: [ConnectCategoryInput!]
   id: Int!
-  attributes: [UpdateProductAttributeInput!]!
-  variants: [UpdateProductVariantInput!]!
+  attributes: [UpdateProductAttributeInput!]
+  variants: [UpdateProductVariantInput!]
 }
 
 input UpdateProductAttributeInput {
   name: String
   values: [CreateProductAttributeValueInput!]
-  id: Int!
+  id: Int
 }
 
 input UpdateProductVariantInput {
@@ -502,14 +478,14 @@ input UpdateProductVariantInput {
   stock: Int!
   sku: String
   product_image_id: Int
-  id: Int!
-  variant_attributes: [UpdateProductVariantAttributeInput!]!
+  id: Int
+  variant_attributes: [UpdateProductVariantAttributeInput!]
 }
 
 input UpdateProductVariantAttributeInput {
   name: String!
   value: String!
-  id: Int!
+  id: Int
 }
 
 input CreateWishlistInput {
@@ -608,7 +584,12 @@ input UpdateProductImageInput {
   name: String
   url: String
   is_main: Boolean = false
-  id: Int!
+  id: Int
+}
+
+input UpdateProductAttributeValueInput {
+  value: String
+  id: Int
 }
 
 input CreateUserInput {

@@ -15,11 +15,11 @@ import { Badge } from "@/components/ui/badge";
 import getClient from "@/lib/apollo/apollo.client.rsc";
 import moment from "moment/moment";
 import { REVIEWS } from "@/lib/graphql/queries/review";
-import { EnumReviewStatus } from "@/lib/graphql/generated/graphql";
+import { EnumReviewStatus, ReviewsQuery } from "@/lib/graphql/generated/graphql";
 
 const Reviews = async () => {
 
-	const { data: { reviews } } = await getClient().query({ query: REVIEWS });
+	const { data: { reviews } } = await getClient().query<ReviewsQuery>({ query: REVIEWS });
 
 	return (
 		<main
@@ -84,7 +84,7 @@ const Reviews = async () => {
 						</TableHeader>
 						<TableBody>
 							{reviews?.map(({ user, status: currentStatus, comment, created_at, product, id }) => (
-								<TableRow key={user.name}>
+								<TableRow key={id}>
 									<TableCell>
 										<p className="font-medium text-nowrap">{user.email}</p>
 									</TableCell>

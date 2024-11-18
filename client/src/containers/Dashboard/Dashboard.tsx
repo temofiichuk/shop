@@ -1,4 +1,5 @@
 import Income from "@/components/admin/Income/Income";
+import IncomeChart from "@/components/admin/IncomeChart/IncomeChart";
 
 const Dashboard = () => {
 	return (
@@ -12,9 +13,9 @@ const Dashboard = () => {
 					<div className="col-span-3 md:col-span-1">
 						<Income period="month" />
 					</div>
-					{/*<div className="col-span-3 md:col-span-2">*/}
-					{/*	<IncomeChart period="year" />*/}
-					{/*</div>*/}
+					<div className="col-span-3 md:col-span-2">
+						<IncomeChart period="year" />
+					</div>
 				</div>
 			</div>
 		</section>

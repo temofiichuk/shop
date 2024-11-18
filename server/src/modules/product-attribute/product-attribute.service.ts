@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { CreateProductAttributeInput } from "./dto/create-product-attribute.input";
 import { UpdateProductAttributeInput } from "./dto/update-product-attribute.input";
 import { PrismaService } from "../../prisma.service";
 
@@ -9,16 +8,16 @@ export class ProductAttributeService {
 	constructor(private readonly prisma: PrismaService) {
 	}
 
-	create({ values, ...data }: CreateProductAttributeInput) {
-		return this.prisma.productAttribute.create({
-			data: {
-				...data,
-				values: {
-					connect: values.map(({ value }) => ({ value })),
-				},
-			},
-		});
-	}
+	// create({ values, ...data }: CreateProductAttributeInput) {
+	// 	return this.prisma.productAttribute.create({
+	// 		data: {
+	// 			...data,
+	// 			values: {
+	// 				connect: values.map(({ value }) => ({ value })),
+	// 			},
+	// 		},
+	// 	});
+	// }
 
 	async findAll() {
 		return this.prisma.productAttribute.findMany({

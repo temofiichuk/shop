@@ -18,6 +18,7 @@ import useAppState from "@/lib/hooks/useAppState";
 import { useCallback, useEffect, useRef } from "react";
 import useSession from "@/lib/hooks/useSession";
 import { toast } from "sonner";
+import { Reference, StoreObject } from "@apollo/client";
 
 
 const CurrentOrder = () => {
@@ -27,12 +28,12 @@ const CurrentOrder = () => {
 	const [currentOrderId, setCurrentOrderId] = useAppState<number | null>("currentOrderId");
 
 	const [deleteOrder] = useDeleteOrderMutation({
-		update(cache, { data: { deleteOrder } }) {
+		update(cache, { data }) {
 			cache.modify({
 				fields: {
 					orders(existingOrdersRefs = [], { readField }) {
 						return existingOrdersRefs.filter(
-							ref => deleteOrder.id !== readField("id", ref),
+							(ref: Reference | StoreObject | undefined) => data?.deleteOrder.id !== readField("id", ref),
 						);
 					},
 				},
@@ -62,7 +63,8 @@ const CurrentOrder = () => {
 		if (!currentOrderId) return;
 		fetchOrder({ variables: { id: currentOrderId } }).then(() => {
 			if (!ref.current) return;
-			ref.current.scrollIntoView();
+			const order = ref.current as HTMLElement;
+			order.scrollIntoView();
 		});
 	}, [currentOrderId]);
 

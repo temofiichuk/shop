@@ -6,7 +6,6 @@ import { PaginationInput } from "../../services/pagination/dto/pagination.input"
 import { PaginationService } from "../../services/pagination/pagination.service";
 import { FilterProductInput } from "./dto/filter-product.input";
 import { includeProductFields } from "./dto/product.output";
-import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class ProductService {
@@ -16,29 +15,29 @@ export class ProductService {
 	}
 
 	async create(createData: CreateProductInput) {
-		const { attributes, variants, ...data } = createData;
+		const { attributes, variants, categories, ...data } = createData;
 
 		return this.prisma.product.create({
 			data: {
 				...data,
-				attributes: {
-					connectOrCreate: attributes.map(({ name, values }) => ({
-						where: { name },
-						create: {
-							name,
-							values: {
-								connectOrCreate: values.map(({ value }) => ({
-									where: { value },
-									create: { value },
-								})),
-							},
+				attributes: attributes && {
+					create: attributes?.map(({ name, values }) => ({
+						name,
+						values: {
+							connect: values.map(({ value }) => ({ value })),
 						},
 					})),
 				},
-				variants: {
-					createMany: {
-						data: variants,
-					},
+				variants: variants && {
+					create: variants.map(({ variant_attributes, ...variant }) => ({
+						...variant,
+						variant_attributes: {
+							create: variant_attributes,
+						},
+					})),
+				},
+				categories: categories && {
+					connect: categories,
 				},
 			},
 		});
@@ -68,53 +67,100 @@ export class ProductService {
 
 	async update(updateData: UpdateProductInput) {
 		return this.prisma.$transaction(async (prisma) => {
-			const { id, attributes, variants, ...data } = updateData;
-			const currentAttrsIds = attributes.map(({ id }) => id);
+			const { id: product_id, attributes, variants, categories, ...data } = updateData;
 			const {
 				attributes: availableAttrs,
 				variants: availableVariants,
+				categories: availableCategories,
 			} = await prisma.product.findUnique({
-				where: { id },
-				select: { attributes: true, variants: true },
-			});
-
-			const currentVariantsIds = variants.map(({ id }) => id);
-
-			return prisma.product.update({
-				where: { id },
-				data: {
-					...data,
+				where: { id: product_id },
+				select: {
 					attributes: {
-						connect: attributes.map(({ id, name }) => ({ id, name })),
-						disconnect: availableAttrs.filter(({ id }) => !currentAttrsIds.includes(id)),
+						select: {
+							name: true, values: true, id: true,
+						},
 					},
 					variants: {
-						deleteMany: availableVariants.filter(({ id }) => !currentVariantsIds.includes(id)),
-						upsert: variants.map(({ id, variant_attributes, ...variant }) => ({
-							where: { id },
+						select: {
+							id: true,
+							variant_attributes: true,
+						},
+					}, categories: true,
+				},
+			});
+
+			const currentAttrsIds = attributes?.map(({ id }) => id);
+			const currentVariantsIds = variants?.map(({ id }) => id);
+			const currentCategoriesIds = categories?.map(({ id }) => id);
+
+			return prisma.product.update({
+				where: { id: product_id },
+				data: {
+					...data,
+					attributes: attributes && {
+						deleteMany: availableAttrs.filter(({ id }) => !currentAttrsIds.includes(id)).map(({ name }) => ({
+							name, product_id,
+						})),
+						upsert: attributes?.map(({ id, name, values }) => ({
+							where: { name_product_id: { name, product_id: updateData.id } },
+							create: {
+								name: name,
+								values: {
+									connect: values.map(({ value }) => ({ value })),
+								},
+							},
+							update: {
+								values: {
+									connect: values.map(({ value }) => ({ value })),
+									disconnect: availableAttrs?.find((attr) => attr.id === id)
+										?.values?.filter(({ value: availableValue }) => !values.some(({ value }) => value === availableValue))
+										?.map(({ value }) => ({ value })),
+								},
+							},
+						})),
+					},
+					variants: variants && {
+						deleteMany: availableVariants.filter(({ id }) => !currentVariantsIds.includes(id)).map(({ id }) => ({ id })),
+						upsert: variants?.map(({ id: variant_id, variant_attributes, ...variant }) => ({
+							where: { id: variant_id ?? 0 },
 							update: {
 								...variant,
 								variant_attributes: {
-									update: variant_attributes.map(({ id, ...attr }) => ({
-										where: { id },
-										data: { ...attr },
+									deleteMany: availableVariants?.find((variant) => variant.id === variant_id)
+										?.variant_attributes?.filter(
+											(availableAttr) => !variant_attributes.some(
+												(attr) => availableAttr.name === attr.name && availableAttr.value === attr.value,
+											))?.map(({ value }) => ({ value })),
+									upsert: variant_attributes?.map(({ id: attr_value_id, ...attr }) => ({
+										where: {
+											name_value_product_variant_id: {
+												name: attr.name,
+												value: attr.value,
+												product_variant_id: variant_id ?? 0,
+											},
+										},
+										update: { ...attr },
+										create: { ...attr },
 									})),
 								},
 							},
 							create: {
 								...variant,
 								variant_attributes: {
-									create: variant_attributes.map(({ id, ...attr }) => ({ ...attr })),
+									create: variant_attributes,
 								},
 							},
 						})),
 					},
+					categories: categories && {
+						connect: categories.map(({ id }) => ({ id })),
+						disconnect: availableCategories.filter(({ id }) => !currentCategoriesIds.includes(id)),
+					},
 				},
+				include: includeProductFields,
 			});
 		});
 	}
-
-	text: Prisma.ProductVariantUpsertWithWhereUniqueWithoutProductInput[];
 
 	async remove(id: number) {
 		return this.prisma.product.delete({

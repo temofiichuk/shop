@@ -3,7 +3,8 @@ import { PropsWithChildren, useLayoutEffect, useMemo, useState } from "react";
 import { ApolloClient, ApolloProvider as AppApolloProvider, InMemoryCache } from "@apollo/client";
 import httpLink from "@/lib/apollo/apollo.auth-http-link";
 
-const cache = new InMemoryCache({ addTypename: false });
+const cache = new InMemoryCache();
+
 export const ApolloProvider = ({ children }: PropsWithChildren) => {
 	const [client, setClient] = useState<any>();
 
@@ -12,7 +13,7 @@ export const ApolloProvider = ({ children }: PropsWithChildren) => {
 		return new ApolloClient({
 			link: httpLink,
 			cache: cache,
-			defaultOptions: { query: { fetchPolicy: "cache-first" } },
+			// defaultOptions: { query: { fetchPolicy: "cache-first" } },
 		});
 	}, [cache, httpLink]);
 

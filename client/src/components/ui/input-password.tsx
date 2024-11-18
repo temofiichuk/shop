@@ -5,10 +5,9 @@ import { Eye, EyeOff } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ControllerRenderProps, FieldValues } from "react-hook-form";
 
-export interface InputProps
-	extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type">, ControllerRenderProps<FieldValues, string> {
+interface InputProps
+	extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const InputPassword = React.forwardRef<HTMLInputElement, InputProps>(

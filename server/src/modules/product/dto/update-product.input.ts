@@ -10,11 +10,11 @@ export class UpdateProductInput extends OmitType(PartialType(CreateProductInput)
 	@IsInt()
 	@IsNotEmpty()
 	id: number;
-	
-	@Field(() => [UpdateProductAttributeInput])
-	attributes: UpdateProductAttributeInput[];
 
-	@Field(() => [UpdateProductVariantInput])
-	variants: UpdateProductVariantInput[];
+	@Field(() => [UpdateProductAttributeInput], { nullable: true })
+	attributes?: UpdateProductAttributeInput[];
+
+	@Field(() => [UpdateProductVariantInput], { nullable: true })
+	variants?: UpdateProductVariantInput[];
 
 }

@@ -3,7 +3,7 @@ import { PlusCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import getClient from "@/lib/apollo/apollo.client.rsc";
 import { GET_CATEGORIES } from "@/lib/graphql/queries/category";
-import { Category } from "@/lib/graphql/generated/graphql";
+import { CategoriesQuery, Category } from "@/lib/graphql/generated/graphql";
 import { Fragment, HTMLAttributes } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
@@ -14,26 +14,26 @@ import {
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 
-const getCategoriesHierarhy = async () => {
-	const { data } = await getClient().query({ query: GET_CATEGORIES });
+const getCategoriesHierarchy = async () => {
+	const { data: { categories } } = await getClient().query<CategoriesQuery>({ query: GET_CATEGORIES });
 	const categoriesMap = new Map<number, Pick<Category, "children">>();
 
-	const roots = [];
+	const roots: Category[] = [];
 
 	// Process each category in a single loop
-	data.categories.forEach(category => {
+	categories.forEach(category => {
 		const { id, parent_id } = category;
-		const categoryNode = { ...category, children: [] } as Category;
+		const categoryNode = { ...category, children: [] as Category[] } as Category;
 		categoriesMap.set(id, categoryNode);
 
 		if (parent_id === null) {
 			roots.push(categoryNode);
 		} else {
-			const parentNode = categoriesMap.get(parent_id);
+			const parentNode = categoriesMap.get(parent_id ?? 0);
 			if (parentNode) {
 				parentNode.children.push(categoryNode);
 			} else {
-				categoriesMap.set(parent_id, { children: [categoryNode] });
+				categoriesMap.set(parent_id ?? 0, { children: [categoryNode] });
 			}
 		}
 	});
@@ -42,7 +42,7 @@ const getCategoriesHierarhy = async () => {
 };
 
 const CategoriesPage = async () => {
-	const categories = await getCategoriesHierarhy();
+	const categories = await getCategoriesHierarchy();
 
 	const Categories = ({ categories, ...props }: { categories: Category[] } & HTMLAttributes<HTMLDivElement>) => {
 		return categories.map((category, index) => (

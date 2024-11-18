@@ -7,6 +7,12 @@ export const toRegularCase = (text: string) => {
 	);
 };
 
+export const toCamelCase = (text: string) => text.replace(/\b\w+(_\w+)?\b/g, (match) => {
+	return match
+		.replace(/_/g, " ")
+		.replace(/\b\w/g, char => char.toUpperCase());
+});
+
 export const USD = new Intl.NumberFormat("en-US", {
 	style: "currency",
 	currency: "USD",
