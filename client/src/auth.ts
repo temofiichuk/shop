@@ -5,7 +5,6 @@ import { apolloClient } from "@/lib/apollo/apollo.client";
 import { AUTH_ADMIN_LOGIN, AUTH_ADMIN_TOKENS, AUTH_USER_LOGIN, AUTH_USER_TOKENS } from "@/lib/graphql/queries/auth";
 import { decodeJwt } from "jose";
 
-// @ts-ignore
 import type { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
@@ -50,11 +49,7 @@ async function refreshAccessToken(refreshToken: string, role: EnumUserRole) {
 
 		const authData = isUser ? data.authUserNewTokens : data.authAdminNewTokens;
 
-		if (authData) {
-			return authData;
-		}
-
-		return null;
+		return authData ?? null;
 	} catch (error) {
 		return null;
 	}
@@ -131,14 +126,12 @@ export const config = {
 	providers,
 	callbacks: {
 		async jwt({ token, user, trigger, session }) {
-			if (token && trigger !== "update") {
-				const accessToken = token?.accessToken;
-				if (accessToken) {
-					const { exp } = decodeJwt(accessToken as string);
-					if (exp && exp <= Math.ceil(Date.now() / 1000)) {
-						const authData = await refreshAccessToken(token.refreshToken, token.user.role);
-						return authData ? { ...token, ...authData } : null;
-					}
+			if (token?.accessToken && trigger !== "update") {
+
+				const { exp } = decodeJwt(token?.accessToken);
+				if (exp && exp <= Math.ceil(Date.now() / 1000)) {
+					const authData = await refreshAccessToken(token.refreshToken, token.user.role);
+					return authData ? { ...token, ...authData } : null;
 				}
 			}
 
@@ -146,7 +139,7 @@ export const config = {
 				return { ...token, ...session };
 			}
 
-			return user ? { ...token, ...user } : token;
+			return { ...token, ...user };
 		},
 		async session({ session, token }: { session: Session, token: JWT }) {
 			session.user = {
@@ -157,25 +150,7 @@ export const config = {
 			session.refreshToken = token.refreshToken;
 			return session;
 		},
-		// async redirect({ url, baseUrl }) {
-		// 	if (url.endsWith("/login")) {
-		// 		return new URL("/profile", baseUrl);
-		// 	}
-		// 	if (url.startsWith(new URL("/profile", baseUrl))) {
-		// 		return new URL("/login", baseUrl);
-		// 	}
-		// 	if (url.endsWith("/admin")) {
-		// 		return new URL("/admin/dashboard", baseUrl);
-		// 	}
-		// 	if (url.startsWith(new URL("/admin/dashboard", baseUrl))) {
-		// 		return new URL("/admin", baseUrl);
-		// 	}
-		//
-		// 	return url.startsWith(baseUrl) ? url : baseUrl;
-		// },
 	},
-
-
 	trustHost: process.env.NEXTAUTH_URL,
 } as NextAuthConfig;
 

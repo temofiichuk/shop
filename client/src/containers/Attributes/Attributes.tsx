@@ -19,7 +19,7 @@ import { AttributesQuery } from "@/lib/graphql/generated/graphql";
 const Attributes = async () => {
 
 	const { data: { attributes } } = await getClient().query<AttributesQuery>({ query: ATTRIBUTES });
-	console.log(attributes);
+
 	return (
 		<div>
 			<Card className="xl:col-span-2">

@@ -3,16 +3,13 @@ import { signIn } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { AuthError } from "@auth/core/errors";
 
-const authorization = async (payload: FormData, id: string) => {
+const authorization = async (payload: FormData, id: string, redirectTo?: string) => {
 	try {
-		const data = await signIn(id, {
+		await signIn(id, {
 			email: payload.get("email"),
 			password: payload.get("password"),
+			redirectTo,
 		});
-
-		console.log("data");
-		console.log(data);
-
 		return undefined;
 	} catch (error) {
 		if (isRedirectError(error)) {
@@ -34,16 +31,18 @@ const authorization = async (payload: FormData, id: string) => {
 	}
 };
 
-export const authenticateUser = async (
+export const authorizationUser = async (
 	state: Awaited<string | undefined>,
 	payload: FormData,
+	redirectTo?: string,
 ) => {
-	return authorization(payload, "user-credentials");
+	return authorization(payload, "user-credentials", redirectTo ?? "/profile");
 };
 
-export const authenticateAdmin = async (
+export const authorizationAdmin = async (
 	state: Awaited<string | undefined>,
 	payload: FormData,
+	redirectTo?: string,
 ) => {
-	return authorization(payload, "admin-credentials");
+	return authorization(payload, "admin-credentials", redirectTo ?? "/admin/dashboard");
 };

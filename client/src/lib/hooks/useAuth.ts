@@ -1,17 +1,21 @@
 "use client";
 
 import { useFormState } from "react-dom";
-import { authenticateAdmin as Admin, authenticateUser as User } from "@/lib/actions/authorization";
+import { authorizationAdmin, authorizationUser } from "@/lib/actions/authorization";
 import { toast } from "sonner";
 import { EnumUserRole } from "@/lib/graphql/generated/graphql";
 import { useEffect } from "react";
 
 const useAuth = (role: EnumUserRole) => {
-	const [error, dispatch, pending] = useFormState(role === EnumUserRole.User ? User : Admin, "");
+	const [error, dispatch, pending] = useFormState(
+		role === EnumUserRole.User
+			? authorizationUser
+			: authorizationAdmin,
+		undefined,
+	);
 
 	useEffect(() => {
 		if (error) {
-			// console.log(error);
 			toast("Something went wrong, please try again", {
 				description: error,
 			});
